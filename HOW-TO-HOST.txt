@@ -1,0 +1,31 @@
+ESSAY QUEST ONLINE: putting it on the web (free, about 5 minutes)
+
+Easiest: Netlify Drop
+1. Go to https://app.netlify.com/drop and make a free account.
+2. Drag this whole folder (the one with index.html in it) onto the page.
+3. Netlify gives you a web address like https://something.netlify.app. That's your game.
+4. In Site settings you can rename it (e.g. essayquest-hsc.netlify.app).
+To update the game later, drag the new folder onto the same site's "Deploys" page.
+
+Alternative: GitHub Pages or itch.io (upload index.html as an HTML game) both work too.
+
+Playing
+- You: open the site, type your name and master key, press Host. Read out the 5-character code,
+  or press "Copy invite link" and share it.
+- Students: open the site, type their name, paste their essay, type the code, press Join.
+- Up to 6 players. Friends can join mid-run. If the host closes the page, the run ends.
+
+Admin (host only)
+- While hosting, tap the 🛠 button at the top. Your hero tab (XP, levels, stat points, Wisdom, Ink,
+  any weapon/armour/trinket) is private: no one else is told. The Run tab moves the whole party.
+
+Good to know
+- Players connect two ways at once and the game uses whichever works first: a relay through public
+  messaging servers over secure web sockets (gets through most school and home Wi-Fi), and a direct
+  browser-to-browser link (works on most mobile data).
+- If a phone switches apps for a while, the player reconnects when they come back.
+- The master key itself is not in the file, only a scrambled (SHA-256) copy of it.
+
+Updating the site
+- Netlify: open your site (essay-quest-hsc) > Deploys, then drag the folder containing index.html
+  onto the "drag and drop" box at the bottom of the page.
