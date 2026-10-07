@@ -17,7 +17,7 @@ Object.assign(D.BOSSKIT, {
     MV('arbeam','Hyper Beam',85,3,'arbeam',[['hit',2.6],['st','vuln',70,2]],{w:2.4,pending:1}), MV('arwheel','Cross Wheel',100,5,'arwheel',[['buff','empower',3],['barrier',0.05],['msg','The Cross Wheel spins faster: Primal Arceus gathers the power of every type!']],{w:2}),
     MV('arcall','Call of Space and Time',100,99,'arcall',[['summon',sm(['dialga','palkia'],2,0.09,0.42,{mini:true,all:true})],['msg','Primal Arceus tears the sky open: DIALGA and PALKIA answer the call, lords of time and space!']],{once:true,w:9,after:2})]},
   // Giratina (Origin Forme): shadow clones with 5% of its HP, Shadow Force, Destiny Bond
-  giratina:{hp:1, atk:1, tag:'Renegade of the Distortion World', intro:['GIRATINA','“The Distortion World does not forgive. It devours.”'], moves:[
+  giratina:{hp:1, atk:1.7, tag:'Renegade of the Distortion World', intro:['GIRATINA','“The Distortion World does not forgive. It devours.”'], moves:[
     MV('girclaw','Shadow Claw',95,0,'girclaw',[['hits',4,0.5]],{w:3}), MV('girforce','Shadow Force',100,3,'girforce',[['hit',3.0]],{w:2.8,pending:1}),
     MV('girtail','Dragon Tail',90,0,'girtail',[['hit',1.3],['st','slow',50,2]],{w:2}), MV('girhex','Hex',90,2,'girhex',[['all',0.62],['stall1','poison',60,3],['stall1','weak',45,2]],{w:2.4}),
     MV('girdestiny','Destiny Bond',100,5,'girdestiny',[['guard'],['reflect',0.4,2],['msg','Giratina binds its fate to yours: damage you deal is thrown back at you!']],{w:2}),

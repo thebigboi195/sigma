@@ -308,7 +308,7 @@ A.push(['silver_instinct_gi','Gi of Silent Instinct','armour','leather',6,'Silen
 
 // Balance pass: the raw numbers above describe the fantasy; this table tames the stacking ones so the tiers stay a few steps apart
 const SCALE = {amp:0.55, critdmg:0.6, vengeance:0.6, warcry:0.5, bulwark:0.55, mend:0.65, energize:0.6, ward:0.85, thorns:0.8, chain:0.75, double:0.75, quake:0.8, lifesteal:0.8, crit:0.85, execute:0.8, burn:0.85};
-for (const it of W.concat(A)){ const f = it[4] >= 6 ? 0.72 : 1; it[7] = it[7].map(([id, v]) => [id, SCALE[id] ? Math.max(1, Math.round(v*SCALE[id]*f)) : v]); }
+for (const it of W.concat(A)){ const f = it[4] >= 6 ? 0.62 : 1; it[7] = it[7].map(([id, v]) => [id, SCALE[id] ? Math.max(1, Math.round(v*SCALE[id]*f)) : v]); }
 D.LEGENDS3 = W.concat(A);
 D.LEGENDS.push(...D.LEGENDS3);
 })();

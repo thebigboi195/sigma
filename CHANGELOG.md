@@ -31,3 +31,14 @@ Source lives in `src/` (`src/app.html` plus `src/parts/*.js`); run `node build.j
 - **Trinkets**: fixed Promised/Outerversal trinket rarities producing NaN (infinite) HP; per-trinket and total caps for every trinket effect.
 - **Fixes**: no free strikes before anyone chooses a move; HP plates are docked at the top (enemies) and bottom (party) of the stage instead of following models; wider FOV, higher camera and wider monster spacing; time-based camera easing.
 - **Balance**: ★7 and ★10 and the final are much harder (re-simulated); Outerversal gear toned down.
+
+## v7.2
+- **Move types**: every move has a type from its name (Slash = Normal, Frost Nova / Frozen Chapter = Ice, Earthquake = Ground…); legendary weapons imbue their plain moves with their own element. The move buttons show the type and, against the selected target, **Super effective ×2** (green glow), **Not very effective ×0.5** (red) or **Barely affects ×0.25**. STAB (move type matches your armour type) is +15%.
+- **Crits** are now ×1.5 (the Pokémon value); crit damage gear can lift that to at most ×3, and crit chance is capped at 60%.
+- **Difficulty**: Easy / Normal / Hard (default) / Brutal / Nightmare, chosen by the host in the lobby or in the admin Run tab; scales mob health and damage.
+- **Player scaling**: bosses gain health and damage per extra player, and from 5 players the boss acts twice a round.
+- **Finals**: the 30-round game ends with Giratina, the 50-round game with Primal Arceus. Re-simulated so ★10 and the final win about 35–55% for an Outerversal party.
+- **Support gear**: Mana Tomes, Frost Grimoires, Warding Psalters, War Lyres and healer vestments, from Common to Outerversal. Their 4th-slot moves heal and cleanse the party, freeze every enemy for a turn, cut damage taken, grant energy, revive allies or boost party damage. 8 legendary support weapons and 4 support armours at the Promised / Outerversal tiers.
+- **HP plates** now sit above each hero and mob, anchored to their resting spot so attacks and camera shake never move them.
+- **Pokémon fidelity**: mob types were hand-checked against their myth (Cerberus is Dark/Fire, Medusa Poison/Rock…).
+- **Percent-HP finishers** (Half the Universe, Weighing of the Heart) now do far less to bosses.

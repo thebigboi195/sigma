@@ -1,7 +1,7 @@
 // Balance simulator: parties of auto-playing heroes vs generated encounters.
 const load = require('./load-core.js');
 const { DATA, CORE: C } = load();
-C.setWeb(true);
+C.setWeb(true); if (process.env.DIFF) C.setDiff(process.env.DIFF);
 function rngSeed(seed){ return C.rng(seed); }
 function hero(L, tier, w = 0, seed = 1) {
   const r = rngSeed(seed * 7919 + L);

@@ -16,7 +16,7 @@ Object.assign(D.SIGS, {
   barbed_crowbar:['Laughing Gas','A hysterical 120% to every enemy; they are poisoned, blinded and weakened',[['all',1.2],['status','poison',100,'all',3],['status','blind',100,'all',2],['weak',2,'all']]],
   fists_last_sun:['Heat-Vision Barrage','Twin solar beams: 200% to every enemy and everything burns',[['all',2.0],['burn','all']]],
   crescent_chain_sickles:['Khonshu’s Judgement','Twelve silver hits (55% each) spread across the foes, and you heal 15% of your HP',[['multi',12,0.55,{spread:true}],['heal','self',0.15]]],
-  hollow_gauntlet:['Half the Universe','The snap: every enemy loses 50% of its current HP (12% of max HP for bosses)',[['judgeall',0.5,0.12]]],
+  hollow_gauntlet:['Half the Universe','The snap: every enemy loses 50% of its current HP (5% of max HP for bosses)',[['judgeall',0.4,0.05]]],
   eye_all_seeing:['Time Loop','Rewind: every fallen ally returns at 60% HP, the party heals 30%, is cleansed and gains 40 energy',[['revive',0.6,'all'],['heal','party',0.3],['cleanse'],['energy',40]]],
   crucible_blade:['Rip and Tear','Ten savage hits (60% each); you drink 50% of the damage as health',[['multi',10,0.6],['steal',0.5]]],
   phoenix_talon:['Phoenix Rebirth','160% to every enemy and they burn; every fallen ally rises at 50% and the party heals 25%',[['all',1.6],['burn','all'],['revive',0.5,'all'],['heal','party',0.25]]],
