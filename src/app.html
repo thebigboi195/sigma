@@ -42,6 +42,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .path.s1{border-color:#6fe0a0}.path.s4{border-color:#ff9a3c}.path.s5{border-color:#ff4d6d;background:linear-gradient(160deg,#3a1d3a,#332c55)}.path.boss,.path.mini{border-color:#ff4d6d}.path.god{border-color:#ffe27a;background:linear-gradient(160deg,#4a3a12,#2c2350 70%);box-shadow:0 0 0 2px rgba(255,226,122,.35),0 0 22px rgba(255,210,90,.35)}.path.god .st{color:#ffe27a;letter-spacing:-1px}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .card{background:var(--panel2);border:3px solid var(--rc,#120f22);border-radius:14px;padding:10px 11px;min-width:0;display:grid;gap:3px;align-content:start}
+.card.r5{box-shadow:0 0 26px rgba(255,138,216,.65);background:linear-gradient(160deg,#4a1f48,#2a2150 60%)} .card.r6{box-shadow:0 0 30px rgba(125,249,255,.7);background:linear-gradient(160deg,#0b2a3a,#241446 60%)}
 .card.r3{box-shadow:0 0 14px rgba(255,181,46,.35)} .card.r4{box-shadow:0 0 18px rgba(255,77,109,.5);background:linear-gradient(160deg,#3d1e3d,#332c55)}
 .card.empty{color:var(--muted);border-style:dashed;border-color:var(--line)}
 .card .rar{font:700 .72rem var(--head);text-transform:uppercase;letter-spacing:.07em;color:var(--rc,var(--muted))}
@@ -133,6 +134,8 @@ button.fight{background:linear-gradient(180deg,#ff5a5a,#d42a3a);color:#fff;box-s
 .pill.xpp{position:relative;overflow:hidden;min-width:170px}.pill.xpp i{position:absolute;inset:0 auto 0 0;background:#3aa08a;z-index:0}.pill.xpp b{position:relative;z-index:1}
 .modalov{position:fixed;inset:0;z-index:60;background:rgba(10,8,20,.72);display:flex;align-items:center;justify-content:center;padding:16px}.modalov[hidden]{display:none}.modalov .adbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:520px;width:100%}
 #admin{position:fixed;inset:0;z-index:50;background:rgba(10,8,20,.72);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}#admin[hidden]{display:none}#admin .adbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:760px;width:100%}#admin .adlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-top:8px}#admin .adlist button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px}#admin .adlist small{opacity:.7}
+
+.prow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel2);border-radius:12px;padding:8px 12px}.prow small{display:block;color:var(--muted)}.plist{display:grid;gap:6px}
 </style>
 <div class="wrap">
   <div class="stage"><div id="stage3d" aria-label="game scene"></div><div id="ov"></div><div id="fx"></div></div>
@@ -652,6 +655,10 @@ const SPECIAL = {
 return {MYTHT1, SIGX, ARCHMOVES, BASICMOVE, STATUS_TEXT, SIGS, GOD_TEXT, LEGENDS, SPECIAL, BOONS, EVENTS, SHOP, RAR, SKILLS, WORLDS, LEG, MYTH, MYTH_DOWN, ARM_ROLE, LEG_ARM, MYTH_ARM, TRINKETS, TRINKET_TEXT, CONSUMABLES, ABIL_TEXT, ENEMIES, TRAITS, LTQ};
 })();
 
+/*@@include data7a.js@@*/
+/*@@include data7b.js@@*/
+/*@@include data7c.js@@*/
+/*@@include data7d.js@@*/
 
 const UNITS=[{"c": "C-INT", "e": "common", "n": "Introduction", "s": ["Through powerful storytelling, literature reveals the paradox that oppression designed to enforce conformity can instead intensify the desire for autonomy, yet that autonomy remains fragile under fear.", "Shaped by his opposition to twentieth-century totalitarianism, George Orwell’s dystopian novel Nineteen Eighty-Four (1949) warns that authoritarian power is most dangerous when it controls the shared standards of truth and identity.", "Orwell charts how manipulated reality first provokes private resistance, before human connection transforms isolation into temporary solidarity.", "Ultimately, coercion exploits the survival instinct, compelling individuals to privilege self-preservation over relationships and thereby destroying loyalty and belief.", "Through Winston’s focalisation, Orwell deepens our understanding of [LTQ] by exposing the conditional nature of human autonomy and endurance."]}, {"c": "C-BP1", "e": "common", "n": "Body 1 · Truth", "s": ["Paradoxically, when authoritarian power attempts to monopolise collective truth, it can intensify the individual desire to preserve independent judgement, yet independent thought alone cannot defend truth [LTQ].", "Shaped by his wartime BBC propaganda work and Stalinist historical revisionism, Orwell's setting warns that power becomes absolute when authority determines not only behaviour, but the political standards by which reality is judged.", "The Party first destroys any stable foundation for shared truth through the parallel syntax and circular logic of “Who controls the past controls the future: who controls the present controls the past.”", "This self-validating logic reveals that history becomes whatever present authority dictates, undermining the security of citizens’ worldview in the absence of community [LTQ].", "In response, Winston locates autonomy within personal reason, as his aphorism “Freedom is the freedom to say that two plus two make four” uses mathematical certainty to establish a standard beyond Party language affirming the freedom to trust one’s own judgement despite collective pressure [LTQ].", "Yet private awakening remains politically limited, as the chiasmus describing the proles, “Until they become conscious they will never rebel, and until after they have rebelled they cannot become conscious,” uses the collective “they” to show that change demands a class rising together, exposing a self-serving cycle in which oppression prevents the very collective awareness that could overthrow it.", "Despite this political limitation, Winston’s suppressed consciousness develops into explicit dissent through the repeated graphological capitalisation of “DOWN WITH BIG BROTHER,” which externalises a belief that Party orthodoxy has forced inward, transforming silent recognition into active rejection.", "Orwell thereby reveals that private consciousness can preserve the self, yet cannot challenge institutional power without connection to others."]}, {"c": "C-BP2", "e": "common", "n": "Body 2 · Connection", "s": ["Once private consciousness proves insufficient, human connection allows isolated individuals to convert personal dissent into a fragile form of shared resistance [LTQ].", "Responding to the ideological surveillance and betrayal Orwell witnessed during the Spanish Civil War, the novel presents intimacy as a threat to a regime sustained by enforced isolation.", "Julia first disrupts Winston’s emotional isolation through the blunt declarative of her secret note, “I love you,” whose directness defies enforced isolation while remaining hidden from the Party, allowing him to experience an attachment founded upon personal feeling rather than Party ideology and thereby recover an emotional identity that solitary intellectual resistance cannot sustain.", "Their relationship then develops from emotional refuge into deliberate opposition, as the militaristic metaphor that their intimacy is “a blow struck against the Party” and “a political act” transforms affection into shared agency, demonstrating that resistance becomes more powerful when private conviction is validated through another person [LTQ].", "However, their shared agency remains structurally fragile, as the symbolic glass paperweight, within which Winston imagines their lives “fixed in a sort of eternity at the heart of the crystal,” embodies the alternative world they construct beyond Party control.", "Its enclosed beauty suggests the security of their private connection, while the fragility and enclosure of glass foreshadow that a relationship severed from any broader community remains vulnerable to institutional force, a vulnerability the Party exploits when their search for the Brotherhood delivers them to O’Brien.", "Consequently, Orwell reveals that connection advances resistance beyond isolated thought, yet paradoxically, while private intimacy is too insular to endure, the pursuit of broader solidarity renders intimate resistance vulnerable to institutional exploitation."]}, {"c": "C-BP3", "e": "common", "n": "Body 3 · Survival", "s": ["Once intimate resistance is isolated, authoritarian power exploits physical fear to obliterate individuality [LTQ].", "Through the Ministry of Love’s coercive reshaping of individual identity, Orwell condemns the brutality of twentieth-century totalitarian regimes.", "Under extreme coercion, individual identity becomes malleable, as O’Brien’s disturbing metaphor, “We shall squeeze you empty, and then we shall fill you with ourselves,” reduces Winston to a vessel that can be emptied of personal convictions and refilled with Party ideology, revealing that absolute power seeks to replace rather than merely suppress individuality.", "The Party then weaponises instinct against relational loyalty, as Winston’s fragmented imperatives, “Do it to Julia! … Not me!”, expose the inconsistency between his earlier belief that emotional allegiance could resist political domination and his willingness to sacrifice Julia when confronted by overwhelming fear.", "By turning the instinct to survive against the relationship that sustained Winston’s autonomy, Orwell demonstrates that a fundamental human drive can become an instrument of self-betrayal [LTQ].", "Finally, Orwell reveals that coercion converts imposed obedience into internalised belief through the paradoxical resolution that Winston “had won the victory over himself” and “loved Big Brother.”", "The bitter irony of “victory” recasts psychological defeat as triumph, revealing that absolute power seeks not mere submission but the victim’s embrace of their own destruction [LTQ].", "This capitulation therefore exposes Orwell’s bleak limit of human endurance: once fear severs individuals from shared truth and sustaining relationships, self-preservation can erode our moral and intellectual integrity, compelling us to question whether our own convictions would survive."]}, {"c": "C-CON", "e": "common", "n": "Conclusion", "s": ["Ultimately, through Winston’s focalised descent, Nineteen Eighty-Four illuminates [LTQ] by exposing a paradox at the heart of autonomy: it depends upon the very truth and connection that power can destroy.", "Orwell leaves us confronting an uncomfortable inconsistency within ourselves, as our desire for freedom may yield to the more fundamental instinct to survive."]}, {"c": "B-INT", "e": "modb", "n": "Introduction", "s": ["T.S. Eliot's poetry interrogates humanity's search for meaning within the fragmentation of modernity, and its textual integrity lies in its experimental forms, which enact the paralysis, emptiness and costly renewal they describe, [sustaining its literary value for contemporary responders].", "Writing as industrialisation, world war and declining faith dissolved inherited certainties, Eliot fragments form to mirror a fragmented age.", "In 'The Love Song of J. Alfred Prufrock' (1915), dramatic monologue exposes an individual paralysed by social scrutiny; 'The Hollow Men' (1925) expands his isolation into collective spiritual desolation; and 'Journey of the Magi' (1927) complicates despair through the arduous possibility of religious renewal."]}, {"c": "B-BP1", "e": "modb", "n": "Body 1 · Prufrock", "s": ["In 'Prufrock', Eliot reveals that conformity and fear of judgement fracture the modern self into paralysis, a private failure that foreshadows a collective doom, [affirming a textual integrity that endures for modern audiences equally governed by others' scrutiny].", "Building on the anonymous city of 'Preludes', where people shrink to \"muddy feet\", Eliot situates Prufrock within the rigid decorum of pre-war drawing rooms, where reputation governed conduct.", "The epigraph from Dante's Inferno frames the dramatic monologue as a confession made only because its speaker believes no one will repeat it; Prufrock's 'love song' is therefore never sung, its silence enacting the paralysis Eliot exposes.", "Eliot externalises Prufrock's paralysis as the \"yellow fog that rubs its back upon the window-panes\" becomes an objective correlative for his languid inertia.", "The refrain \"In the room the women come and go / Talking of Michelangelo\" reduces high culture to ritualised chatter, its repetition enacting the social scrutiny that later fixes him \"in a formulated phrase\".", "Prufrock's life, \"measured out\" with \"coffee spoons\", reduces existence to trivial ritual, while the bathetic question \"Do I dare / Disturb the universe?\" magnifies ordinary action into existential crisis, exposing fear of judgement as the force that paralyses modern agency.", "Eliot denies the modern individual heroic agency through Prufrock's allusive self-demotion from \"Prince Hamlet\" to \"an attendant lord\" [unsettling my faith in individual agency].", "McCoy and Harlan aptly identify in Prufrock the \"frustration and impotence of the modern individual\"; however, Eliot's form suggests such impotence is socially produced, for the poem ends as human contact becomes fatal: \"Till human voices wake us, and we drown.\"", "Ironically, a promised love song dissolves into a collective 'we', foreshadowing the communal emptiness of Eliot's later verse.", "Eliot thus exposes paralysis as the product of a society prizing appearance over authentic connection."]}, {"c": "B-BP2", "e": "modb", "n": "Body 2 · The Hollow Men", "s": ["Extending private paralysis into collective spiritual emptiness, 'The Hollow Men' depicts a post-war civilisation that retains the rituals and language of faith while losing the spiritual conviction to act upon them, [deepening my understanding of desolation as spiritual rather than personal].", "Written amid the disillusionment following World War I, the poem opens with the epigraph \"Mistah Kurtz—he dead\", alluding to Conrad's Heart of Darkness to frame modernity as morally hollow.", "Eliot dehumanises post-war society through the paradox \"We are the hollow men / We are the stuffed men\", which presents individuals as spiritual vessels emptied of faith yet stuffed with hollow ritual.", "Eliot then fractures structure itself: the refrain \"Between the idea / And the reality ... Falls the Shadow\" isolates each abstraction on its own line, so the Shadow falls between intention and act, and the broken Lord's Prayer, \"For Thine is / Life is / For Thine is the\", collapses before completion.", "Helen Gardner defines religious poetry as \"concerned in some way with revelation and with man's response to it\"; 'The Hollow Men' is religious in precisely this negative sense, depicting a civilisation that remembers revelation but cannot complete its response [LTQ].", "This complicates I.A. Richards' contemporaneous claim that Eliot had severed his poetry from \"all beliefs\": the fractured prayer registers not the absence of belief, but a failed reaching towards it.", "Ultimately, the anticlimactic \"This is the way the world ends / Not with a bang but a whimper\" suggests that meaning erodes rather than explodes.", "Fittingly, fragmented free verse embodies the dissolution of meaning it condemns, a fusion of form and concept that constitutes its textual integrity, allowing its spiritual crisis to transcend its post-war context and speak to a secular age that inherits faith's language without its conviction.", "Eliot therefore presents spiritual emptiness as a collective condition, demanding the costly renewal his later poetry explores."]}, {"c": "B-BP3", "e": "modb", "n": "Body 3 · Journey of the Magi", "s": ["Yet 'Journey of the Magi' redirects this emptiness towards fulfilment through faith, while revealing that transformation demands suffering and the abandonment of former certainty, [complicating my understanding of renewal].", "Published months after Eliot's 1927 baptism into the Church of England, the poem appropriates Lancelot Andrewes' 1622 Nativity sermon in its opening, \"A cold coming we had of it\", stripping the Nativity of conventional warmth.", "The ominous \"three trees on the low sky\" and \"Six hands at an open door dicing for pieces of silver\" embed the Crucifixion and Judas' betrayal within the Nativity journey, collapsing beginning into ending.", "The Magus' syntax falters as he struggles to articulate revelation, \"set down / This set down / This\", before the paradox that \"this Birth was / Hard and bitter agony for us, like Death, our death\" reveals that rebirth demands the death of the former self [LTQ].", "Russell Elliott Murphy likens the Magus to the hollow men: having glimpsed the light, he \"is unable to either recognize its source or to follow it.\"", "I find Murphy's reading too closed, however: the Magus' insistence that \"I would do it again\" and his closing wish to \"be glad of another death\" suggest not incomprehension but a longing to complete the transformation begun, since he is \"no longer at ease here, in the old dispensation\".", "Eliot therefore offers faith as a genuine source of meaning, yet one attained only through estrangement and loss, unsettling contemporary expectations of instant, comfortable fulfilment."]}, {"c": "B-CON", "e": "modb", "n": "Conclusion", "s": ["Ultimately, Eliot's textual integrity lies in making fragments of both subject and method [LTQ].", "Because his poetry refuses to resolve the struggle between emptiness and meaning, we recognise our own uncertain search within it, ensuring its enduring value for contemporary responders."]}, {"c": "A-INT", "e": "moda", "n": "Introduction", "s": ["Textual conversations create new meaning about (LTQ) when later composers preserve enduring concerns while testing the assumptions and values that originally shaped them.", "Margaret Atwood’s postmodern novel Hag-Seed (2016), written for the Hogarth Shakespeare project, reimagines William Shakespeare’s Jacobean tragicomedy The Tempest (1611), translating its concerns with art, forgiveness and power into a prison-theatre setting shaped by rehabilitation, psychological freedom and marginalised agency.", "Notably, Atwood mirrors Shakespeare’s use of theatre as a dialogue between creator and audience while sharing interpretive authority among director, performers and audience; aligns with his movement from vengeance towards liberating release while internalising redemption through Felix’s grief; and collides with Shakespeare’s containment of Caliban’s resistance within hierarchy by amplifying the voices of those traditionally marginalised.", "Through these resonances and dissonances, Atwood reveals that revisiting a familiar text tests inherited assumptions about authority, liberation and agency, renewing (LTQ) for contemporary audiences."]}, {"c": "A-BP1", "e": "moda", "n": "Body 1 · Mirror: theatre", "s": ["Atwood’s Hag-Seed instigates a resonant textual conversation with The Tempest by mirroring Shakespeare’s representation of theatre as transformative, yet distributes interpretive authority among director, performers and audience, enhancing our contemporary appreciation of art as a shared process of interpretation.", "Within Jacobean drama’s self-conscious theatrical conventions, Shakespeare foregrounds the constructed nature of performance through Prospero’s declaration that “Our revels now are ended” and his actors “are melted into air,” where metatheatrical self-reference dissolves the boundary between Prospero’s spectacle and the stage itself, inviting audiences to question the permanence of the roles and realities before them.", "Shakespeare then makes the exchange explicitly reciprocal through Prospero’s Epilogue, “Let your indulgence set me free,” where direct audience address makes Prospero’s release dependent upon the responder, revealing that theatrical meaning cannot be controlled by its creator alone (LTQ).", "In Atwood’s prison theatre, she preserves Shakespeare’s participatory power when Felix instructs the inmates to “shed your daily self” and “draw on a new face”, where the extended metaphor of reconstructing identity transforms performance into rehabilitation, allowing prisoners to create identities beyond institutional labels.", "Atwood extends Shakespeare’s reciprocal relationship between creator and audience through the observation that “the brain completes the illusion,” using metatheatrical commentary to make meaning dependent upon performers and responders, demonstrating that textual conversation can redistribute the creative authority already implicit in Shakespeare’s theatre.", "By democratising Shakespeare’s metatheatre, the textual conversation invites contemporary audiences to value art as a collaborative act that transforms both creator and responder, renewing the significance of (LTQ)."]}, {"c": "A-BP2", "e": "moda", "n": "Body 2 · Align: release", "s": ["Aligning with Shakespeare’s movement beyond vengeance towards release, Atwood’s Hag-Seed transforms Shakespeare’s public moral restoration into a more intimate psychological recovery from grief, a textual conversation that reshapes our contemporary understanding of forgiveness.", "Within Shakespeare’s Christian-humanist context, where virtuous self-command supports moral and social restoration, Prospero privileges ethical restraint when he recognises that “the rarer action is / In virtue than in vengeance,” as the antithesis between “virtue” and “vengeance” elevates self-command over retaliation, linking personal forgiveness to restored communal order.", "Shakespeare then externalises the renunciation when Prospero vows, “I’ll break my staff,” symbolically renouncing the instrument of manipulation and relinquishing the authority sustaining his revenge.", "Whilst Atwood concurs with Shakespeare’s belief that liberation requires surrendering destructive control, her contemporary emphasis on rehabilitation and psychological grief shifts release from social restoration towards internal recovery (LTQ).", "Atwood initially aligns Felix with Prospero’s rejection of vengeance while redirecting its consequences inward when he determines, “That’s enough vengeance.", "Not a frown further,” as the truncated declaratives echo Prospero’s restraint yet recast revenge from the coercive control of others into Felix’s self-destructive fixation.", "Atwood further internalises Shakespeare’s conception of release through Felix’s recognition that he has been “keeping her tethered” before telling Miranda, “To the elements be free,” where the metaphor of restraint and intertextual echo of Ariel’s liberation transform Shakespeare’s external surrender of power into Felix’s acceptance of grief.", "The conversation therefore persuades contemporary audiences that (LTQ) depends upon release, extending it from the surrender of coercive authority to the acceptance of loss."]}, {"c": "A-BP3", "e": "moda", "n": "Body 3 · Collide: marginalised voices", "s": ["In a dissonant textual conversation, Atwood’s Hag-Seed collides with Shakespeare’s containment of colonised resistance within colonial hierarchy, amplifying a protest the play already voices into collective agency capable of redefining identity and freedom.", "Shakespeare challenges Prospero’s claim to legitimate ownership when Caliban declares, “This island’s mine, by Sycorax my mother,” as the possessive declarative and appeal to maternal lineage establish an alternative claim to authority; however, within a Jacobean culture shaped by inherited hierarchy and early colonial encounters, Caliban’s challenge remains contained by Prospero’s rule.", "Shakespeare further exposes the contradiction within supposedly civilising authority when Caliban protests, “You taught me language, and my profit on’t / Is, I know how to curse,” where bitter irony converts Prospero’s imposed language into resistance, allowing Caliban to voice his subordination without escaping it.", "While Shakespeare therefore permits Caliban to contest authority without escaping its structures, Atwood’s twenty-first-century context, shaped by heightened attention to postcolonial identity and institutional marginalisation, enables her to contradict this containment by granting the prisoners collective authorship over Caliban’s identity.", "Atwood then empowers the prisoners to reclaim imposed marginality through the rap, “Hag-Seed’s black and Hag-Seed’s brown, / Hag-Seed’s red,” where anaphora and cumulative racial identification transform Shakespeare’s isolated outcast into communal solidarity, allowing marginalised performers to redefine imposed labels.", "Atwood further amplifies their agency when the prisoners refuse to “get on the back of the bus” and demand “our land right back”, as the historical allusions to racial segregation and dispossession connect Caliban’s subjugation with contemporary concerns surrounding race, incarceration and social exclusion (LTQ).", "Atwood therefore does not merely reskin Shakespeare’s conflict; she expands possibilities embedded within marginalised resistance, even as the rap still sounds within Felix’s production, compelling contemporary audiences to reconsider who may speak, define identity and challenge inherited authority."]}, {"c": "A-CON", "e": "moda", "n": "Conclusion", "s": ["Ultimately, the textual conversation between The Tempest and Hag-Seed reveals that inherited stories stay alive as each generation questions them.", "Reading Shakespeare through Atwood, we hear tensions his play already voices with renewed prominence and contemporary urgency, enriching our understanding of (LTQ) through reinterpretation rather than repetition."]}, {"c": "M-1", "e": "modc", "n": "Name Sign · Part I (to “He thought I had given him something.”)", "s": ["My brother’s name is Daniel, and I am the one who decided what he would be called.", "He was six, and I was ten, and he had been deaf since he was two.", "At school he sat in the support room with Minh, who had arrived from Vietnam that winter without a word of English.", "Sharing no language at all, they drew each other pictures all day—they were the happiest boys in the building.", "In Auslan you are given a name sign, usually about something true — a habit, a scar, the way you laugh.", "If you look away you have not merely stopped talking; you have made the other person disappear.", "Proper name signs come from Deaf people.", "Ours was a hearing house, and nobody had told us that.", "Daniel breathed through his mouth when a thing was hard.", "His jaw would go loose, and for about four seconds he looked, and this is the word I used, stupid.", "I am not going to put a kinder one in its place and call it honesty.", "So I made him a sign.", "Two fingers at my own mouth, opening.", "I did it outside the shops, Minh beside us, for Michael Petrakis, who pretended not to understand his yiayia’s Greek in front of us, and he laughed so hard he sat down on the gutter.", "And Daniel, who had been watching my hands — because that is the only door in — copied it back to me.", "Minh did not laugh.", "He had no English for the joke, so he read it the only way left to him, off Michael’s face and then off mine.", "He thought I had given him something."]}, {"c": "M-2", "e": "modc", "n": "Name Sign · Part I (the hallway)", "s": ["My mother saw it from the car.", "She said it that night in the hallway, in Arabic, which she kept for things that were not to leave the house, the door open behind her so I could see him at his reading, breathing through his mouth.", "“Tell him what it means,” she said.", "“He likes it,” I said.", "She did not answer.", "She pushed the door wider, so the lamp fell across his page, and waited.", "I had just learned that you can do in one second what takes a year to undo, and I did not have the words, not in English, not in Arabic, not in the forty signs I knew.", "Underneath that was the real reason: I did not want to.", "I did not tell him.", "For the rest of that year, I became very good at watching my brother’s hands and not his eyes."]}, {"c": "M-3", "e": "modc", "n": "Name Sign · Part II · Now", "s": ["Daniel is thirty-two, with two hearing daughters both faster in Auslan than I will ever be.", "Last month he taught his older girl’s kindergarten class some signs, and I went to hold the door.", "He stood before twenty-six five-year-olds on the carpet, children who went home to Mandarin and Arabic and Samoan and Hindi, and he gave them a language none of them had brought from home, and so one they could all learn together.", "He introduced himself: two fingers at his mouth, opening.", "Twenty-six children gave it back, delighted.", "The first was a girl at the back who, her teacher said, had not yet spoken a word of English.", "She watched his face the whole time, the way Minh used to.", "In the car park, I told him.", "All of it, badly, my hands shaking so much he asked me twice to slow down.", "He had known since he was fifteen, when a boy at the Deaf school asked who had given him that, and pulled a face.", "“Why did you keep it?”", "I signed.", "“It stopped being about my mouth a long time ago,” he signed back.", "“Now it just means me.”", "He made it once more with one hand, not watching, the way you sign your name on a form.", "I had wanted, for twenty-six years, to be forgiven for four seconds outside a shopping centre.", "What I was given instead was a fact about language.", "Then he said it aloud, which he rarely does: “It’s alright, Pete.”", "It is not alright.", "But it is his, and he has decided, and that is not the same as forgiveness.", "The car park filled with parents calling their children in every language but mine, and I did the one thing I had spent my whole childhood not doing.", "I looked at his face."]}, {"c": "M-R", "e": "modc", "n": "Reflection", "s": ["In my imaginative piece Name Sign, I aimed to convey [LTQ] by exploring how a moment of childhood cruelty outlives the child who committed it.", "Drawing on Gwen Harwood's 'Father and Child', I adopted her diptych structure to delay the reckoning and made her motifs of sight and naming literal in a multilingual, signed world.", "Central to my piece, I reimagined the withheld moral reckoning of Harwood's 'Barn Owl' and 'Nightfall' by utilising a dated diptych to convey [LTQ].", "Where 'Barn Owl' confronts the cruelty at once, leaving the child “owl blind in early sun / for what I had begun”, 'Nightfall' revisits it across “Forty years, lived or dreamed”.", "I adapted this return across time to a delayed confession: I dated my panels ‘I. 1999’ and ‘II.", "Now’, and made “I did not tell him” Part I’s culminating refusal, which the motif of hands, not eyes, carries into Part II.", "Her father's “End what you have begun” becomes my mother's “Tell him what it means”, issued in Arabic, disobeyed, and pressed through silent action rather than repetition.", "Because structure rather than narration does the moral work, my reader reaches the judgement first.", "Inspired by Harwood's twin motifs, I used motif and symbolism to make sight and naming literal.", "Where Harwood's guilt arrives through eyes that “did not see / mirror my cruelty”, my narrator’s metaphor states it plainly: “If you look away … you have made the other person disappear.”", "My narrator's year of “watching my brother's hands and not his eyes” is reversed only in the closing short sentence, “I looked at his face.”", "Minh, with “no English for the joke”, and the silent kindergarten girl show that sight carries meaning where speech cannot, while parents calling “in every language but mine” leave my narrator outside a world that has already accepted Daniel.", "Harwood's consolation that “things truly named / can never vanish from earth” is complicated: Daniel's “Now it just means me” is a fact about language, not forgiveness, inviting my reader to reconsider [LTQ]."]}];
 /* ===== Essay Quest v2 core (pure logic) ===== */
@@ -666,10 +673,10 @@ let WEB = false; const setWeb = v => { WEB = !!v; };
 let NQ = false; const setNQ = v => { NQ = !!v; };   // battle-only mode: no study quests, XP only from fights, foes a little tougher   // web edition: one 50-level world, enemy level = stage
 let LMAX = 30; let curW = 0; const miniLv = () => WEB ? [5,15,25,35,45].filter(x => x < LMAX) : [Math.round(LMAX/3), Math.round(2*LMAX/3)];
 const isBossL = L => WEB ? (L % 10 === 0 || L === LMAX) : L === LMAX;
-const K = {nqXP:3.5, nqHard:1.06, hpBase:120, hpPer:5, strPer:0.025, agiDodge:0.004, agiCrit:0.002, wpnSurplus:0.01, dodgeCap:0.4,
-           ttk:3.2, ttd:7.2, bossTTK:1.6, bossTTD:0.62, miniTTK:1.45, miniTTD:0.85, lvAtk:0.02, lvDef:0.015, wm:[1.2,1.6,1.85,1.85], wlo:0.88, whi:1.2, webm:1.2, webLo:0.85, webHi:1.85, webPow:1, webFinal:{hp:1.4, atk:1.2}, webFinal30:{hp:1.8, atk:1.32}, godTTK:2.25, godTTD:1.3, pHp:0.08, pAtk:0.02, pHpM:0.07, pHpN:0.08, pAtkN:0.05};
+const K = {nqXP:3.5, nqHard:1.06, hpBase:120, hpPer:5, strPer:0.025, agiDodge:0.004, agiCrit:0.002, wpnSurplus:0.01, dodgeCap:0.45,
+           ttk:3.2, ttd:7.2, bossTTK:1.6, bossTTD:0.62, miniTTK:1.45, miniTTD:0.85, lvAtk:0.02, lvDef:0.015, wm:[1.2,1.6,1.85,1.85], wlo:0.88, whi:1.2, webm:1.2, webLo:0.85, webHi:1.85, webPow:1, webFinal:{hp:1.4, atk:1.2}, webFinal30:{hp:1.8, atk:1.32}, p7:{hp:1.8, atk:1.05}, p10:{hp:4.0, atk:1.3}, finalX:{hp:0.7, atk:1.0}, healerHp:0.06, godTTK:2.25, godTTD:1.3, pHp:0.08, pAtk:0.02, pHpM:0.07, pHpN:0.08, pAtkN:0.05};
 const STAR = {hp:[0,0.7,0.95,1.15,1.45,2.3], atk:[0,0.7,0.95,1.1,1.3,1.7], count:[[0],[1],[1,1,2],[2,2,1,3],[2,3,3],[3]]};
-const WBASE = [9, 22, 44, 78], AB = [24, 60, 120, 210], REQW = [0, 8, 18, 30], REQR = [0, 3, 6, 10, 14], SEC = [6, 14, 24, 36], SEC2 = [9, 18, 30, 44];
+const WBASE = [9, 22, 44, 78], AB = [24, 60, 120, 210], REQW = [0, 8, 18, 30], REQR = [0, 3, 6, 10, 14, 20, 28], SEC = [6, 14, 24, 36], SEC2 = [9, 18, 30, 44];
 const ARCH = {fist:0.85, blade:1, pole:1, ranged:0.95, heavy:1.15, scythe:1, katana:1, staff:0.95, thrown:0.95};
 const SECSTAT = {fist:'AGI', ranged:'AGI', blade:'STR', pole:'STR', heavy:'STR', scythe:'STR', katana:'AGI', staff:'FOR', thrown:'AGI'};
 
@@ -682,22 +689,24 @@ let PL = 1; const plOf = (w, L) => WEB ? Math.max(1, L) : w*30 + Math.round((L-1
 function dropLevel(r, bonus=0){ r = r || Math.random; return Math.max(1, PL + Math.floor(r()*3) + bonus); }
 const ROLEF = {plate:1.3, leather:0.9, robe:0.8};
 function applyLevel(it, L){ if (!it || it.kind === 'consumable') return it; L = Math.max(1, Math.round(L)); it.lvl = L; const RL = 1 + Math.floor((L-1)/7)*7; /* requirements only step up every 7 levels */ const rar = it.rar || 0;
-  if (it.kind === 'weapon'){ const starterW = it.ti === -1; const mult = starterW ? 0.67 : RAR[rar].m * (ARCH[it.arch]||1) * (it.myth ? 1.06 : it.special ? 1.08 : 1); it.dmg = Math.max(1, Math.round(WB(L) * mult));
+  if (it.kind === 'weapon'){ const starterW = it.ti === -1; const mult = starterW ? 0.67 : RAR[rar].m * (ARCH[it.arch]||1) * (it.myth ? 1.06 : it.special ? 1.08 : 1); it.dmg = Math.max(1, Math.round(WB(L) * mult * (it.mod || 1)));
     if (starterW) it.req = {WPN: RW(RL)}; else if (it.special) it.req = {WPN: RW(RL)+10, AGI: S2(RL), STR: S1(RL)};
-    else { const req = {WPN: RW(RL) + REQR[rar]}; if (rar === 3) req[SECSTAT[it.arch]] = S1(RL); if (rar === 4){ req[SECSTAT[it.arch]] = S2(RL); if (it.myth ? ['fist','heavy'].includes(it.arch) : it.ti % 2 === 0) req.FOR = S1(RL); } it.req = req; } }
-  else if (it.kind === 'armour'){ const st = it.starter || it.name === 'Traveller’s Rags'; it.hp = Math.max(1, Math.round(ABf(L) * (st ? 0.42 : RAR[rar].m * ROLEF[it.role] * (it.myth ? 1.06 : 1))));
-    if (st) it.req = {}; else if (it.special) it.req = {AGI: S2(RL), FOR: S1(RL)}; else if (rar === 4) it.req = {plate:{FOR:S2(RL), STR:S1(RL)}, leather:{AGI:S2(RL), FOR:S1(RL)}, robe:{FOR:S2(RL), WPN:S1(RL)}}[it.role]; else if (rar === 3) it.req = {[{plate:'FOR', leather:'AGI', robe:'FOR'}[it.role]]: S1(RL)}; else it.req = {}; }
+    else { const req = {WPN: RW(RL) + REQR[rar]}; if (rar === 3) req[SECSTAT[it.arch]] = S1(RL); if (rar === 4){ req[SECSTAT[it.arch]] = S2(RL); if (it.myth ? ['fist','heavy'].includes(it.arch) : it.ti % 2 === 0) req.FOR = S1(RL); }
+      if (rar >= 5){ req[SECSTAT[it.arch]] = S2(RL) + (rar === 5 ? 4 : 10); req.FOR = Math.max(req.FOR || 0, S1(RL) + (rar === 5 ? 2 : 6)); } it.req = req; } }
+  else if (it.kind === 'armour'){ const st = it.starter || it.name === 'Traveller’s Rags'; it.hp = Math.max(1, Math.round(ABf(L) * (st ? 0.42 : RAR[rar].m * ROLEF[it.role] * (it.myth ? 1.06 : 1) * (it.mod || 1))));
+    if (st) it.req = {}; else if (it.special) it.req = {AGI: S2(RL), FOR: S1(RL)}; else if (rar >= 5){ const x = rar === 5 ? 4 : 10, y = rar === 5 ? 2 : 5; it.req = {plate:{FOR:S2(RL)+x, STR:S1(RL)+y}, leather:{AGI:S2(RL)+x, FOR:S1(RL)+y}, robe:{FOR:S2(RL)+x, WPN:S1(RL)+y}}[it.role]; }
+    else if (rar === 4) it.req = {plate:{FOR:S2(RL), STR:S1(RL)}, leather:{AGI:S2(RL), FOR:S1(RL)}, robe:{FOR:S2(RL), WPN:S1(RL)}}[it.role]; else if (rar === 3) it.req = {[{plate:'FOR', leather:'AGI', robe:'FOR'}[it.role]]: S1(RL)}; else it.req = {}; }
   else if (it.kind === 'trinket' && it.tix != null && ['STR','AGI','WPN'].includes(it.eff)){ it.v = Math.round(TRINKETS[it.tix][2][rar] * (1 + 0.02*(L-1))); }
   return it; }
 const lv = (it, L) => applyLevel(it, L != null ? L : dropLevel());
 function pickLegend(kind, cls, rar, r){ r = r || Math.random; const any = kind==='weapon' && r() < 0.45; const L = D.LEGENDS.filter(x => x[2]===kind && (any || x[3]===cls) && x[4]===rar); return L[Math.floor((r||Math.random)()*L.length)]; }
-function legendWeapon(w, arch, rar, r, key){ const x = key ? D.LEGENDS.find(l => l[0]===key) : pickLegend('weapon', arch, rar, r); if (!x) return null; const [k, n, , a2, rr, origin, lore, abil, down, fx] = x; arch = a2;
+function legendWeapon(w, arch, rar, r, key){ const x = key ? D.LEGENDS.find(l => l[0]===key) : pickLegend('weapon', arch, rar, r); if (!x) return null; const [k, n, , a2, rr, origin, lore, abil, down, fx, spec] = x; arch = a2;
   const req = {WPN: REQW[w] + REQR[rr]}; req[SECSTAT[arch]] = rr===4 ? SEC2[w] : SEC[w]; if (rr===4 && ['fist','heavy'].includes(arch)) req.FOR = SEC[w];
-  return lv({uid:UID++, kind:'weapon', world:w, ti:-3, type:n, arch, name:n, rar:rr, myth:k, origin, fx, dmg:Math.round(WBASE[w]*RAR[rr].m*ARCH[arch]*1.06), req, abil:abil.map(a=>a.slice()), down: down ? down.slice() : null, lore}, arguments[5]); }
-function legendArmour(w, role, rar, r, key){ const x = key ? D.LEGENDS.find(l => l[0]===key) : pickLegend('armour', role, rar, r); if (!x) return null; const [k, n, , , rr, origin, lore, abil, down, fx] = x;
+  return lv({uid:UID++, kind:'weapon', world:w, ti:-3, type:n, arch, name:n, rar:rr, myth:k, origin, fx, mod:(spec && spec.mod) || 1, dmg:Math.round(WBASE[w]*RAR[rr].m*ARCH[arch]*1.06), req, abil:abil.map(a=>a.slice()), down: down ? down.slice() : null, lore}, arguments[5]); }
+function legendArmour(w, role, rar, r, key){ const x = key ? D.LEGENDS.find(l => l[0]===key) : pickLegend('armour', role, rar, r); if (!x) return null; const [k, n, , , rr, origin, lore, abil, down, fx, spec] = x;
   const hp = Math.round(AB[w]*RAR[rr].m*{plate:1.3, leather:0.9, robe:0.8}[role]*1.06); const req = rr===4 ? {plate:{FOR:SEC2[w], STR:SEC[w]}, leather:{AGI:SEC2[w], FOR:SEC[w]}, robe:{FOR:SEC2[w], WPN:SEC[w]}}[role] : {[{plate:'FOR', leather:'AGI', robe:'FOR'}[role]]: SEC[w]};
-  const base = role==='leather' ? [['evasion',[3,4,5,6,8][rr]]] : role==='robe' ? [['regen',[1,1.5,2,2.5,3][rr]]] : [];
-  return lv({uid:UID++, kind:'armour', world:w, role, name:n, rar:rr, myth:k, origin, fx, hp, abil: base.concat(abil.map(a=>a.slice())), req: Object.assign({}, req), down: down ? down.slice() : null, lore}, arguments[5]); }
+  const base = rr >= 5 ? [] : role==='leather' ? [['evasion',[3,4,5,6,8][rr]]] : role==='robe' ? [['regen',[1,1.5,2,2.5,3][rr]]] : [];
+  return lv({uid:UID++, kind:'armour', world:w, role, name:n, rar:rr, myth:k, origin, fx, mod:(spec && spec.mod) || 1, hp, abil: base.concat(abil.map(a=>a.slice())), req: Object.assign({}, req), down: down ? down.slice() : null, lore}, arguments[5]); }
 function makeWeapon(w, ti, rar, r, L){ if (rar >= 3){ const it = legendWeapon(w, WORLDS[w].types[ti][1], rar, r, null, L); if (it) return it; }
   const [type, arch, names] = WORLDS[w].types[ti];
   const req = {WPN: REQW[w] + REQR[rar]}; let abil = [], down = null;
@@ -740,7 +749,7 @@ function abilOf(it, id){ if (!it) return 0; let v = 0; for (const [a,x] of (it.a
 function trink(P, e){ return (P.eq.trinkets||[]).filter(Boolean).reduce((a,t)=> a + (t.eff===e ? t.v : 0), 0); }
 function derive(P){
   const s = eff(P), w = P.eq.weapon, a = P.eq.armour;
-  let max = (K.hpBase + K.hpPer*s.FOR + (a?a.hp:0)) * (1 + trink(P,'HPPCT')/100 + ((P.boons||[]).includes('bulk')?0.1:0) - ((P.boons||[]).includes('berserk')?0.1:0)) * (1 - abilOf(w,'maxhp')/100);
+  let max = (K.hpBase + K.hpPer*s.FOR + (a?a.hp:0)) * (1 + trink(P,'HPPCT')/100 + ((P.boons||[]).includes('bulk')?0.1:0) - ((P.boons||[]).includes('berserk')?0.1:0)) * Math.max(0.3, 1 - (abilOf(w,'maxhp') + abilOf(a,'maxhp'))/100);
   let dodge = Math.min(0.10, K.agiDodge*s.AGI) + (abilOf(a,'evasion'))/100 + ((P.boons||[]).includes('dance')?0.08:0) - (abilOf(w,'clumsy') + abilOf(a,'clumsy'))/100;
   const surplus = Math.max(0, s.WPN - (w.req.WPN||0));
   return {s, max: Math.round(max), dodge: clamp(dodge, 0, K.dodgeCap), mult: (1 + K.strPer*s.STR) * (1 + K.wpnSurplus*Math.min(surplus, 30)),
@@ -754,7 +763,11 @@ function power(it){ if (!it) return 0;
   return 50 + it.rar*20; }
 
 // ---------- loot
-const RARW = [[62,28,8,1.8,0],[62,28,8,1.8,0],[60,29,9,1.8,0],[56,30,11,2.7,0],[38,32,20,8.1,0.9],[25,30,26,12.6,4.5],[12,26,32,18,9]];   // Legendary / Mythical weights cut by 10%   // Legendary is a real find outside mini-bosses and bosses
+// Legendary / Mythical odds were cut hard in v7 (the really good gear now lives in the ★7 and ★10 dungeons)
+const RARW = [[63,28,8,0.9,0],[63,28,8,0.9,0],[61,29,9,0.9,0],[58,30,11,1.4,0],[44,33,20,3.5,0.3],[33,34,26,6.5,1.0],[22,34,32,10,2]];
+/* a Promised (5) or Outerversal (6) piece, chosen from the whole roster whatever the land */
+function makeTop(rar, r, L, kind, w=0){ const list = D.LEGENDS.filter(x => x[4] === rar && (!kind || x[2] === kind)); if (!list.length) return null; const x = list[Math.floor(r()*list.length)];
+  return x[2] === 'weapon' ? legendWeapon(w, x[3], rar, r, x[0], L) : legendArmour(w, x[3], rar, r, x[0], L); }
 function rollItem(r, w, stars){
   const ww = w; const L = dropLevel(r, stars >= 4 ? 1 : 0);
   const rar = wpick(RARW[Math.min(6, stars)], r); const c = wpick([18,18,14], r);   // trinkets only a little rarer than weapons and armour
@@ -763,35 +776,44 @@ function rollItem(r, w, stars){
   return makeTrinket(ww, Math.floor(r()*TRINKETS.length), rar, L);
 }
 function rollConsumable(r){ const keys = Object.keys(CONSUMABLES); return keys[wpick(keys.map(k=>CONSUMABLES[k].w), r)]; }
+const tome = n => ({uid:UID++, kind:'tome', name:'Tome of Wisdom', wis:n});
 function rollChest(r, w, stars, kind, extra=0, lucky=false){
-  const nW = [[60,30,10],[60,30,10],[50,35,15],[40,40,20],[10,40,35,15],[0,30,45,25],[0,20,45,35]][Math.min(6, stars)];
-  let n = wpick(nW, r) + 1 + extra; if (kind==='mini') n = Math.max(n, 3); if (kind==='boss') n = 5;
+  const top = kind === 'promised' || kind === 'outer' || kind === 'final'; const si = Math.min(8, stars >= 10 ? 8 : stars);
+  const nW = [[60,30,10],[60,30,10],[50,35,15],[40,40,20],[10,40,35,15],[0,30,45,25],[0,20,45,35],[0,10,40,50],[0,10,40,50]][si];
+  let n = wpick(nW, r) + 1 + extra; if (kind==='mini') n = Math.max(n, 3); if (kind==='boss') n = 5; if (kind==='promised') n = Math.max(n, 3); if (kind==='outer') n = Math.max(n, 3); if (kind==='final') n = 4;
   const out = [];
   for (let i=0;i<n;i++){
-    const gearChance = 0.35 + 0.04*stars + (stars >= 4 ? 0.1 : 0) + (kind!=='normal'?0.2:0);
-    if (r() < gearChance) out.push(rollItem(r, w, kind==='mini' ? 3 : Math.min(6, (kind==='boss' ? Math.max(stars,4) : stars) + (lucky && stars < 4 ? 1 : 0))));
+    const gearChance = 0.35 + 0.04*Math.min(stars, 7) + (stars >= 4 ? 0.1 : 0) + (kind!=='normal'?0.2:0);
+    if (r() < gearChance) out.push(rollItem(r, w, kind==='mini' ? 3 : Math.min(6, (kind==='boss' || top ? Math.max(stars,4) : stars) + (lucky && stars < 4 ? 1 : 0))));
     else out.push({uid:UID++, kind:'consumable', key: rollConsumable(r)});
   }
-  if (stars === 5 && r() < 0.045) out.push(makeSpecial(r() < 0.5 ? 'atomic' : 'shadow', w));
-  if (kind==='boss' && r() < 0.036) out.push(makeSpecial(r() < 0.5 ? 'atomic' : 'shadow', w));
-  if (stars === 5 && kind==='normal'){ const t = Math.floor(r()*3); const rar = r() < 0.225 ? 4 : 3; out.push(t===0 ? makeWeapon(w, Math.floor(r()*5), rar, r) : t===1 ? makeArmour(w, rar, Math.floor(r()*3), r) : makeTrinket(w, Math.floor(r()*TRINKETS.length), rar)); }
+  if (stars === 5 && r() < 0.03) out.push(makeSpecial(r() < 0.5 ? 'atomic' : 'shadow', w));
+  if (kind==='boss' && r() < 0.025) out.push(makeSpecial(r() < 0.5 ? 'atomic' : 'shadow', w));
+  const piece = rar => { const t = Math.floor(r()*3); return t===0 ? makeWeapon(w, Math.floor(r()*5), rar, r) : t===1 ? makeArmour(w, rar, Math.floor(r()*3), r) : makeTrinket(w, Math.floor(r()*TRINKETS.length), rar); };
+  if (stars === 5 && kind==='normal' && r() < 0.5) out.push(piece(r() < 0.08 ? 4 : 3));   // a ★5 dungeon now gives a Legendary half the time (it used to be every time)
   if (kind==='boss' && r() < (WEB ? 0.27 : 0.54)){ const SIG = [['Glass Paperweight','HPPCT',35],['Prospero’s Book','LIFESTEAL',18],['The Silver Coffee Spoon','THORNS',40],['The Barn Owl Feather','BURN',45]][w]; out.push({uid:UID++, kind:'trinket', world:w, name:SIG[0]+' (boss relic)', eff:SIG[1], v:SIG[2], rar:4}); }
-  if (kind==='mini'){ // mini-boss: always an Epic, 45% a Legendary, 4.5% a Mythical
-    const piece = rar => { const t = Math.floor(r()*3); return t===0 ? makeWeapon(w, Math.floor(r()*5), rar, r) : t===1 ? makeArmour(w, rar, Math.floor(r()*3), r) : makeTrinket(w, Math.floor(r()*TRINKETS.length), rar); };
-    out.push(piece(2)); if (r() < 0.45) out.push(piece(3)); if (r() < 0.045) out.push(piece(4)); }
-  if (kind==='god'){ // a myth god always yields at least one Mythical weapon or armour (and sometimes two)
-    const myth = () => r() < 0.5 ? makeWeapon(w, Math.floor(r()*5), 4, r) : makeArmour(w, 4, Math.floor(r()*3), r); out.push(myth()); if (r() < 0.18) out.push(myth()); if (r() < 0.072) out.push(makeSpecial(r() < 0.5 ? 'atomic' : 'shadow', w)); }
-  if (kind==='boss'){ const it = rollItem(r, w, 4); if (it.rar < 3){ out.push(makeWeapon(w, Math.floor(r()*5), r() < 0.9 ? 3 : 2)); } else out.push(it); }
-  return out;
+  if (kind==='mini'){ // mini-boss: always an Epic, 25% a Legendary, 1.5% a Mythical
+    out.push(piece(2)); if (r() < 0.25) out.push(piece(3)); if (r() < 0.015) out.push(piece(4)); }
+  if (kind==='god'){ // ★6: always an Epic or better, but only a 30% chance of a Mythical and a separate 30% chance of a Legendary
+    const myth = () => r() < 0.5 ? makeWeapon(w, Math.floor(r()*5), 4, r) : makeArmour(w, 4, Math.floor(r()*3), r);
+    out.push(piece(2)); if (r() < 0.30){ out.push(myth()); if (r() < 0.06) out.push(myth()); } if (r() < 0.30) out.push(piece(3)); if (r() < 0.03) out.push(makeSpecial(r() < 0.5 ? 'atomic' : 'shadow', w)); }
+  if (kind==='promised'){ // ★7: a Promised piece and a Mythical piece, every time
+    out.push(makeTop(5, r, undefined, null, w)); out.push(r() < 0.5 ? makeWeapon(w, Math.floor(r()*5), 4, r) : makeArmour(w, 4, Math.floor(r()*3), r)); if (r() < 0.12) out.push(makeTop(5, r, undefined, null, w)); if (r() < 0.6) out.push(piece(3)); out.push(tome(40)); }
+  if (kind==='outer'){ // ★10: an Outerversal piece, a Promised piece and a Mythical piece, every time
+    out.push(makeTop(6, r, undefined, null, w)); out.push(makeTop(5, r, undefined, null, w)); out.push(r() < 0.5 ? makeWeapon(w, Math.floor(r()*5), 4, r) : makeArmour(w, 4, Math.floor(r()*3), r)); if (r() < 0.25) out.push(makeTop(6, r, undefined, null, w)); out.push(piece(3)); out.push(tome(120)); }
+  if (kind==='final'){ // the final boss: a massive haul (the run ends here, so it is mostly pride, Wisdom and a place in the Hall of Legends)
+    out.push(makeTop(6, r, undefined, 'weapon', w)); out.push(makeTop(6, r, undefined, 'armour', w)); out.push(makeTop(5, r, undefined, null, w)); out.push(makeTop(5, r, undefined, null, w)); out.push(makeWeapon(w, Math.floor(r()*5), 4, r)); out.push(makeArmour(w, 4, Math.floor(r()*3), r)); out.push(tome(300)); out.push(tome(300)); }
+  if (kind==='boss'){ const it = rollItem(r, w, 4); if (it.rar < 3){ out.push(makeWeapon(w, Math.floor(r()*5), r() < 0.35 ? 3 : 2)); } else out.push(it); }
+  return out.filter(Boolean);
 }
 
 // ---------- paths
 // chance per level that the map offers a ★5 / ★6 path, rising with depth (level 5: ~6% / ~1%, level 40: ~25% / ~7%)
 function starOdds(L){ const lv = WEB ? L : 1 + 49*(L-1)/(Math.max(2, LMAX)-1); const x = Math.min(1, Math.max(0, (lv-1)/49));
-  return {lv, p5: Math.min(0.32, 0.03 + 0.0055*lv), p6: Math.min(0.10, 0.004 + 0.0016*lv), w:[0, 7 - 4*x, 40 - 18*x, 38 - 6*x, 12 + 10*x]}; }
+  return {lv, p5: Math.min(0.32, 0.03 + 0.0055*lv), p6: Math.min(0.10, 0.004 + 0.0016*lv), p7: L < 12 ? 0 : Math.min(0.13, 0.010 + 0.0034*L), p10: L < 18 ? 0 : Math.min(0.028, 0.0006 + 0.0006*L), w:[0, 7 - 4*x, 40 - 18*x, 38 - 6*x, 12 + 10*x]}; }
 function rollPaths(r, L, w){ if (w != null) curW = w;
   const ml = miniLv(); const W = WORLDS[curW] || WORLDS[0]; if (ml.includes(L)) return [{stars:5, kind:'mini', theme:L===ml[0]?2:3, idx:L===ml[0]?0:1, key: pick(W.mini, r)}];
-  if (isBossL(L)) return [{stars:4, kind:'boss', theme:4, key: pick(W.bossKeys || [W.bossKey], r), final: L === LMAX}];
+  if (isBossL(L)) return [{stars: L === LMAX ? 10 : 4, kind:'boss', theme: L === LMAX ? 6 : 4, key: pick(W.bossKeys || [W.bossKey], r), final: L === LMAX}];
   const out = []; const n = 3; const od = starOdds(L);
   for (let i=0;i<n;i++){
     if (i===n-1 && r() < 0.3){ out.push({stars:1, kind:'event', ev: pick(['river','campsite','altar','aura','shrine','merchant'], r), theme: Math.floor(r()*4)}); continue; }
@@ -800,20 +822,22 @@ function rollPaths(r, L, w){ if (w != null) curW = w;
   const slots = () => out.map((p, i) => p.kind === 'normal' ? i : -1).filter(i => i >= 0);
   if (r() < od.p5){ const sl = slots(); if (sl.length) out[pick(sl, r)] = {stars:5, kind:'normal', theme:4}; }
   if (r() < od.p6 && W.gods){ const sl = slots().filter(i => out[i].stars < 5); if (sl.length) out[pick(sl, r)] = {stars:6, kind:'god', theme:4, key: pick(W.gods, r)}; }
+  if (r() < od.p7){ const sl = slots(); if (sl.length){ const di = Math.floor(r()*D.PROMISED_DUOS.length); out[pick(sl, r)] = {stars:7, kind:'promised', theme:5, key:di}; } }
+  if (r() < od.p10){ const sl = slots(); if (sl.length) out[pick(sl, r)] = {stars:10, kind:'outer', theme:6, key: pick(D.OUTER_BOSSES, r)}; }
   return out.sort((a,b)=>(a.kind==='event')-(b.kind==='event') || a.stars-b.stars);
 }
 
 // ---------- enemies
 let EXP = null; // filled by calibration table below
 /* ---------- levels: the hero levels from study XP; enemies have a level from where they stand (world + round) ---------- */
-const XPK = {perLevel:100, perQuest:25, kill:[0,8,15,22,32,44,60], mini:45, boss:60, god:85, gapPen:0.12, catchUp:0.3, sp:3};
+const XPK = {perLevel:100, perQuest:25, kill:[0,8,15,22,32,44,60], mini:45, boss:60, god:85, promised:140, outer:260, final:320, gapPen:0.12, catchUp:0.3, sp:3};
 const lvPerStage = () => WEB ? 1 : 29/(Math.max(2, LMAX)-1);
 const enemyLv = (w, L) => plOf(w, L);
 function avgPts(L){ const ws = tierWeights(L); let a = 0, b = 0; for (let t=1;t<ws.length;t++){ a += ws[t]*TIERS[t].pts; b += ws[t]; } return b ? a/b : 2; }
 function gapMod(gap){ return gap > 0 ? Math.max(0.15, 1 - XPK.gapPen*gap) : 1 + XPK.catchUp*(-gap); }
 function questXP(pts, L, gap){ return XPK.perQuest * pts / avgPts(L) * lvPerStage() * gapMod(gap); }
 // XP for winning a fight: harder dungeons (more stars), mini-bosses and bosses pay more
-function killXP(stars, kind, gap){ const base = kind === 'god' ? XPK.god : kind === 'boss' ? XPK.boss : kind === 'mini' ? XPK.mini : XPK.kill[Math.max(0, Math.min(6, stars||0))]; return base * lvPerStage() * gapMod(gap) * (NQ ? K.nqXP : 1); }
+function killXP(stars, kind, gap){ const base = kind === 'final' ? XPK.final : kind === 'outer' ? XPK.outer : kind === 'promised' ? XPK.promised : kind === 'god' ? XPK.god : kind === 'boss' ? XPK.boss : kind === 'mini' ? XPK.mini : XPK.kill[Math.max(0, Math.min(6, stars||0))]; return base * lvPerStage() * gapMod(gap) * (NQ ? K.nqXP : 1); }
 /* the "reference hero" at level E: stats from level-ups, half Common / half Rare gear at its level */
 const REF = {};
 function refP(E){ E = Math.max(1, Math.round(E)); if (REF[E]) return REF[E]; const tot = XPK.sp*(E-1); const want = {STR:0.36, FOR:0.34, AGI:0.15, WPN:0.15}; const st = {STR:0, AGI:0, FOR:0, WPN:0};
@@ -830,11 +854,21 @@ function makeEnemy(key, hp, atk, opts={}){
           status:{burn:0, burnDmg:0, stun:0}, charging:false, guard:false, enraged:false};
 }
 function makeGroup(w, L, path, r){ const g = makeGroup0(w, L, path, r); const E = enemyLv(w, L); g.forEach(e => e.lv = E);
-  if (WEB && path.kind === 'boss' && L === LMAX){ const b = g.find(e => e.boss && !e.minion); const wf = LMAX <= 30 ? K.webFinal30 : K.webFinal; if (b){ b.max = b.hp = Math.round(b.max*wf.hp); b.atk = Math.round(b.atk*wf.atk); b.final = true; } }
+  if (WEB && path.kind === 'boss' && L === LMAX){ const b = g.find(e => e.boss && !e.minion); if (b) b.final = true; }   // the final boss is built at ★10 strength in makeGroup0
   if (!WEB && path.kind === 'boss' && L === LMAX && w === 3){ const b = g.find(e => e.boss && !e.minion); if (b) b.final = true; }
   return g; }
+const kitMoves = key => D.BOSSKIT && D.BOSSKIT[key] ? D.BOSSKIT[key].moves.map(m => Object.assign({}, m)) : null;
+function makeBoss(key, hp, atk, o){ const e = makeEnemy(key, hp, atk, o); const k = D.BOSSKIT && D.BOSSKIT[key]; if (k){ e.moves = kitMoves(key); e.kit = key; } return e; }
+function makeHealer(key, boss){ const e = makeEnemy(key, boss.max*K.healerHp, boss.atk*0.25); e.minion = true; e.healer = true; e.moves = D.HEALERKIT.moves.map(m => Object.assign({}, m)); e.name = D.HEALER_NAMES[key] || e.name; return e; }
+const FINAL_HEALER = ['healVoid','healDeep','healEmber','healStar'];
 function makeGroup0(w, L, path, r){
   const b = budget(w, L), W = WORLDS[w];
+  if (path.kind==='promised'){ const duo = D.PROMISED_DUOS[path.key] || D.PROMISED_DUOS[0];
+    const out = duo.keys.map(k => { const kit = D.BOSSKIT[k] || {}; const e = makeBoss(k, b.dps*K.ttk*K.p7.hp*(kit.hp||1), b.hp/K.ttd*K.p7.atk*(kit.atk||1)); e.promised = true; return e; }); out.forEach((e, i) => { e.duo = i; }); return out; }
+  if (path.kind==='outer'){ const k = path.key || pick(D.OUTER_BOSSES, r); const kit = D.BOSSKIT[k] || {}; const e = makeBoss(k, b.dps*K.ttk*K.p10.hp*(kit.hp||1), b.hp/K.ttd*K.p10.atk*(kit.atk||1)); e.outer = true; e.healerKey = kit.healers || 'healVoid';
+    return [e, makeHealer(e.healerKey, e), makeHealer(e.healerKey, e)]; }
+  if (path.kind==='boss' && path.final && WEB){ const bk = path.key || W.bossKey; const e = makeBoss(bk, b.dps*K.ttk*K.p10.hp*K.finalX.hp, b.hp/K.ttd*K.p10.atk*K.finalX.atk); e.outer = true; e.final = true; e.healerKey = FINAL_HEALER[w] || 'healVoid';
+    e.moves = enemyMoves(e).concat((D.FINALKIT || []).map(m => Object.assign({}, m))); return [e, makeHealer(e.healerKey, e), makeHealer(e.healerKey, e)]; }
   if (path.kind==='boss'){
     const bk = path.key || W.bossKey; const out = [makeEnemy(bk, b.dps*K.ttk*K.bossTTK*1.0, b.hp/K.ttd*K.bossTTD*1.0)]; if (['colossus','kraken','apophis','ymir','hydra'].includes(bk)) out[0].summoner = true;
     if (w >= 2) out.push(makeEnemy(pick(W.enemies, r), b.dps*K.ttk*0.35, b.hp/K.ttd*0.3));
@@ -864,10 +898,11 @@ const T4COST = 50, T4CD = 3;
 const BAD = ['burn','poison','freeze','blind','slow','weak','vuln','recharge'], GOOD = ['empower','swift','enlight','god'];
 function heroOf(P, belt, opts={}){ const d = derive(P); const boons = P.boons || [];
   return {lv: P.lv || 0, hid: opts.hid || 'p', hp: Math.min(d.max, opts.hp != null ? Math.max(1, Math.round(opts.hp)) : d.max), max:d.max, speed:d.speed, energy: 40 + (boons.includes('quick')?30:0), first: boons.includes('first'), will:boons.includes('will'), dodge:d.dodge, mult:d.mult, crit:d.crit, w:P.eq.weapon, a:P.eq.armour, tr:(P.eq.trinkets||[]).filter(Boolean), cool:0,
-    buff:{str:0, iron:0, smoke:0}, st:{}, guard:false, revived:false, boons, focus:0, frozen:false, down:false, mcd:{}, belt: belt || {}}; }
+    buff:{str:0, iron:0, smoke:0}, st:{}, guard:false, revived:false, stand: abilOf(P.eq.armour,'lastStand') > 0 || abilOf(P.eq.weapon,'lastStand') > 0, combo:0, boons, focus:0, frozen:false, down:false, mcd:{}, belt: belt || {}}; }
 function newBattle(P, enemies, belt, opts={}){ const p = heroOf(P, belt, opts); return {boons:p.boons, focus:0, frozen:false, p, es: enemies, turn:1, over:null, world: opts.world||0}; }
 /* scale an encounter for n heroes: one extra enemy per extra hero, totals grow about n-fold */
-function scaleForParty(g, n, w, L, path, r){ if (n <= 1) return g; const H0 = g.reduce((a,e)=>a+e.max,0), A0 = g.reduce((a,e)=>a+e.atk,0); const W = WORLDS[w]; const big = g.find(e => (e.boss || e.mini) && !e.minion);
+function scaleForParty(g, n, w, L, path, r){ if (n <= 1) return g;
+  if (path && (path.kind === 'promised' || path.kind === 'outer' || path.final)){ const kh = n*(1 + K.pHp*(n-1)), ka = 1 + K.pAtk*(n-1); for (const e of g){ e.max = e.hp = Math.max(1, Math.round(e.max*kh)); e.atk = Math.max(2, Math.round(e.atk*ka)); e.extraActs = e.boss && !e.minion ? (n >= 7 ? 1 : 0) : 0; } return g; } const H0 = g.reduce((a,e)=>a+e.max,0), A0 = g.reduce((a,e)=>a+e.atk,0); const W = WORLDS[w]; const big = g.find(e => (e.boss || e.mini) && !e.minion);
   for (let i=1;i<n;i++){ const e = big ? makeEnemy(pick(W.enemies, r), big.max*0.25, big.atk*0.3) : makeEnemy(pick(W.enemies, r), H0/g.length, A0/g.length); e.partyAdd = true; e.lv = g[0].lv; g.push(e); }
   const H1 = g.reduce((a,e)=>a+e.max,0), A1 = g.reduce((a,e)=>a+e.atk,0); const isB = big && big.boss && !big.mini, gh = isB ? K.pHp : big ? K.pHpM : K.pHpN, ga = isB ? K.pAtk : K.pAtkN;
   const kh = H0*n*(1 + gh*(n-1))/H1, ka = A0*n*(1 + ga*(n-1))/A1;
@@ -890,6 +925,10 @@ function opening(B, r){ if (B.party){ const fastest = Math.max(...B.heroes.map(h
   if (B.p.first) return []; const fast = alive(B).filter(e => (SPEED[e.trait] || 10) > B.p.speed); if (!fast.length) return [];
   const keepEs = B.es; B.es = fast; const ev = [{t:'msg', v:`${fast.map(e=>e.name).join(', ')} ${fast.length>1?'are':'is'} faster than you and strike${fast.length>1?'':'s'} first!`}].concat(enemiesAct(B, r, B.p.belt)); B.es = keepEs; if (B.over==='win') B.over = null; return ev; }
 const TRK = (B, e) => B.p.tr.reduce((a,t)=>a+(t.eff===e?t.v:0),0);
+const ab = (p, id) => abilOf(p.w, id) + abilOf(p.a, id);   // an ability summed over a hero's weapon and armour
+const standing = B => B.party ? B.heroes.filter(h => !h.down && h.hp > 0) : (B.p.hp > 0 ? [B.p] : []);
+const warcryOf = B => Math.min(0.35, standing(B).reduce((a, h) => a + ab(h, 'warcry') + (h.boons.includes('inspireb') ? 8 : 0), 0)/100);
+const bulwarkOf = B => Math.min(0.4, standing(B).reduce((a, h) => a + ab(h, 'bulwark') + (h.boons.includes('bulwarkb') ? 8 : 0), 0)/100);
 const gapOf = (B, e) => ((B.p.lv || 0) && (e.lv || 0)) ? B.p.lv - e.lv : 0;
 const lvAtkMod = g => Math.max(0.6, Math.min(1.5, 1 + K.lvAtk*g)), lvDefMod = g => Math.max(0.55, Math.min(1.5, 1 - K.lvDef*g));
 
@@ -902,7 +941,7 @@ function foeStatus(e, name, turns, ev, r){ if (!e || e.hp <= 0) return false; co
   e.status[name] = Math.max(e.status[name] || 0, turns); if (name === 'burn') e.status.burnDmg = Math.max(1, Math.round(e.max*0.03));
   ev.push({t:'status', id:e.id, s:{burn:'burning', poison:'poisoned', blind:'blinded', slow:'slowed', weak:'weakened', vuln:'exposed', empower:'empowered'}[name] || name}); return true; }
 /* accuracy: blind −20, the target being slowed +15, swift +10, godhood never misses; only (mini-)bosses can dodge, via their own move */
-function heroHitChance(p, e, acc){ if (p.st.god) return 1; return Math.max(0.05, Math.min(1, acc/100 - (p.st.blind ? 0.2 : 0) + (e.status.slow ? 0.15 : 0) + (p.st.swift ? 0.1 : 0) - (e.status.dodge || 0))); }
+function heroHitChance(p, e, acc){ if (p.st.god) return 1; return Math.max(0.05, Math.min(1, acc/100 - (p.st.blind ? 0.2 : 0) + (e.status.slow ? 0.15 : 0) + (p.st.swift ? 0.1 : 0) - (e.status.dodge || 0) - ab(p, 'shortsight')/100 + (p.boons.includes('steady') ? 0.1 : 0))); }
 function foeHitChance(e, p, acc){ return Math.max(0.05, Math.min(1, acc/100 - (e.status.blind ? 0.2 : 0) + (p.st.slow ? 0.15 : 0) - (p.st.swift ? 0.1 : 0) - p.dodge)); }
 
 function dealTo(B, e, raw, r, ev, opts={}){
@@ -912,16 +951,20 @@ function dealTo(B, e, raw, r, ev, opts={}){
   let dmg = raw * lvAtkMod(gapOf(B, e)) * (e.status.vuln > 0 ? 1 + (e.status.vulnAmt || 0.3) : 1);
   if (e.hp < e.max*0.3) dmg *= 1 + abilOf(w,'execute')/100 + (B.boons.includes('exec') ? 0.35 : 0);
   if (opts.exec && e.hp < e.max*0.35) dmg *= 1 + opts.exec;
-  const crit = r() < Math.min(0.95, p.crit + (opts.critBonus || 0) + (p.st.enlight ? 0.15 : 0)) || opts.crit; if (crit) dmg *= 2;
+  const crit = r() < Math.min(0.95, p.crit + (opts.critBonus || 0) + (p.st.enlight ? 0.15 : 0)) || opts.crit; if (crit) dmg *= 2 + ab(p, 'critdmg')/100;
   if (e.guard && !pierce) dmg *= 0.5;
-  if (e.key==='watcher' && B.es.some(x => x.minion && x.hp > 0)) dmg *= 0.3;
+  if (e.key==='watcher' && B.es.some(x => x.minion && !x.healer && x.hp > 0)) dmg *= 0.3;
   if (e.exposed) dmg *= 1.6;
   if (e.key==='troll') dmg *= 0.7;
   const bb = TRK(B,'BOSSBANE'); if (bb && e.boss) dmg = Math.max(dmg, e.max*bb/100);
-  dmg = Math.max(1, Math.round(dmg)); e.hp = Math.max(0, e.hp - dmg); if (e.hp <= 0) noteDeaths(B); ev.push({t:'edmg', id:e.id, v:dmg, crit, h:p.hid});
+  dmg = Math.max(1, Math.round(dmg)); let absorbed = 0; if (e.barrier > 0){ absorbed = Math.min(e.barrier, dmg); e.barrier -= absorbed; dmg -= absorbed; }
+  e.hp = Math.max(0, e.hp - dmg); if (e.hp <= 0) noteDeaths(B); ev.push({t:'edmg', id:e.id, v:dmg, crit, h:p.hid, abs:absorbed || undefined});
+  if (e.status.reflect > 0 && dmg > 0 && p.hp > 1){ const back = Math.max(1, Math.round(dmg*(e.status.reflectAmt || 0.25))); p.hp = Math.max(1, p.hp - back); ev.push({t:'pdot', v:back, h:p.hid, s:'reflect'}); }
   const ls = abilOf(w,'lifesteal') + TRK(B,'LIFESTEAL') + (opts.reap ? 30 : 0) + (opts.steal ? opts.steal*100 : 0) + (B.boons.includes('vamp') ? 5 : 0);
   if (ls){ const h = Math.round(dmg*ls/100); if (h){ p.hp = Math.min(p.max, p.hp + h); ev.push({t:'fx', k:'lifesteal', a:e.id, h:p.hid}); ev.push({t:'pheal', v:h, h:p.hid}); } }
-  if (e.hp > 0){ const burnC = abilOf(w,'burn') + TRK(B,'BURN') + (opts.burn || 0); if (burnC && r() < burnC/100) foeStatus(e, 'burn', 3, ev);
+  if (e.hp > 0){ const exC = ab(p,'expose'); if (exC && r() < exC/100){ e.status.vuln = Math.max(e.status.vuln||0, 2); e.status.vulnAmt = Math.max(e.status.vulnAmt||0, 0.3); ev.push({t:'status', id:e.id, s:'exposed'}); }
+    const poC = ab(p,'poison'); if (poC && r() < poC/100) foeStatus(e, 'poison', 3, ev, r); const weC = ab(p,'weaken'); if (weC && r() < weC/100) foeStatus(e, 'weak', 2, ev, r);
+    const burnC = abilOf(w,'burn') + TRK(B,'BURN') + (opts.burn || 0); if (burnC && r() < burnC/100) foeStatus(e, 'burn', 3, ev);
     if (opts.poison && r() < opts.poison/100) foeStatus(e, 'poison', 3, ev); if (opts.blind && r() < opts.blind/100) foeStatus(e, 'blind', 1, ev); if (opts.slow) foeStatus(e, 'slow', opts.slow, ev);
     const stn = abilOf(w,'stun') + (opts.stun||0); if (stn && r() < stn/100*(e.boss||e.mini ? 0.5 : 1)){ e.status.stun = 1; e.charging = false; ev.push({t:'status', id:e.id, s:'stunned'}); } }
   if (!opts.noChain){
@@ -932,8 +975,10 @@ function dealTo(B, e, raw, r, ev, opts={}){
   return dmg;
 }
 function baseHit(B, r){ const p = B.p; let m = (B.boons.includes('berserk') ? 1.2 : 1) * (p.buff.str ? 1.4 : 1) * (B.focus ? 1.25 : 1) * (B.boons.includes('adrenaline') && p.hp < p.max*0.35 ? 1.25 : 1) * (p.st.empower ? 1.25 : 1) * (p.st.god ? 1.5 : 1);
+  const amp = ab(p, 'amp'); if (amp) m *= 1 + amp/100; const ven = ab(p, 'vengeance'); if (ven) m *= 1 + ven/100*Math.floor((1 - p.hp/p.max)*10); m *= 1 + warcryOf(B);
+  if (B.boons.includes('combo') && p.combo) m *= 1 + Math.min(0.4, 0.08*p.combo); if (B.boons.includes('bloodlust')) m *= 1 + Math.min(0.2, 0.04*B.es.filter(x => x.hp <= 0).length);
   return p.w.dmg * p.mult * (0.72 + r()*0.56) * m * (B.rally > 0 ? 1 + (B.rallyAmt||0.2) : 1); }   // wide swings: luck matters
-function selfBurn(B, r, ev){ const p = B.p, sb = abilOf(p.w,'selfburn'); if (sb && r() < sb/100) heroStatus(B, p, 'burn', 2, ev); }
+function selfBurn(B, r, ev){ const p = B.p, sb = ab(p,'selfburn'); if (sb && r() < sb/100) heroStatus(B, p, 'burn', 2, ev); }
 
 /* ---------- the four hero moves ---------- */
 const MOVES = Object.fromEntries(Object.entries(D.SIGS || {}).map(([k, v]) => [k, {n:v[0], d:v[1]}]));
@@ -943,17 +988,17 @@ function movesOf(w){ const k = sigKey(w); return k && (w.rar||0) >= 3 ? [k] : []
 function optText(o){ o = o || {}; const t = []; if (o.stun) t.push(`${o.stun}% chance to stun`); if (o.burn) t.push(`${o.burn}% chance to burn`); if (o.slow) t.push('slows the target'); if (o.pierce) t.push('ignores shields'); if (o.critBonus) t.push(`+${Math.round(o.critBonus*100)}% crit chance`); if (o.exec) t.push(`+${Math.round(o.exec*100)}% damage to foes under 35% HP`); if (o.steal) t.push(`heals you ${Math.round(o.steal*100)}% of the damage`); return t.length ? '. ' + t.join(', ').replace(/^./, c => c.toUpperCase()) : ''; }
 function hashOf(s){ let h = 7; for (const ch of String(s)) h = (h*31 + ch.charCodeAt(0)) >>> 0; return h; }
 const RIDER = {burn:'25% chance to burn', stun:'15% chance to stun', poison:'25% chance to poison', blind:'20% chance to blind', slow:'slows the target', steal:'heals 15% of the damage', crit:'+20% crit chance', pierce:'ignores shields', energy:'+10 extra energy', chain:'arcs to a second foe for 40%'};
-function heroMoves(w){ if (!w) return []; const arch = w.arch || 'blade'; const A = D.ARCHMOVES[arch] || D.ARCHMOVES.blade; const k = sigKey(w); const myth = (w.rar||0) === 4 && k && D.MYTHT1[k];
+function heroMoves(w, a){ if (!w) return []; const arch = w.arch || 'blade'; const A = D.ARCHMOVES[arch] || D.ARCHMOVES.blade; const k = sigKey(w); const myth = (w.rar||0) >= 4 && k && D.MYTHT1[k];
   const t1 = myth ? {slot:0, type:1, n:D.MYTHT1[k][0], cost:0, gain:15, acc:100, mult:1.05, rider:D.MYTHT1[k][1], d:`Free Mythical strike: ${RIDER[D.MYTHT1[k][1]]}. Builds +15 energy${D.MYTHT1[k][1]==='energy' ? ' (+10 more)' : ''}.`, fx:'myth1'}
                   : {slot:0, type:1, n:D.BASICMOVE[arch] || 'Strike', cost:0, gain:15, acc:100, mult:1.0, d:'Free, reliable strike. Builds +15 energy for your bigger moves.', fx:'basic'};
   const [n2, kind2, hits2, m2, acc2, o2] = A.t2;
   const t2 = {slot:1, type:2, n:n2, cost:20, acc:acc2, kind:kind2, hits:hits2, mult:m2, opts:o2 || {}, d: (kind2 === 'area' ? 'Sweeps across every enemy; each hit rolls its own accuracy' : `${hits2} quick hits${(o2||{}).spread ? ' spread across the enemies' : ' on your target'}; each rolls its own accuracy`) + optText(o2), fx:'skill'};
   let [n3, c3, acc3, m3, o3] = A.t3; if ((w.rar||0) >= 3 && k){ const h = hashOf(k); c3 = Math.max(40, Math.min(60, c3 + (h % 3 - 1)*5)); m3 = Math.round((m3 + ((h >> 3) % 3 - 1)*0.1)*100)/100; acc3 = Math.max(90, Math.min(95, acc3 + ((h >> 5) % 3 - 1)*2)); }
   const t3 = {slot:2, type:3, n:n3, cost:c3, acc:acc3, mult:m3, opts:o3 || {}, d:'One crushing blow on your target' + optText(o3), fx:'heavy'};
-  let t4; if (k && (w.rar||0) >= 3){ const sx = (w.rar === 4 && D.SIGX[k]) || {}; const acc = sx.acc || 100;
+  let t4; if (k && (w.rar||0) >= 3){ const sx = (w.rar >= 4 && D.SIGX[k]) || {}; const acc = sx.acc || 100;
     t4 = {slot:3, type:4, n:D.SIGS[k][0], cost:T4COST, cd:T4CD, acc, sig:k, down: sx.down || [], d:D.SIGS[k][1] + (sx.note ? `. DOWNSIDE: ${sx.note}` : ''), fx:'special'}; }
   else { const [n4, d4, ops4, acc4] = A.t4; t4 = {slot:3, type:4, n:n4, cost:T4COST, cd:T4CD, acc:acc4, ops:ops4, down:[], d:d4, fx:'special'}; }
-  const slow = abilOf(w, 'slowskill'); if (slow){ t2.cost += 10*slow; t3.cost += 10*slow; }
+  const slow = abilOf(w, 'slowskill') + (a ? abilOf(a, 'slowskill') : 0); if (slow){ t2.cost += 10*slow; t3.cost += 10*slow; }
   const pc = x => Math.round(x*100) + '%';
   t1.dmg = pc(t1.mult) + ' to one foe'; t2.dmg = kind2 === 'area' ? pc(m2) + ' to every foe' : hits2 + ' hits × ' + pc(m2); t3.dmg = pc(m3) + ' to one foe';
   const ops4 = t4.sig ? D.SIGS[t4.sig][2] : t4.ops; const dOp = ops4.find(o => ['hit','all','multi','judge','gentle'].includes(o[0]));
@@ -975,7 +1020,8 @@ function runOps(B, name, ops, tgt, r, ev, acc){ const p = B.p, h = p.hid; const 
     if (k === 'gentle'){ const e = tgt && tgt.hp > 0 ? tgt : alive(B)[0]; if (e){ ev.push({t:'act', h, a:'special', tg:[e.id]}); if (e.hp < e.max*0.35 && !e.boss && !e.mini && r() <= heroHitChance(p, e, acc)){ const dd = e.hp; e.hp = 0; dealt += dd; ev.push({t:'edmg', id:e.id, v:dd, crit:true, h}); ev.push({t:'msg', v:'Death comes gently.', h}); noteDeaths(B); } else hitOne(e, e.hp < e.max*0.35 ? 3.0 : 1.0, {}); } }
     if (k === 'heal'){ ev.push({t:'act', h, a:'focus'}); for (const x of (a === 'self' ? [p] : allies())){ const hh = Math.round(x.max*b); x.hp = Math.min(x.max, x.hp + hh); ev.push({t:'pheal', v:hh, h:x.hid}); } }
     if (k === 'steal' && dealt > 0){ const hh = Math.round(dealt*a); p.hp = Math.min(p.max, p.hp + hh); ev.push({t:'fx', k:'lifesteal', a:(tgt||{}).id, h}); ev.push({t:'pheal', v:hh, h}); }
-    if (k === 'revive'){ const fallen = B.party ? B.heroes.filter(x => x.down || x.hp <= 0) : []; if (fallen.length){ const x = fallen[0]; x.down = false; x.hp = Math.round(x.max*a); x.st = {}; ev.push({t:'fx', k:'phoenix', h:x.hid}); ev.push({t:'revive', h:x.hid}); ev.push({t:'pheal', v:x.hp, h:x.hid}); ev.push({t:'msg', v:'A fallen hero rises!', h:x.hid}); }
+    if (k === 'judgeall'){ const all = alive(B); ev.push({t:'act', h, a:'special', tg:all.map(e => e.id), area:true}); for (const e of all){ if (r() > heroHitChance(p, e, acc)){ ev.push({t:'miss', id:e.id, h}); continue; } const raw = Math.max(1, Math.min(e.hp*a, e.boss || e.mini ? e.max*b : 1e9)); const dd = Math.max(1, Math.round(raw)); e.hp = Math.max(0, e.hp - dd); dealt += dd; ev.push({t:'edmg', id:e.id, v:dd, crit:true, h}); if (e.hp <= 0) noteDeaths(B); } }
+    if (k === 'revive'){ const fallen = B.party ? B.heroes.filter(x => x.down || x.hp <= 0) : []; if (fallen.length){ for (const x of (b === 'all' ? fallen : fallen.slice(0, 1))){ x.down = false; x.hp = Math.round(x.max*a); x.st = {}; ev.push({t:'fx', k:'phoenix', h:x.hid}); ev.push({t:'revive', h:x.hid}); ev.push({t:'pheal', v:x.hp, h:x.hid}); ev.push({t:'msg', v:'A fallen hero rises!', h:x.hid}); } }
       else for (const x of allies()){ const hh = Math.round(x.max*0.15); x.hp = Math.min(x.max, x.hp + hh); ev.push({t:'pheal', v:hh, h:x.hid}); } }
     if (k === 'rally'){ B.rally = b; B.rallyAmt = a; ev.push({t:'msg', v:`The party hits ${Math.round(a*100)}% harder!`, h}); }
     if (k === 'aegis'){ B.aegis = b; B.aegisAmt = a; ev.push({t:'fx', k:'aegis', h}); ev.push({t:'msg', v:`The party takes ${Math.round(a*100)}% less damage!`, h}); }
@@ -995,12 +1041,14 @@ function runOps(B, name, ops, tgt, r, ev, acc){ const p = B.p, h = p.hid; const 
     if (k === 'smoke') for (const x of (b === 'party' ? allies() : [p])) x.buff.smoke = Math.max(x.buff.smoke||0, a);
     if (k === 'shield'){ p.buff.iron = Math.max(p.buff.iron||0, a); ev.push({t:'msg', v:'Your skin turns hard as stone.', h}); } }
   return dealt; }
-function doMove(B, mv, tgt, r, ev){ const p = B.p; const m = heroMoves(p.w)[3]; ev.push({t:'skill', v:D.SIGS[mv][0], h:p.hid, sig:true}); runOps(B, D.SIGS[mv][0], D.SIGS[mv][2], tgt, r, ev, m ? m.acc : 100); if (m && m.down && m.down.length) runOps(B, '', m.down, tgt, r, ev, 100); }
+function doMove(B, mv, tgt, r, ev){ const p = B.p; const m = heroMoves(p.w, p.a)[3]; ev.push({t:'skill', v:D.SIGS[mv][0], h:p.hid, sig:true}); runOps(B, D.SIGS[mv][0], D.SIGS[mv][2], tgt, r, ev, m ? m.acc : 100); if (m && m.down && m.down.length) runOps(B, '', m.down, tgt, r, ev, 100); }
 function tickBuffs(B){ if (B.rally > 0) B.rally--; if (B.aegis > 0) B.aegis--;
-  for (const e of B.es){ for (const k of ['blind','slow','weak','empower']) if (e.status[k] > 0) e.status[k]--; if (e.status.vuln > 0){ e.status.vuln--; if (!e.status.vuln) e.status.vulnAmt = 0; } } }
-function useMove(B, slot, tgt, r, ev){ const p = B.p, h = p.hid; const mv = heroMoves(p.w)[slot]; if (!mv) return;
+  for (const e of B.es){ for (const k of ['blind','slow','weak','empower','reflect']) if (e.status[k] > 0) e.status[k]--; if (e.status.vuln > 0){ e.status.vuln--; if (!e.status.vuln) e.status.vulnAmt = 0; } } }
+function useMove(B, slot, tgt, r, ev){ const p = B.p, h = p.hid; const mv = heroMoves(p.w, p.a)[slot]; if (!mv) return;
   if (mv.type > 1 && (p.energy < mv.cost || (mv.cd && (p.mcd[slot] || 0) > B.turn))) return useMove(B, 0, tgt, r, ev);
   p.energy -= mv.cost || 0; if (mv.cd) p.mcd[slot] = B.turn + mv.cd;
+  if (mv.type >= 3){ if (B.boons.includes('endurance')) p.energy = Math.min(100, p.energy + 10); const bp = ab(p, 'bloodprice'); if (bp){ const dd = Math.min(p.hp - 1, Math.round(p.max*bp/100)); if (dd > 0){ p.hp -= dd; ev.push({t:'pdot', v:dd, h, s:'blood'}); } } }
+  p.combo = (p.combo || 0) + 1;
   if (mv.type === 1){ ev.push({t:'skill', v:mv.n, h, basic:true}); ev.push({t:'act', h, a:'attack', tg:[tgt.id], fx: mv.fx, rider: mv.rider}); p.energy = Math.min(100, p.energy + 15 + (mv.rider === 'energy' ? 10 : 0));
     const o = {acc:100}; if (mv.rider === 'burn') o.burn = 25; if (mv.rider === 'stun') o.stun = 15; if (mv.rider === 'poison') o.poison = 25; if (mv.rider === 'blind') o.blind = 20; if (mv.rider === 'slow') o.slow = 1; if (mv.rider === 'steal') o.steal = 0.15; if (mv.rider === 'crit') o.critBonus = 0.2; if (mv.rider === 'pierce') o.pierce = true; if (mv.rider === 'chain') o.chain = 40;
     dealTo(B, tgt, baseHit(B, r)*mv.mult, r, ev, o);
@@ -1022,6 +1070,8 @@ function heroAction(B, act, targetId, r, belt={}, item=null){
 function heroAction0(B, act, targetId, r, belt, item, p, h){ const ev = [];
   let tgt = B.es.find(e => e.id === targetId && e.hp > 0) || alive(B)[0]; if (!tgt) return ev;
   p.guard = false;
+  if (act === 'skip'){ p.combo = 0; ev.push({t:'skipped', h}); ev.push({t:'msg', v:'The host skipped this turn.', h}); return ev; }
+  if (act !== 'move' && act !== 'attack' && act !== 'skill') p.combo = 0;
   if (B.frozen || p.st.freeze){ B.frozen = false; p.frozen = false; delete p.st.freeze; ev.push({t:'fx', k:'thaw', h}); ev.push({t:'msg', v:'Frozen solid: you lose this turn!', h}); return ev; }
   if (p.st.recharge){ delete p.st.recharge; ev.push({t:'msg', v:'Recharging: you lose this turn.', h}); return ev; }
   if (act === 'attack'){ act = 'move'; item = 0; } else if (act === 'skill'){ act = 'move'; item = 1; }
@@ -1035,7 +1085,7 @@ function heroAction0(B, act, targetId, r, belt, item, p, h){ const ev = [];
     belt[item]--; ev.push({t:'act', h, a:'item:'+item, tg: item==='fire' ? alive(B).map(e=>e.id) : []}); ev.push({t:'item', v:D.CONSUMABLES[item].n, k:item, h});
     const pot = 1 + TRK(B,'POTION')/100;
     if (item==='hp' || item==='hp2' || item==='cleanse'){ const hh = Math.round(p.max*({hp:0.35, hp2:0.65, cleanse:0.13}[item])*pot*(B.boons.includes('potion')?1.2:1)); p.hp = Math.min(p.max, p.hp + hh); ev.push({t:'pheal', v:hh, h}); if (item==='cleanse'){ for (const bad of BAD) delete p.st[bad]; p.frozen = false; B.frozen = false; } }
-    if (item==='str') p.buff.str = 3; if (item==='iron') p.buff.iron = 3; if (item==='smoke') p.buff.smoke = 2;
+    const tn = B.boons.includes('tonic') ? 2 : 0; if (item==='str') p.buff.str = 5 + tn; if (item==='iron') p.buff.iron = 4 + tn; if (item==='smoke') p.buff.smoke = 4 + tn;   // Strength Tonic and Iron-Skin: 4 turns; Smoke Bomb: 4 attacks
     if (item==='fire') for (const e of alive(B)){ dealTo(B, e, baseHit(B,r)*0.6, r, ev, {noChain:true}); if (e.hp>0) foeStatus(e, 'burn', 3, ev); }
     if (item==='phoenix'){ p.feather = true; belt.phoenix++; }
   }
@@ -1064,6 +1114,8 @@ function hurt(B, e, raw, r, ev, label, acc=95){
   if (r() > foeHitChance(e, p, acc)){ ev.push({t:'dodge', id:e.id, h, miss:true}); return 0; }
   let d = raw * (0.72 + r()*0.56) * lvDefMod(gapOf(B, e)) * (e.status.weak > 0 ? 0.7 : 1) * (e.status.empower > 0 ? 1.25 : 1) * (B.aegis > 0 ? 1 - (B.aegisAmt||0.25) : 1) * (p.st.vuln ? 1.25 : 1);
   if (p.guard) d *= 0.4 * (1 - TRK(B,'GUARD')/100);
+  if (B.focus && B.boons.includes('focusward')) d *= 0.5;   // Focused Guard boon
+  d *= 1 - bulwarkOf(B);
   if (p.buff.iron > 0) d *= 0.55;
   d *= 1 - abilOf(p.a,'ward')/100; if (B.boons.includes('iron')) d *= 0.9; d *= 1 + (abilOf(p.w,'fragile') + abilOf(p.a,'fragile'))/100;
   d = Math.max(1, Math.round(d)); p.hp = Math.max(0, p.hp - d); ev.push({t:'pdmg', id:e.id, v:d, label, h});
@@ -1108,24 +1160,79 @@ function enemyMoves(e){ if (e.moves) return e.moves; const list = [Object.assign
   e.moves = list.slice(0, n); return e.moves; }
 function bossSummon(B, e, ev, n=1){ const W = WORLDS[B.world||0] || WORLDS[0]; for (let i=0;i<n;i++){ const m = makeEnemy(pick(W.enemies, Math.random), e.max*0.11, e.atk*0.35); m.minion = true; m.lv = e.lv; m.name = 'Summoned ' + m.name; B.es.push(m); ev.push({t:'summon', id:m.id, by:e.id}); }
   ev.push({t:'msg', v:`${e.name} calls ${n > 1 ? 'reinforcements' : 'a servant'} to the fight!`}); }
-function pickFoeMove(B, e, r){ const ms = enemyMoves(e); e.cd = e.cd || {}; const nMin = B.es.filter(x => x.minion && x.hp > 0).length;
-  const ok = ms.filter(m => (e.cd[m.id] || 0) <= e.turns && !(m.after && e.turns < m.after) && !(m.k === 'heal' && !alive(B).some(x => x.hp < x.max*0.65)) && !(m.k === 'summon' && nMin >= 2) && !(m.k === 'dodge' && (e.status.dodge || 0) >= 0.4) && !(m.k === 'buff' && e.status.empower));
-  const wt = m => m.id === 'strike' ? 3 : m.sig ? 3 : m.k === 'summon' ? 2.5 : 2; const tot = ok.reduce((a, m) => a + wt(m), 0); let x = r()*tot; for (const m of ok){ x -= wt(m); if (x <= 0) return m; } return ok[0] || ms[0]; }
+const hasOp = (m, name) => m.ops && m.ops.some(o => o[0] === name);
+function pickFoeMove(B, e, r, bonus){ const ms = enemyMoves(e); e.cd = e.cd || {}; const nMin = B.es.filter(x => x.minion && x.hp > 0).length; const nHeal = B.es.filter(x => x.healer && x.hp > 0).length;
+  if (e.turns === 1 && !bonus){ const f = ms.find(m => m.first && !(e.used && e.used[m.id])); if (f) return f; }
+  const scriptOk = m => { if (m.k !== 'script') return true; if (bonus && (m.cd || m.pending || hasOp(m, 'summon') || hasOp(m, 'healers') || hasOp(m, 'guard') || hasOp(m, 'heal'))) return false;
+    if (m.once && e.used && e.used[m.id]) return false; if (m.first && e.used && e.used[m.id]) return false;
+    if (hasOp(m, 'healers') && (nHeal >= 2 || !e.healerKey)) return false; if (hasOp(m, 'summon') && !m.ops.find(o => o[0] === 'summon')[1].all && nMin >= (e.promised ? 4 : 3)) return false;
+    if ((hasOp(m, 'heal') || hasOp(m, 'cleanseSelf')) && e.hp > e.max*0.75) return false; if (hasOp(m, 'healAllies') && !alive(B).some(x => x.hp < x.max*0.7)) return false;
+    if (hasOp(m, 'dodge') && (e.status.dodge || 0) >= 0.3) return false; if (hasOp(m, 'buff') && e.status.empower) return false; if (hasOp(m, 'guard') && e.guard) return false; if (hasOp(m, 'reflect') && e.status.reflect > 0) return false; if (hasOp(m, 'barrier') && e.barrier > 0) return false; return true; };
+  const ok = ms.filter(m => (e.cd[m.id] || 0) <= e.turns && !(m.after && e.turns < m.after) && !(m.k === 'heal' && !alive(B).some(x => x.hp < x.max*0.65)) && !(m.k === 'summon' && nMin >= 2) && !(m.k === 'dodge' && (e.status.dodge || 0) >= 0.4) && !(m.k === 'buff' && e.status.empower) && scriptOk(m));
+  const wt = m => m.w ? (m.heal && nHeal < 2 ? 9 : m.w) : m.id === 'strike' ? 3 : m.sig ? 3 : m.k === 'summon' ? 2.5 : 2; const tot = ok.reduce((a, m) => a + wt(m), 0); let x = r()*tot; for (const m of ok){ x -= wt(m); if (x <= 0) return m; } return ok[0] || ms[0]; }
+/* ---------- scripted boss moves (the ★7 and ★10 bosses): a move is a list of ops, see BOSSKIT in the data ---------- */
+const BADNAMES = ['burn','poison','blind','slow','weak','vuln'];
+function runScript(B, e, mv, r, ev){
+  const orig = B.p, party = !!B.party; let dealt = 0, lastHit = []; const ops = mv.ops;
+  const hasDmg = ops.some(o => ['hit','hits','all','rand','exec','gems','snap'].includes(o[0]));
+  const selfKind = hasDmg ? null : ops.some(o => o[0]==='summon' || o[0]==='healers') ? 'summon' : ops.some(o => o[0]==='heal' || o[0]==='healAllies' || o[0]==='cleanseSelf') ? 'heal' : ops.some(o => o[0]==='guard' || o[0]==='barrier') ? 'shield' : ops.some(o => o[0]==='dodge') ? 'dodge' : 'buff';
+  const banner = e.boss && !e.minion && !e.healer && (mv.pending || (mv.w || 2) >= 2.2 || (hasDmg && mv.cd >= 3));
+  ev.push({t:'emove', id:e.id, n:mv.n, sig:!!banner, self:selfKind ? {summon:'summon', heal:'heal', shield:'shield', dodge:'dodge', buff:'roar'}[selfKind] : null}); if (banner) ev.push({t:'bspecial', id:e.id, n:mv.n});
+  const asHero = (x, fn) => { if (party && B.p !== x) use(B, x); const res = fn(); if (party){ keep(B); use(B, orig); } return res; };
+  const strike = (x, mult, ch) => asHero(x, () => { ev.push({t:'attack', id:e.id, h:x.hid, anim:mv.anim, ch:!!ch}); const d = hurt(B, e, e.atk*mult, r, ev, mv.n, mv.acc); if (d > 0){ dealt += d; if (!lastHit.includes(x)) lastHit.push(x); } return d; });
+  const status = (x, name, chance, turns) => { if (x && x.hp > 0 && !x.down && r() < chance/100) asHero(x, () => heroStatus(B, x, name, turns, ev)); };
+  const newTgt = () => { const u = up(B); return u.length ? u[Math.floor(r()*u.length)] : null; };
+  let tgt = orig; const retarget = () => { if (!tgt || tgt.down || tgt.hp <= 0) tgt = newTgt(); return tgt; };
+  const healE = (t, pct) => { const hh = Math.round(t.max*pct); if (hh > 0 && t.hp > 0){ t.hp = Math.min(t.max, t.hp + hh); ev.push({t:'eheal', id:t.id, v:hh}); } };
+  const spawn = (key, hp, atk, o) => { const m = makeEnemy(key, hp, atk, {}); m.minion = true; m.lv = e.lv; if (o && o.mini) m.mini = true; if (D.MINIONKIT && D.MINIONKIT[key]) m.moves = D.MINIONKIT[key].map(x => Object.assign({}, x)); B.es.push(m); ev.push({t:'summon', id:m.id, by:e.id}); return m; };
+  for (const op of ops){ const k = op[0]; if (B.over) break;
+    if (k === 'hit'){ const x = retarget(); if (x) strike(x, op[1], true); }
+    else if (k === 'hits'){ for (let i=0;i<op[1];i++){ const x = retarget(); if (!x) break; strike(x, op[2]); } }
+    else if (k === 'all'){ for (const x of up(B).slice()) strike(x, op[1], true); }
+    else if (k === 'rand'){ for (let i=0;i<op[1];i++){ const x = newTgt(); if (!x) break; strike(x, op[2]); } }
+    else if (k === 'exec'){ const u = up(B).slice().sort((a, b) => a.hp/a.max - b.hp/b.max); if (u[0]) strike(u[0], op[1], true); }
+    else if (k === 'gems'){ const gem = [['poison',70,3],['burn',70,3],['blind',70,2],['slow',70,2],['weak',70,2],['recharge',25,1]]; for (let i=0;i<6;i++){ const x = newTgt(); if (!x) break; const d = strike(x, 0.36); if (d > 0) status(x, gem[i][0], gem[i][1], gem[i][2]); } }
+    else if (k === 'snap'){ for (const x of up(B).slice()){ const d = strike(x, 0); void d; asHero(x, () => { if (x.hp > 1){ const dd = Math.min(x.hp - 1, Math.max(1, Math.round(x.hp*op[1]*(x.guard ? 0.4 : 1)*(x.buff.iron > 0 ? 0.55 : 1)))); x.hp -= dd; ev.push({t:'pdmg', id:e.id, v:dd, label:mv.n, h:x.hid}); if (lastHit.indexOf(x) < 0) lastHit.push(x); } }); } }
+    else if (k === 'st'){ for (const x of lastHit) status(x, op[1], op[2], op[3]); }
+    else if (k === 'stall1'){ for (const x of lastHit) status(x, op[1], op[2], op[3]); }
+    else if (k === 'stall'){ for (const x of lastHit){ for (const n of BADNAMES) status(x, n, op[1], op[2]); status(x, 'freeze', op[1]*0.4, 1); status(x, 'recharge', op[1]*0.3, 1); } }
+    else if (k === 'drainE'){ const list = lastHit.length ? lastHit : up(B); for (const x of list){ x.energy = Math.max(0, x.energy - op[1]); } ev.push({t:'msg', v:'Energy drained!'}); }
+    else if (k === 'heal'){ healE(e, op[1]); }
+    else if (k === 'healAllies' || k === 'reviveAlly'){ for (const x of alive(B)) healE(x, op[1]); }
+    else if (k === 'leech'){ const hh = Math.round(dealt*op[1]); if (hh > 0){ e.hp = Math.min(e.max, e.hp + hh); ev.push({t:'eheal', id:e.id, v:hh}); } }
+    else if (k === 'buff'){ foeStatus(e, op[1], op[2], ev); ev.push({t:'fx', k:'enrage', a:e.id}); }
+    else if (k === 'buffAllies'){ for (const x of alive(B)) foeStatus(x, op[1], op[2], ev); }
+    else if (k === 'enrage'){ e.atk = Math.round(e.atk*(1 + op[1])); ev.push({t:'fx', k:'enrage', a:e.id}); }
+    else if (k === 'guard'){ e.guard = true; }
+    else if (k === 'reflect'){ e.status.reflect = op[2]; e.status.reflectAmt = op[1]; }
+    else if (k === 'barrier'){ e.barrier = (e.barrier || 0) + Math.round(e.max*op[1]); ev.push({t:'fx', k:'barrier', a:e.id}); }
+    else if (k === 'dodge'){ e.status.dodge = Math.min(0.4, (e.status.dodge || 0) + op[1]); }
+    else if (k === 'cleanseSelf'){ for (const n of BADNAMES.concat(['stun'])) e.status[n] = 0; }
+    else if (k === 'summon'){ const sp = op[1]; if (sp.all){ for (const key of sp.keys) spawn(key, e.max*sp.hp, e.atk*sp.atk, sp); } else for (let i=0;i<sp.n;i++) spawn(sp.keys[i % sp.keys.length], e.max*sp.hp, e.atk*sp.atk, sp); }
+    else if (k === 'healers'){ const nH = B.es.filter(x => x.healer && x.hp > 0).length; for (let i = nH; i < 2; i++){ const m = makeHealer(e.healerKey || 'healVoid', e); m.lv = e.lv; B.es.push(m); ev.push({t:'summon', id:m.id, by:e.id}); } ev.push({t:'msg', v:`${e.name} calls its healers to its side! Kill them first, or it will keep mending.`}); }
+    else if (k === 'healBoss'){ const t = alive(B).filter(x => !x.healer).sort((a, b) => b.max - a.max)[0] || e; healE(t, op[1]); }
+    else if (k === 'barrierBoss'){ const t = alive(B).filter(x => !x.healer).sort((a, b) => b.max - a.max)[0] || e; t.barrier = (t.barrier || 0) + Math.round(t.max*op[1]); ev.push({t:'fx', k:'barrier', a:t.id}); }
+    else if (k === 'msg'){ ev.push({t:'msg', v:op[1]}); }
+  }
+  B.p = orig; if (party) use(B, orig);
+}
 /* one enemy's turn; B.p is its chosen target */
-function enemyAct(B, e, r, ev){
+function enemyAct(B, e, r, ev, bonus){
   const p = B.p, h = p.hid; const orig = p;
-  e.guard = false; if (e.exposed) e.exposed--; e.turns = (e.turns||0) + 1;
+  e.guard = false; if (e.exposed) e.exposed--; if (!bonus) e.turns = (e.turns||0) + 1;
   if (e.key==='caliban' || e.key==='wyrm'){ const hh = Math.round(e.max*0.03); if (e.hp < e.max){ e.hp = Math.min(e.max, e.hp + hh); } }
   const nMin = B.es.filter(x=>x.minion && x.hp>0).length, cap = B.party ? 1 + B.heroes.length : 2;
   if (e.key==='watcher' && e.turns % 3 === 0 && e.turns % 4 !== 3 && nMin < cap){ const m = makeEnemy('enforcer', e.max*0.12, e.atk*0.35); m.minion = true; m.lv = e.lv; m.name = 'Telescreen Guard'; B.es.push(m); ev.push({t:'summon', id:m.id, by:e.id}); ev.push({t:'msg', v:'The Watcher summons a Telescreen Guard! It takes 70% less damage while guards stand.'}); return; }
   if (e.summoner && e.turns % 3 === 0 && e.turns % 4 !== 3 && nMin < cap){ const W = WORLDS[B.world||0]; const m = makeEnemy(W.enemies[(e.turns/3)%W.enemies.length|0], e.max*0.14, e.atk*0.4); m.minion = true; m.lv = e.lv; m.name = 'Summoned ' + m.name; B.es.push(m); ev.push({t:'summon', id:m.id, by:e.id}); ev.push({t:'msg', v:`${e.name} calls a minion to fight!`}); return; }
   if (e.boss && !e.enraged && e.hp < e.max*0.5){ e.enraged = true; e.atk = Math.round(e.atk*1.3); ev.push({t:'fx', k:'enrage', a:e.id}); ev.push({t:'msg', v:`${e.name} is enraged!`});
     if (e.final && !e.phase2){ e.phase2 = true; const hh = Math.round(e.max*0.15); e.hp = Math.min(e.max, e.hp + hh); ev.push({t:'bspecial', id:e.id, n:'Second form'}); ev.push({t:'eheal', id:e.id, v:hh}); ev.push({t:'msg', v:`${e.name} rises in a terrible second form!`}); bossSummon(B, e, ev, 2); return; } }
-  if (e.status.stun){ e.status.stun = 0; ev.push({t:'msg', v:`${e.name} is stunned and loses its turn.`}); return; }
+  if (e.status.stun){ e.status.stun = 0; e.pend = null; e.charging = false; ev.push({t:'msg', v:`${e.name} is stunned and loses its turn.`}); return; }
+  if (e.pend && !bonus){ const mp = e.pend; e.pend = null; e.charging = false; return runScript(B, e, mp, r, ev); }
   if (e.key==='prospero' && e.turns % 4 === 0){ const hh = Math.round(e.max*0.1); e.hp = Math.min(e.max, e.hp + hh); ev.push({t:'emove', id:e.id, n:'Book Magic'}); ev.push({t:'eheal', id:e.id, v:hh}); ev.push({t:'msg', v:'Prospero draws on his books and heals.'}); return; }
   if (e.key==='shadow' && e.turns % 4 === 0 && !e.charging){ e.charging = true; ev.push({t:'msg', v:'Falls the Shadow… it gathers darkness. GUARD, then strike while it is exposed!'}); return; }
   if (e.charging){ e.charging = false; ev.push({t:'attack', id:e.id, h, ch:true, anim:'smash'}); hurt(B, e, e.atk*2.3, r, ev, 'charged', 85); if (e.key==='shadow'){ e.exposed = 2; ev.push({t:'msg', v:'The Shadow is EXPOSED: +60% damage this turn!'}); } return; }
-  const mv = pickFoeMove(B, e, r); if (mv.cd) e.cd[mv.id] = e.turns + mv.cd;
+  const mv = pickFoeMove(B, e, r, bonus); if (mv.cd && !bonus) e.cd[mv.id] = e.turns + mv.cd; if (mv.once){ e.used = e.used || {}; e.used[mv.id] = 1; }
+  if (mv.k === 'script'){ if (mv.pending && !bonus){ e.pend = mv; e.charging = true; ev.push({t:'emove', id:e.id, n:mv.n, sig:true, self:'charge'}); ev.push({t:'bspecial', id:e.id, n:mv.n + ' (charging)'}); ev.push({t:'msg', v:`${e.name} gathers power for ${mv.n}! GUARD, or be ready to take it!`}); return; } return runScript(B, e, mv, r, ev); }
   const targets = () => heroTargets(B); const each = fn => { for (const x of targets()){ if (B.party) use(B, x); fn(x); if (B.party) keep(B); } if (B.party) use(B, orig); };
   const hitWith = (x, mult, acc, anim, ch) => { ev.push({t:'attack', id:e.id, h:x.hid, anim, ch}); return hurt(B, e, e.atk*mult, r, ev, mv.n, acc); };
   const inflict = (x, st) => { if (st && r() < st[1]/100) heroStatus(B, x, st[0], st[2], ev); };
@@ -1156,15 +1263,20 @@ function enemyAct(B, e, r, ev){
 /* end-of-round upkeep for B.p: statuses, regen, buffs, death and revival. Returns true if the hero falls. */
 function heroTick(B, belt, ev){
   const p = B.p, h = p.hid;
-  if (p.hp > 0 && p.st.burn > 0){ const d = Math.max(1, Math.round(p.max*0.04)); p.hp = Math.max(0, p.hp - d); ev.push({t:'pdot', v:d, h, s:'burn'}); }
-  if (p.hp > 0 && p.st.poison > 0){ const d = Math.max(1, Math.round(p.max*0.05)); p.hp = Math.max(0, p.hp - d); ev.push({t:'pdot', v:d, h, s:'poison'}); }
+  const calm = p.boons.includes('calm') ? 0.5 : 1;
+  if (p.hp > 0 && p.st.burn > 0){ const d = Math.max(1, Math.round(p.max*0.04*calm)); p.hp = Math.max(0, p.hp - d); ev.push({t:'pdot', v:d, h, s:'burn'}); }
+  if (p.hp > 0 && p.st.poison > 0){ const d = Math.max(1, Math.round(p.max*0.05*calm)); p.hp = Math.max(0, p.hp - d); ev.push({t:'pdot', v:d, h, s:'poison'}); }
+  const bl = ab(p, 'bleed'); if (p.hp > 1 && bl){ const d = Math.min(p.hp - 1, Math.max(1, Math.round(p.max*bl/100))); p.hp -= d; ev.push({t:'pdot', v:d, h, s:'bleed'}); }
   if (p.st.enlight) p.energy = Math.min(100, p.energy + 15);
+  const en = ab(p, 'energize') - ab(p, 'tired'); if (en) p.energy = Math.max(0, Math.min(100, p.energy + en));
   const rg = abilOf(p.a,'regen'); if (p.hp > 0 && rg){ const hh = Math.round(p.max*rg/100); p.hp = Math.min(p.max, p.hp + hh); ev.push({t:'pheal', v:hh, h}); }
+  const md = standing(B).reduce((a, x) => a + ab(x, 'mend') + (x.boons.includes('medicb') ? 2 : 0), 0); if (p.hp > 0 && md){ const hh = Math.max(1, Math.round(p.max*md/100)); if (p.hp < p.max){ p.hp = Math.min(p.max, p.hp + hh); ev.push({t:'pheal', v:hh, h}); } }
   for (const k of ['str','iron']) if (p.buff[k] > 0) p.buff[k]--;
   if (p.hp <= 0){
     const ph = abilOf(p.a,'phoenix');
     if (ph && !p.revived){ p.revived = true; p.hp = Math.round(p.max*ph/100); ev.push({t:'fx', k:'phoenix', h}); ev.push({t:'msg', v:'Phoenix fire revives you!', h}); ev.push({t:'pheal', v:p.hp, h}); }
     else if (p.will){ p.will = false; p.hp = 1; ev.push({t:'msg', v:'Force of Will: you refuse to fall!', h}); }
+    else if (p.stand){ p.stand = false; p.hp = 1; ev.push({t:'msg', v:'Last Stand: you survive on a single heartbeat!', h}); ev.push({t:'fx', k:'standing', h}); }
     else if (belt.phoenix > 0){ belt.phoenix--; p.hp = Math.round(p.max*0.5); ev.push({t:'fx', k:'phoenix', h}); ev.push({t:'msg', v:'The Phoenix Feather bursts into flame. You rise!', h}); ev.push({t:'pheal', v:p.hp, h}); }
     else return true;
   }
@@ -1186,8 +1298,9 @@ function partyRound(B, actions, r){
   for (const h of order){ if (B.over || h.down || h.hp <= 0) continue; if (!alive(B).length) break;
     const a = actions[h.hid] || {act:'move', item:0}; use(B, h); ev.push(...heroAction(B, a.act || 'move', a.tgt, r, h.belt, a.item != null ? a.item : 0)); keep(B); }
   enemyTicks(B, ev);
-  if (!alive(B).length){ B.over = 'win'; ev.push({t:'win'}); return ev; }
-  for (const e of alive(B).sort((a, b) => (a.status.slow ? 1 : 0) - (b.status.slow ? 1 : 0))){ const tg = up(B); if (!tg.length) break; const guards = tg.filter(h => h.guard); const pickH = guards.length && r() < 0.3 ? pick(guards, r) : pick(tg, r); use(B, pickH); enemyAct(B, e, r, ev); keep(B); }
+  if (!alive(B).length){ B.over = 'win'; ev.push({t:'win'}); B.turn++; return ev; }   // bump the round even on the winning blow: clients only play a round whose number is new, so the final strike and the death animations used to be skipped
+  for (const e of alive(B).sort((a, b) => (a.status.slow ? 1 : 0) - (b.status.slow ? 1 : 0))){ const tg = up(B); if (!tg.length) break; const guards = tg.filter(h => h.guard); const pickH = guards.length && r() < 0.3 ? pick(guards, r) : tg[wpick(tg.map(h => 1 + Math.max(0, ab(h, 'taunt'))/100), r)]; use(B, pickH); enemyAct(B, e, r, ev); keep(B);
+    for (let k = 0; k < (e.extraActs || 0) && e.hp > 0; k++){ const tg2 = up(B); if (!tg2.length) break; use(B, tg2[wpick(tg2.map(h => 1 + Math.max(0, ab(h, 'taunt'))/100), r)]); enemyAct(B, e, r, ev, true); keep(B); } }
   for (const h of B.heroes){ if (h.down) continue; use(B, h); const fell = heroTick(B, h.belt, ev); keep(B); if (fell){ h.down = true; h.hp = 0; ev.push({t:'down', h:h.hid}); ev.push({t:'msg', v:'A hero falls!', h:h.hid}); } }
   for (const e of B.es) if (e.hp <= 0 && !e.dead){ e.dead = true; ev.push({t:'kill', id:e.id}); }
   if (!up(B).length){ B.over = 'lose'; ev.push({t:'lose'}); }
@@ -1195,7 +1308,7 @@ function partyRound(B, actions, r){
   B.turn++; return ev;
 }
 /* a sensible automatic choice (timed-out players, simulations): heavy hit on one foe, area on many, special when ready */
-function autoAct(B, h, r){ const ms = heroMoves(h.w); const al = alive(B); if (!al.length) return {act:'move', item:0};
+function autoAct(B, h, r){ const ms = heroMoves(h.w, h.a); const al = alive(B); if (!al.length) return {act:'move', item:0};
   const tgt = al.slice().sort((a, b) => a.hp - b.hp)[0]; const ready = m => m && h.energy >= m.cost && (!m.cd || (h.mcd[m.slot] || 0) <= B.turn);
   if (h.hp < h.max*0.35 && (h.belt.hp2 > 0 || h.belt.hp > 0)) return {act:'item', item: h.belt.hp2 > 0 ? 'hp2' : 'hp', tgt:tgt.id};
   if (al.some(e => e.charging)) return {act:'guard'};
@@ -1279,13 +1392,14 @@ function placeChunks(u, withAnalysis){
   return out;
 }
 function essayText(units){ return units.map(u=>u.s.join(' ')).join(' '); }
-return {K, get LMAX(){ return LMAX; }, setLMAX: n => { LMAX = n; }, miniLv, makeSpecial, SKILLCOST, opening, rng, pick, wpick, makeWeapon, makeArmour, makeTrinket, starter, essayRelic, derive, eff, canEquip, missing, power, abilOf, rollItem, rollChest, rollConsumable,
+return {K, makeTop, tome, makeBoss, makeHealer, kitMoves, get LMAX(){ return LMAX; }, setLMAX: n => { LMAX = n; }, miniLv, makeSpecial, SKILLCOST, opening, rng, pick, wpick, makeWeapon, makeArmour, makeTrinket, starter, essayRelic, derive, eff, canEquip, missing, power, abilOf, rollItem, rollChest, rollConsumable,
         rollPaths, starOdds, xpShares, isBossL, BELTCAP: 5, makeGroup, budget, makeEnemyPub: makeEnemy, XPK, enemyLv, avgPts, gapMod, questXP, killXP, setWeb, setNQ, get NQ(){ return NQ; }, get WEB(){ return WEB; }, refP, legendWeapon, legendArmour, applyLevel, plOf, setPL: x => { PL = Math.max(1, x); }, get PL(){ return PL; }, dropLevel, CURVE, STARp: STAR, scaleForParty, BOSSMOVES, newParty, partyRound: (B, a, r) => { const ev = partyRound(B, a, r); noteDeaths(B); tickBuffs(B); return ev; }, MOVES, MOVECOST, MOVECD, movesOf, heroMoves, autoAct, enemyMoves, EM, heroStatus, foeStatus, T4COST, T4CD, BADST: BAD, GOODST: GOOD, heroHitChance, foeHitChance, heroOf, mkQuest, pairsOf, MAXTRIES, newBattle, playerAct: function(B){ const ev = playerAct.apply(null, arguments); noteDeaths(B); tickBuffs(B); return ev; }, alive, TIERS, tierWeights, rollQuests, quotesOf, accuracy, initials, markSummary, placeChunks, essayText,
         words, norm, setEXP: e => { EXP = e; }, getUID: () => UID, setUID: n => { UID = n; }};
 })(DATA);
 
 
 CORE.setEXP([[[9,48],[9,65],[15,86],[19,104],[24,123],[27,141],[32,157],[37,177],[45,207],[52,232],[63,258],[73,283],[84,306],[92,330],[99,355],[110,396],[120,440],[131,470],[145,501],[159,537],[181,581],[198,615],[215,650],[236,692],[257,730],[282,766],[307,804],[329,840],[352,884],[382,919]],[[397,917],[418,937],[438,957],[460,978],[486,1001],[513,1019],[542,1040],[571,1066],[603,1087],[634,1114],[678,1153],[711,1178],[751,1210],[786,1236],[827,1265],[866,1292],[909,1327],[954,1359],[999,1394],[1045,1428],[1120,1477],[1172,1515],[1217,1549],[1275,1592],[1330,1629],[1396,1676],[1461,1712],[1525,1756],[1580,1807],[1665,1843]],[[1674,1821],[1725,1843],[1779,1871],[1840,1893],[1903,1917],[1975,1943],[2041,1968],[2099,1998],[2173,2025],[2248,2056],[2351,2096],[2440,2121],[2507,2143],[2591,2186],[2665,2221],[2761,2247],[2846,2291],[2941,2325],[3041,2362],[3135,2404],[3270,2448],[3373,2488],[3496,2540],[3619,2578],[3730,2624],[3849,2674],[3975,2709],[4105,2753],[4239,2797],[4367,2844]],[[4355,2804],[4463,2830],[4555,2857],[4668,2880],[4773,2907],[4867,2936],[4978,2962],[5086,2996],[5204,3024],[5335,3056],[5512,3093],[5637,3128],[5751,3156],[5890,3183],[6017,3215],[6160,3252],[6302,3287],[6453,3323],[6604,3359],[6751,3401],[6972,3439],[7136,3485],[7304,3536],[7487,3576],[7659,3628],[7819,3664],[8017,3708],[8215,3761],[8386,3805],[8581,3850]]]);
+/*@@include asm.js@@*/
 /* ===== Essay Quest v5 — gear + hero models (three.js r128) =====
    Every weapon is built with its grip at the origin and its business end along +Y.
    Rarity layers: Common plain → Rare trim → Epic gems + runes → Legendary gold filigree, glow, sparkles → Mythical obsidian + crimson veins, orbiting shards, embers. */
@@ -2678,7 +2792,7 @@ function migrateHero(){ if (!S) return; if (S.hlv == null){ S.hlv = Math.max(1, 
   if (S.quests && S.quests.some(q => q.tier > 3 || GONE_KINDS.includes(q.kind))) { S.quests = S.quests.filter(q => q.tier <= 3 && !GONE_KINDS.includes(q.kind)); if (!S.quests.length) S.quests = null; } }
 function migrateItems(){ for (const it of (S.bag||[])) if (it && it.kind !== 'consumable' && it.lvl == null) C.applyLevel(it, (it.world||0)*30 + 1); }
 const stars = n => n > 5 ? '★'.repeat(n) : '★'.repeat(n) + '☆'.repeat(5-n);
-const dungeonName = (w, pth) => pth.kind === 'god' && pth.key ? 'Temple of ' + Dd.ENEMIES[pth.key][0].split(',')[0] : WD[w].dungeons[pth.theme];
+const dungeonName = (w, pth) => pth.kind === 'god' && pth.key ? 'Temple of ' + Dd.ENEMIES[pth.key][0].split(',')[0] : pth.kind === 'promised' ? (Dd.PROMISED_DUOS[pth.key] || Dd.PROMISED_DUOS[0]).name : pth.kind === 'outer' ? 'The ' + Dd.ENEMIES[pth.key][0].replace(/^The /, '').split(',')[0] : pth.final ? 'The Final Examination' : WD[w].dungeons[pth.theme];
 const slotsUsed = () => S.meta.equipped.reduce((a,id) => a + (Dd.BOONS.find(b=>b[0]===id)||[0,0,0])[2], 0);
 
 /* ---------- AI marking ---------- */
@@ -2746,6 +2860,7 @@ function sellVal(it){ return 5 + (it.rar||0)*8 + Math.floor((it.lvl||1)/5); }
 function card(it, actions='', compare=null){
   if (!it) return `<div class="card empty">Empty slot</div>`;
   if (it.kind==='consumable'){ const c = Dd.CONSUMABLES[it.key]; return `<div class="card" style="--rc:#7fe0a0"><div class="rar">Consumable</div><div class="nm">${esc(c.n)}</div><div class="sm">${esc(c.d)}</div></div>`; }
+  if (it.kind==='tome') return `<div class="card r3" style="--rc:#c9a2ff"><div class="rar">Wisdom</div><div class="nm">${esc(it.name)}</div><div class="sm">+${it.wis} Wisdom (kept forever, spend it on Boons)</div></div>`;
   if (it.kind==='soul') return `<div class="card r3" style="--rc:#ff8a3c"><div class="rar">Boss Soul</div><div class="nm">${esc(it.name)}</div><div class="sm">Spend at the Forge in camp to craft Legendary gear.</div></div>`;
   const r = Dd.RAR[it.rar]; const main = it.kind==='weapon' ? `${it.dmg} damage · ${ARCHN[it.arch] || it.arch}` : it.kind==='armour' ? `+${it.hp} HP · ${it.role==='plate'?'heavy plate':it.role==='leather'?'coat / leathers':'robe / suit'}` : '';
   const req = Object.entries(it.req||{}).map(([k,v]) => `${k} ${v}`).join(' · '); const miss = C.missing(P(), it);
@@ -2783,7 +2898,7 @@ function enterWorld(w){ Object.assign(S, {world:w, level:1, quests:null, paths:n
   S.snap = clone({st:S.st, pts:S.pts, bag:S.bag, eq:S.eq, belt:S.belt, ink:S.ink, souls:S.souls, hlv:S.hlv, xp:S.xp}); go('map'); }
 function mapScreen(p){
   if (!S.paths){ S.paths = C.rollPaths(Math.random, S.level, S.world); S.rested = false; if (C.miniLv().includes(S.level) && (!S.cp || S.cp.level < S.level)) S.cp = clone({st:S.st, pts:S.pts, bag:S.bag, eq:S.eq, belt:S.belt, ink:S.ink, souls:S.souls, level:S.level, hlv:S.hlv, xp:S.xp}); save(); }
-  const desc = pth => pth.kind==='god' ? `<b>${esc(Dd.ENEMIES[pth.key][0])}</b>: a myth god (${esc(Dd.GOD_TEXT[pth.key]||'')}). Brutal. Win for a guaranteed Mythical weapon or armour` : pth.kind==='boss' ? `World boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : WD[S.world].boss)}` : pth.kind==='mini' ? `Mini-boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : '')}. Always an Epic, 45% a Legendary, 4.5% a Mythical` : pth.kind==='event' ? `<b>${esc(Dd.EVENTS[pth.ev].n)}</b>: no fight, a choice` :
+  const desc = pth => pth.kind==='god' ? `<b>${esc(Dd.ENEMIES[pth.key][0])}</b>: a myth god (${esc(Dd.GOD_TEXT[pth.key]||'')}). Brutal. Win for a guaranteed Mythical weapon or armour` : pth.kind==='boss' ? `World boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : WD[S.world].boss)}` : pth.kind==='mini' ? `Mini-boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : '')}. Always an Epic, 25% a Legendary, 1.5% a Mythical` : pth.kind==='event' ? `<b>${esc(Dd.EVENTS[pth.ev].n)}</b>: no fight, a choice` :
     ['', 'Lucky path: 3 bonus quests (more points), weak foes, a chest', 'A fair fight', 'Tougher foes, better chest', 'Elite enemy, rich chest', 'Deadly. Win for a guaranteed Legendary (maybe Mythical)'][pth.stars];
   const dm = S.dailyMsg ? `<p class="ok">${esc(S.dailyMsg)}</p>` : ''; S.dailyMsg = null;
   p.innerHTML = dm + `<h2>Level ${S.level}: choose your path</h2><p class="muted">Enemies here are <b>Lv ${foeLv()}</b>. You are <b>Hero Lv ${heroPL()}</b>${heroPL() >= foeLv()+2 ? ' (ahead: good odds)' : heroPL() < foeLv() ? ' (behind: study more!)' : ' (even)'}.</p><div class="paths">${S.paths.map((pth,i)=>`<button class="path s${pth.stars} ${pth.kind}" data-i="${i}"><span class="st">${pth.kind==='event'?'? Event':stars(pth.stars)}</span><b>${esc(dungeonName(S.world, pth))}</b><small>${desc(pth)}</small></button>`).join('')}</div>
@@ -2865,7 +2980,7 @@ const ACH = [
   ['myth','Myth Made Real','Find a Mythical item', s => Object.values(s.stats.found).some(r => r >= 4)],
   ['codex','Master of the Codex','Fill one paragraph’s Codex to ●●●●●', s => Object.values(s.mastery).some(m => m.pass - m.fail >= 5)]];
 function noteFind(it){ if (!it || !S || !S.stats) return; if (it.name && it.kind !== 'consumable') S.stats.found[it.name] = Math.max(S.stats.found[it.name]||0, it.rar||0); if (it.myth){ S.stats.myth = S.stats.myth || {}; S.stats.myth[it.myth] = Math.max(S.stats.myth[it.myth]||0, (it.world||0)+1); } }
-function legendBanner(loot){ const L = (loot||[]).filter(i => i.myth || i.special).sort((a,b)=>b.rar-a.rar)[0]; if (!L) return ''; return `<div class="legend-banner r${L.rar}"><span>${L.rar===4?'MYTHICAL':'LEGENDARY'} RELIC</span><b>${esc(L.name)}</b><em>${esc(L.lore||'')}</em></div>`; }
+function legendBanner(loot){ const L = (loot||[]).filter(i => i.myth || i.special).sort((a,b)=>b.rar-a.rar)[0]; if (!L) return ''; return `<div class="legend-banner r${L.rar}"><span>${L.rar===6?'OUTERVERSAL RELIC':L.rar===5?'PROMISED RELIC':L.rar===4?'MYTHICAL RELIC':'LEGENDARY RELIC'}</span><b>${esc(L.name)}</b><em>${esc(L.lore||'')}</em></div>`; }
 function checkAch(){ if (!S || !S.stats) return; for (const [id, n, d, f] of ACH){ if (!S.stats.ach.includes(id) && f(S)){ S.stats.ach.push(id); S.meta.wisdom += 10; toast(`🏆 Achievement: ${n} (+10 Wisdom) · title unlocked`); if (!S.stats.title) S.stats.title = n; } } save(); }
 function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); SND.sfx('perfect'); setTimeout(() => d.remove(), 3500); }
 function journalHTML(){ const st = S.stats; const units = unitsOf(S.world); const allKeys = WD.flatMap(w => [...w.enemies, ...(Array.isArray(w.mini)?w.mini:[w.mini]), ...(w.bossKeys || [w.bossKey])]);
@@ -2913,7 +3028,7 @@ function runQuest(i){
     const st = S.stats; (st.units[u.c] = st.units[u.c] || []).push(Math.round(score*100)); if (st.units[u.c].length > 30) st.units[u.c].shift(); st.time += Math.min(900, Math.round((Date.now() - (q.t0||Date.now()))/1000)); q.t0 = Date.now();
     if (pass){ st.quests++; if (score >= 0.999){ st.perfects++; if (K.startsWith('quote')) st.quotePerf++; } } setTimeout(checkAch, 400);
     if (pass){ q.done = true; q.passed = true; q.best = score; m.pass++; const quill = P().eq.trinkets.filter(Boolean).reduce((a,t)=>a+(t.eff==='QUILL'?t.v:0),0) + (S.meta.equipped.includes('scholar') && q.tier >= 3 ? 1 : 0);
-      const gap = (S.hlv||1) - foeLv(); const gm = C.gapMod(gap); let gain = Math.round(C.questXP(q.pts + quill, S.level, gap)); if (q.peeked) gain = Math.max(1, Math.floor(gain/2)); q.why = [`${C.TIERS[q.tier].n} quest`].concat(quill ? [`+${quill} Quill/Scholar`] : [], (S.len||30) === 15 ? ['×2 short game'] : [], Math.abs(gm - 1) > 0.02 ? [gap > 0 ? `×${gm.toFixed(2)}: you’re ${gap} level${gap>1?'s':''} above the enemies` : `×${gm.toFixed(2)} catch-up: you’re ${-gap} below`] : []).join(', '); if (q.shrine) S.pts += 5; q.gain = gain; q.ups = gainXP(gain); S.ink += q.pts*5; S.meta.wisdom += q.pts*2; S.hp = Math.min(maxHP(), curHP() + Math.round(maxHP()*(score>=0.999 ? 0.15 : 0.1)));
+      const gap = (S.hlv||1) - foeLv(); const gm = C.gapMod(gap); let gain = Math.round(C.questXP(q.pts + quill, S.level, gap)); if (q.peeked) gain = Math.max(1, Math.floor(gain/2)); q.why = [`${C.TIERS[q.tier].n} quest`].concat(quill ? [`+${quill} Quill/Scholar`] : [], (S.len||30) === 15 ? ['×2 short game'] : [], Math.abs(gm - 1) > 0.02 ? [gap > 0 ? `×${gm.toFixed(2)}: you’re ${gap} level${gap>1?'s':''} above the enemies` : `×${gm.toFixed(2)} catch-up: you’re ${-gap} below`] : []).join(', '); if (q.shrine) S.pts += 5; q.gain = gain; q.ups = gainXP(gain); S.ink += q.pts*5 + (S.meta.equipped.includes('scribe') ? 10 : 0); S.meta.wisdom += q.pts*2; S.hp = Math.min(maxHP(), curHP() + Math.round(maxHP()*(score>=0.999 ? 0.15 : 0.1)));
       SND.sfx(score >= 0.999 ? 'perfect' : 'pass'); }
     else { m.fail++; if (q.tries >= q.maxTries){ q.done = true; q.passed = false; } SND.sfx('fail'); }
     let inspMsg = '';
@@ -3292,7 +3407,7 @@ const VOTE_MS = 15000, ACT_MS = 15000, ANIM_MS = 2600, CHEST_MS = 25000, MAXP = 
 let lobbyRoom = null, R = {P:null, S:null, E:null}, code = null, isHost = false, myPeer = null, nick = '', local = false;
 let G = null, GT = 0, BE = null, BET = 0; // latest host state + local receive time; latest battle packet
 let peersP = [], unsub = [], hostTick = null, H = null; // H = host-only state
-let CB = null, playedR = 0, playing = false, myAct = null, selT = null, view = 'home', lastErr = '';
+let CB = null, playedR = 0, playing = false, myAct = null, selT = null, view = 'home', lastErr = ''; let myNN = '';
 const PKEY = 'eq5_party';
 const now = () => Date.now();
 const rcode = () => { const A = 'abcdefghjkmnpqrstuvwxyz23456789'; let s = ''; for (let i=0;i<5;i++) s += A[Math.floor(Math.random()*A.length)]; return s; };
@@ -3340,7 +3455,8 @@ function peerLobby(){ const NS = 'essayquest-hsc-v1-', T = 'essayquest-hsc/v2/';
   function hostLost(){ if (gone) return; gone = true; clearInterval(beat); clearInterval(hello); const rs = Object.keys(rooms); for (const name of rs){ const r = rooms[name]; if (!r) continue; for (const pid in r.map) if (pid !== L.me) delete r.map[pid]; } for (const name of rs) if (rooms[name]) fire(name); if (L.onLost) setTimeout(L.onLost, 0); }
   function closeAll(){ clearInterval(beat); clearInterval(hello); for (const c of mq){ try { c.end(true); } catch(e){} } mq = []; try { peer && peer.destroy(); } catch(e){} peer = null; }
   /* host: one message from a client, arriving by either route */
-  function hostHandle(id, m, link){ if (!id || !m || typeof m !== 'object') return; L.st.in++; (L.st.from = L.st.from || {})[id] = (L.st.from[id] || 0) + 1; const full = () => !conns[id] && Object.keys(conns).length >= MAXP - 1;
+  const banned = {}; L.kick = id => { const c = conns[id]; if (c) sendTo(c, {t:'kicked'}); banned[id] = 1; delete conns[id]; dropPeer(id); };
+  function hostHandle(id, m, link){ if (!id || !m || typeof m !== 'object') return; if (banned[id]){ sendTo(link, {t:'kicked'}); return; } L.st.in++; (L.st.from = L.st.from || {})[id] = (L.st.from[id] || 0) + 1; const full = () => !conns[id] && Object.keys(conns).length >= MAXP - 1;
     if (m.t === 'hello'){ sendTo(link, full() ? {t:'full'} : {t:'welcome'}); return; }   // a client probing routes: just answer on that route
     if (m.t === 'bye'){ if (conns[id] && conns[id] === link){ delete conns[id]; dropPeer(id); } return; }
     let c = conns[id], fresh = false; if (!c){ if (full()){ sendTo(link, {t:'full'}); return; } c = conns[id] = link; fresh = true; } else if (c !== link) conns[id] = c = link;   // 'bind' (and every later message) fixes the route
@@ -3350,6 +3466,7 @@ function peerLobby(){ const NS = 'essayquest-hsc-v1-', T = 'essayquest-hsc/v2/';
   /* client: one message from the host */
   function clientHandle(m, via){ if (!m || typeof m !== 'object' || gone) return; if (up && up.via !== via) return; lastHeard = now(); L.st.in++;
     if (m.t === 'hostbye'){ hostLost(); return; }
+    if (m.t === 'kicked'){ goneWhy = 'The host removed you from the game. You can rejoin with the same code.'; hostLost(); return; }
     if (m.t === 'full'){ goneWhy = 'That game is full (' + MAXP + ' players).'; if (L._bad) L._bad(new Error(goneWhy)); hostLost(); return; }
     if (m.t === 'room'){ const r = rm(m.room); const mine = r.map[L.me]; r.map = {}; for (const pid in m.map){ if (pid === L.me) continue; r.map[pid] = entry(pid, m.map[pid].p, m.map[pid].u); } if (mine) r.map[L.me] = mine; fire(m.room); } }
   function relay(url, extra){ if (typeof mqtt === 'undefined') return null; try { const c = mqtt.connect(url, Object.assign({clientId: 'eq' + rid() + rid(), clean:true, keepalive:30, reconnectPeriod:3000, connectTimeout:9000, protocolVersion:4}, extra || {})); c.on('error', () => {}); mq.push(c); return c; } catch(e){ return null; } }
@@ -3397,6 +3514,7 @@ async function checkOnline(){ if (WEBV){ online = true; return online; } if (onl
 async function getLobby(){ if (lobbyRoom) return lobbyRoom; if (WEBV && !testMode){ lobbyRoom = peerLobby(); local = false; online = true; return lobbyRoom; } if (testMode && typeof BroadcastChannel !== 'undefined'){ lobbyRoom = fakeLobby(); local = true; return lobbyRoom; }
   await checkOnline(); if (lobbyRoom) return lobbyRoom; return null; }
 async function connect(c, host){
+  myNN = Math.random().toString(36).slice(2, 8);
   const L = await getLobby(); if (!L) throw new Error('Online play isn’t available in this view: open the game from its claude.ai link while signed in.');
   if (L.prepare){ L.onLost = () => { if (code && !isHost) hostGone(); }; await L.prepare(c, host); }
   code = c; isHost = host; for (const k of ['P','S','E']) R[k] = await L.join(`eq${k.toLowerCase()}-${c}`);
@@ -3409,7 +3527,9 @@ async function connect(c, host){
 }
 async function leave(){ unsub.forEach(f => { try { f(); } catch(e){} }); unsub = []; clearInterval(hostTick); hostTick = null; for (const k of ['P','S','E']){ try { if (R[k]) await R[k].leave(); } catch(e){} R[k] = null; } G = null; BE = null; H = null; code = null; isHost = false; CB = null; playedR = 0; }
 const me = () => peersP.find(p => p.peer === myPeer);
-const players = () => peersP.filter(p => p.presence && p.presence.n && p.presence.j === code).sort((a,b) => (a.presence.t||0) - (b.presence.t||0));
+const kickedList = () => ((isHost && H) ? H.kicked : G && G.kicked) || [];
+const isKickedP = p => kickedList().some(k => k.id === p.peer && k.nn === (p.presence.nn || ''));
+const players = () => peersP.filter(p => p.presence && p.presence.n && p.presence.j === code && !isKickedP(p)).sort((a,b) => (a.presence.t||0) - (b.presence.t||0));
 const pres = patch => { if (R.P) R.P.presence(patch).catch(e => { lastErr = e.message || e.code; }); };
 const nameOf = id => { const p = peersP.find(x => x.peer === id); return p && p.presence.n ? String(p.presence.n).slice(0, 20) : 'Someone'; };
 
@@ -3417,6 +3537,9 @@ const nameOf = id => { const p = peersP.find(x => x.peer === id); return p && p.
 /* Wisdom and Boons are yours for good: party play keeps them on this device between runs */
 const MKEY = 'eq5_partymeta';
 function loadMeta(){ try { const m = JSON.parse(localStorage.getItem(MKEY) || 'null'); if (m && typeof m.wisdom === 'number') return {wisdom: m.wisdom, owned: Array.isArray(m.owned) ? m.owned : [], equipped: Array.isArray(m.equipped) ? m.equipped : []}; } catch(e){} return null; }
+const HKEY = 'eq5_hall';
+function loadHall(){ try { const h = JSON.parse(localStorage.getItem(HKEY) || 'null'); if (h && typeof h.clears === 'number') return h; } catch(e){} return {clears:0, last:'', trophies:[]}; }
+function hallClear(){ const h = loadHall(); const k = code + ':' + (G ? G.wipes : 0); if (h.last === k) return; h.last = k; h.clears++; const best = (S.chest || []).filter(i => i.kind !== 'consumable' && i.kind !== 'tome').sort((a, b) => b.rar - a.rar)[0]; h.trophies.unshift({d: new Date().toISOString().slice(0, 10), n: nick, len: G ? G.len : 0, item: best ? best.name : ''}); h.trophies = h.trophies.slice(0, 12); try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch(e){} S.hallRank = h.clears; setTimeout(() => toast(`🏆 Hall of Legends: rank ${h.clears}. Every new run starts with +${Math.min(10, 2*h.clears)} stat points!`), 1500); }
 function saveMeta(){ try { if (S && S.party && S.meta) localStorage.setItem(MKEY, JSON.stringify({wisdom: S.meta.wisdom, owned: S.meta.owned, equipped: S.meta.equipped})); } catch(e){} }
 function saveLocal(){ saveMeta(); try { localStorage.setItem(PKEY, JSON.stringify({code, S, nick})); } catch(e){} }
 function lookOf(st){ const it = uid => st.bag.find(i => i.uid === uid) || null; const w = it(st.eq.weapon), a = it(st.eq.armour);
@@ -3425,6 +3548,7 @@ function heroSnap(){ const pl = P(); const strip = x => x ? Object.assign({}, x,
   return {P:{st:pl.st, boons:pl.boons, eq:{weapon:strip(pl.eq.weapon), armour:strip(pl.eq.armour), trinkets:pl.eq.trinkets.filter(Boolean).map(strip)}}, belt:S.belt, hp: (S.meta.equipped.includes('second') && curHP() < maxHP()*0.5) ? Math.min(maxHP(), curHP() + Math.round(maxHP()*0.2)) : curHP(), insp:S.inspired||0}; }
 function newChar(src){ let st = fresh(); if (st.bag) st.bag.forEach(i => C.applyLevel(i, i.lvl || 1)); if (src && src.startsWith('slot')){ const s = readSlot(+src.slice(4)); if (s){ st = fresh(); Object.assign(st, {hlv: s.hlv || C.plOf(s.world, s.level), xp: s.xp || 0, st: clone(s.st), bag: clone(s.bag.filter(i => [s.eq.weapon, s.eq.armour, ...s.eq.trinkets].includes(i.uid))), eq: clone(s.eq), meta:{wisdom:0, owned:[], equipped: clone(s.meta.equipped)}, mastery: clone(s.mastery||{})}); } }
   { const mm = loadMeta(); if (mm){ const eqd = (st.meta.equipped && st.meta.equipped.length) ? st.meta.equipped : mm.equipped; st.meta = {wisdom: mm.wisdom, owned: mm.owned.concat((st.meta.equipped||[]).filter(x => !mm.owned.includes(x))), equipped: eqd}; } }
+  { const hh = loadHall(); if (hh.clears){ st.pts = (st.pts || 0) + Math.min(10, 2*hh.clears); st.legacy = hh.clears; } }
   st.party = true; st.essaySrc = Object.keys(myEssays()).length ? 'mine' : 'builtin'; st.stats = {units:{}, time:0, quests:0, perfects:0, quotePerf:0, kills:{}, found:{}, bosses:[], ach:[], title:''}; return st; }
 
 /* rejoining the same game: pick up your hero as it was at the start of the last round you were in */
@@ -3453,7 +3577,7 @@ function processGifts(){ if (!S || !S.party || !myPeer) return; S.gotGifts = S.g
     if (pendingGifts.length !== before){ pres({gifts: pendingGifts.length ? pendingGifts : null}); saveLocal(); } } }
 /* ---------- host ---------- */
 function hostStart(opts){ H = {seq:0, w:opts.w, len:opts.len, cp:opts.cp, nq:!!opts.nq, lvl:1, ph:'lobby', wipes:0, cpLvl:0}; pushState(); clearInterval(hostTick); hostTick = setInterval(hostCheck, 300); }
-function pushState(extra){ if (!isHost || !H) return; H.seq++; const g = {seq:H.seq, ph:H.ph, w:H.w, len:H.len, cp:H.cp, nq:!!H.nq, lvl:H.lvl, wipes:H.wipes, cpLvl:H.cpLvl, host:myPeer, roster:H.roster || [], paths:H.paths || null, path:H.path || null, vk:H.vk || null, dl: H.deadline ? Math.max(0, H.deadline - now()) : 0, res:H.res || null, evc:H.evc, msg:H.msg || '', downs:H.downs || [], revived:H.revived || 0};
+function pushState(extra){ if (!isHost || !H) return; H.seq++; const g = {seq:H.seq, ph:H.ph, w:H.w, len:H.len, cp:H.cp, nq:!!H.nq, lvl:H.lvl, wipes:H.wipes, cpLvl:H.cpLvl, host:myPeer, roster:H.roster || [], paths:H.paths || null, path:H.path || null, vk:H.vk || null, dl: H.deadline ? Math.max(0, H.deadline - now()) : 0, res:H.res || null, evc:H.evc, msg:H.msg || '', downs:H.downs || [], revived:H.revived || 0, kicked:(H.kicked || []).slice(-16), sit:Object.keys(H.sit || {}), afk:Object.keys(H.afk || {}).filter(k => H.afk[k] >= 2)};
   Object.assign(g, extra || {}); R.S.presence({g}).catch(e => { lastErr = 'state: ' + (e.message || e.code); }); }
 function pushBattle(ev){ if (!H || !H.B) return; const B = H.B; const fl = e => (e.elite?'e':'') + (e.minion?'m':'') + (e.mini?'M':'') + (e.boss?'b':'') + (e.charging?'c':'') + (e.exposed?'x':'') + (e.guard?'g':'') + (e.status.burn?'u':'') + (e.status.stun?'s':'') + (e.enraged?'r':'') + (e.summoner?'S':'');
   const stE = e => { const o = {}; for (const k of ['burn','poison','blind','slow','weak','vuln','empower']) if (e.status[k] > 0) o[k] = e.status[k]; if (e.status.dodge > 0) o.dodge = e.status.dodge; if (e.status.stun) o.stun = 1; return o; };
@@ -3471,19 +3595,24 @@ function hostCheck(){ if (!isHost || !H) return; const ps = players(); const ids
       if (H.path.ev === 'aura' && H.evc === 0){ H.path = Object.assign({}, H.path, {kind:'normal', stars:4, aura:true}); H.ph = 'camp'; H.evc = null; H.deadline = 0; pushState(); return; }
       if (H.path.ev === 'shrine' && H.evc === 0){ H.ph = 'camp'; H.deadline = 0; pushState(); return; }
       H.deadline = t + 6000; pushState(); } return; }
-  if (H.ph === 'camp'){ const ready = ps.filter(p => p.presence.rdy === H.lvl + ':' + H.wipes && p.presence.hero); if (ps.length && ready.length >= ps.length){ if (H.path.kind === 'event') hostNext(); else hostBattle(ready); } return; }
+  if (H.ph === 'camp'){ const sit = H.sit || {}; const need = ps.filter(p => !sit[p.peer]); const ready = need.filter(p => p.presence.rdy === H.lvl + ':' + H.wipes && p.presence.hero); if (need.length && ready.length >= need.length){ if (H.path.kind === 'event') hostNext(); else hostBattle(ready); } return; }
   if (H.ph === 'battle'){ const B = H.B; if (!B) return; if (B.over){ if (t >= H.deadline) hostAfterBattle(); return; }
     if (B.heroes.some(h => !ids.includes(h.hid))){ B.heroes = B.heroes.filter(h => ids.includes(h.hid)); if (!B.heroes.length){ hostAfterBattle(true); return; } if (!B.heroes.includes(B.p)) B.p = B.heroes[0]; pushBattle([]); } // someone left: they vanish from the battle
     const alive = B.heroes.filter(h => !h.down && h.hp > 0);
     const acts = {}; for (const p of ps){ const a = p.presence.act; if (a && a.r === B.turn && a.k === H.bk) acts[p.peer] = a; }
-    if (t >= H.deadline || alive.every(h => acts[h.hid])){ const ev = C.partyRound(B, Object.fromEntries(Object.entries(acts).map(([k, a]) => [k, {act:a.a, tgt:a.t, item:a.i}])), Math.random);
+    H.skip = H.skip || {}; H.afk = H.afk || {}; const rk = H.bk + ':' + B.turn; const own = Object.assign({}, acts);
+    for (const h of alive){ if (!acts[h.hid]){ if (H.skip[h.hid] === rk) acts[h.hid] = {a:'skip'}; else if ((H.afk[h.hid] || 0) >= 2) acts[h.hid] = {a:'auto'}; } }   // the host can skip a turn; players who missed two rounds in a row stop holding the party up
+    if (t >= H.deadline || alive.every(h => acts[h.hid])){
+      for (const h of alive){ if (own[h.hid]) H.afk[h.hid] = 0; else if (H.skip[h.hid] !== rk) H.afk[h.hid] = (H.afk[h.hid] || 0) + 1; }
+      const acts2 = {}; for (const [k, a] of Object.entries(acts)){ const hh = B.heroes.find(x => x.hid === k); acts2[k] = a.a === 'skip' ? {act:'skip'} : a.a === 'auto' ? (hh ? C.autoAct(B, hh, Math.random) : {act:'move', item:0}) : {act:a.a, tgt:a.t, item:a.i}; }
+      const ev = C.partyRound(B, acts2, Math.random);
       H.deadline = t + ACT_MS + Math.min(9000, ANIM_MS + ev.length*140); if (B.over) H.deadline = t + Math.min(9000, ANIM_MS + ev.length*140); pushBattle(ev); } return; }
   if (H.ph === 'chest'){ const done = ps.filter(p => p.presence.cont === H.lvl + ':' + H.wipes); if (done.length >= ps.length || t >= H.deadline) hostNext(); return; }
   if (H.ph === 'wipe'){ if (t >= H.deadline){ H.ph = 'map'; newPaths(); pushState(); } return; }
   if (H.ph === 'terrain'){ const votes = ps.map(p => p.presence.cv).filter(v => v && v.k === H.vk); if (votes.length >= ps.length || t >= H.deadline){ const tally = WD.map((_, i) => votes.filter(v => v.i === i).length); const best = Math.max(...tally); const top = best ? tally.map((n, i) => n === best ? i : -1).filter(i => i >= 0) : [H.w]; const pick = top.includes(H.w) && top.length > 1 && best === 0 ? H.w : top[Math.floor(Math.random()*top.length)];
       const moved = pick !== H.w; H.w = pick; H.msg = moved ? `The party travels to ${WD[pick].name}: new enemies, new loot.` : `The party stays in ${WD[pick].name}.`; H.lvl++; H.ph = 'map'; newPaths(); pushState(); } return; }
 }
-function newPaths(){ H.paths = C.rollPaths(Math.random, H.lvl, H.w); H.path = null; H.vk = 'm' + H.lvl + ':' + H.wipes + ':' + H.seq; H.deadline = now() + VOTE_MS; H.res = null; H.evc = null; if (H.cp && C.miniLv().includes(H.lvl)) H.cpLvl = Math.max(H.cpLvl, H.lvl); }
+function newPaths(){ H.sit = {}; H.paths = C.rollPaths(Math.random, H.lvl, H.w); H.path = null; H.vk = 'm' + H.lvl + ':' + H.wipes + ':' + H.seq; H.deadline = now() + VOTE_MS; H.res = null; H.evc = null; if (H.cp && C.miniLv().includes(H.lvl)) H.cpLvl = Math.max(H.cpLvl, H.lvl); }
 function hostBegin(){ const ps = players(); if (!ps.length) return; C.setLMAX(H.len); C.setNQ(!!H.nq); H.lvl = 1; H.ph = 'map'; H.cpLvl = 0; newPaths(); pushState(); }
 function hostBattle(ready0){ const ready = ready0.filter(p => !(H.downs||[]).includes(p.peer)); if (!ready.length){ H.wipes++; H.lvl = H.cp && H.cpLvl ? H.cpLvl : 1; H.ph = 'wipe'; H.deadline = now() + 7000; H.downs = []; pushState(); return; } const n = ready.length; const g = C.makeGroup(H.w, H.lvl, H.path, Math.random);
   C.scaleForParty(g, n, H.w, H.lvl, H.path, Math.random); // more friends, more foes: +1 enemy per extra player, totals grow ~n-fold
@@ -3502,7 +3631,7 @@ function hostNext(){ if (H.lvl >= H.len && H.path && H.path.kind === 'boss'){ H.
 
 /* ---------- client: react to host state ---------- */
 let appliedWipe = 0, appliedRes = '', appliedEv = '';
-function onState(prev){ if (!G) return; C.setLMAX(G.len); C.setNQ(!!G.nq); if (!S || !S.party) return;
+function onState(prev){ if (!G) return; if (!isHost && myPeer && (G.kicked || []).some(k => k.id === myPeer && k.nn === myNN)){ kickedOut(); return; } C.setLMAX(G.len); C.setNQ(!!G.nq); if (!S || !S.party) return;
   if (rejoined){ rejoined = false; appliedWipe = G.wipes; appliedRes = G.lvl + ':' + G.wipes; appliedEv = G.lvl + ':' + G.wipes; S.runCode = code; }
   if (G.wipes > appliedWipe && S.snap){ appliedWipe = G.wipes; const useCp = G.cpLvl && S.cp && S.cp.level === G.cpLvl; const sn = clone(useCp ? S.cp : S.snap); if (sn.hlv != null){ S.hlv = sn.hlv; S.xp = sn.xp || 0; } Object.assign(S, {st:sn.st, pts:sn.pts, bag:sn.bag, eq:sn.eq, belt:sn.belt, ink:sn.ink, quests:null, path:null, essay:null, inspired:0, hp:null, down:false}); toast('The party fell. Back to level ' + (useCp ? G.cpLvl : 1) + '.'); }
   if (S.level !== G.lvl || S.world !== G.w){ S.level = G.lvl; S.world = G.w; S.quests = null; S.rested = false; S.inspDone = false; }
@@ -3511,9 +3640,10 @@ function onState(prev){ if (!G) return; C.setLMAX(G.len); C.setNQ(!!G.nq); if (!
   if (G.ph === 'map' && C.miniLv().includes(G.lvl) && (!S.cp || S.cp.level < G.lvl)) S.cp = clone({st:S.st, pts:S.pts, bag:S.bag, eq:S.eq, belt:S.belt, ink:S.ink, level:G.lvl, hlv:S.hlv, xp:S.xp});
   if (G.ph === 'camp' && (!prev || prev.ph !== 'camp' || prev.lvl !== G.lvl)){ S.path = G.path; S.phase = 'camp'; campTab = 'gear'; myAct = null; }
   if (G.ph === 'chest' && G.res && myPeer && G.res[myPeer] && appliedRes !== G.lvl + ':' + G.wipes){ appliedRes = G.lvl + ':' + G.wipes; const r = G.res[myPeer]; if (r.belt) S.belt = r.belt; if (r.revive){ S.down = false; S.hp = Math.round(maxHP()*0.5); setTimeout(() => toast('You are revived at half HP!'), 600); } else if (r.down){ S.down = true; S.hp = 0; } else if (r.hp != null){ S.hp = r.hp; S.down = false; } if (G.path){ const share = r.xs != null ? r.xs : 0; const kx = Math.round(C.killXP(G.path.stars, G.path.kind, heroPL() - C.enemyLv(G.w, G.lvl)) * share); if (kx > 0){ gainXP(kx); setTimeout(() => toast(r.down ? `+${kx} XP for the foes beaten before you fell` : `+${kx} party XP for the fight`), 300); } }
-    S.chest = C.rollChest(Math.random, S.world, G.path.stars, G.path.kind, (G.path.aura ? 1 : 0) + (S.meta.equipped.includes('hunter') ? 1 : 0), S.meta.equipped.includes('lucky')); S.ink += 5 + G.path.stars*3 + (G.path.kind==='boss' ? 40 : G.path.kind==='mini' ? 20 : 0) + (G.nq ? 15 : 0); if (G.nq && !(G.res && G.res[myPeer] && G.res[myPeer].down)){ S.meta.wisdom += 6; saveMeta(); }
-    for (const it of S.chest){ noteFind(it); if (it.kind==='consumable') addBelt(it.key); else { S.bag.push(it); S.newLoot.push(it.uid); } } S.wins = (S.wins||0) + 1; SND.sfx('win');
-    const best = S.chest.filter(i => i.kind !== 'consumable').sort((a,b) => b.rar - a.rar)[0]; if (best && best.rar >= 2) pres({best:{k: G.lvl + ':' + G.wipes, n: String(best.name).slice(0, 60), r: best.rar}}); }
+    const ck = G.path.final ? 'final' : G.path.kind; S.chest = C.rollChest(Math.random, S.world, G.path.stars, ck, (G.path.aura ? 1 : 0) + (S.meta.equipped.includes('hunter') ? 1 : 0), S.meta.equipped.includes('lucky')); S.ink += Math.round((5 + Math.min(7, G.path.stars)*3 + (G.path.kind==='boss' ? 40 : G.path.kind==='mini' ? 20 : G.path.kind==='promised' ? 60 : G.path.kind==='outer' ? 120 : 0) + (G.path.final ? 300 : 0) + (G.nq ? 15 : 0)) * (S.meta.equipped.includes('windfall') ? 1.25 : 1)); if (G.nq && !(G.res && G.res[myPeer] && G.res[myPeer].down)){ S.meta.wisdom += 6; saveMeta(); }
+    if (G.path.final && !(G.res && G.res[myPeer] && G.res[myPeer].down)) hallClear();
+    for (const it of S.chest){ noteFind(it); if (it.kind==='consumable') addBelt(it.key); else if (it.kind==='tome'){ S.meta.wisdom += it.wis; saveMeta(); } else { S.bag.push(it); S.newLoot.push(it.uid); } } S.wins = (S.wins||0) + 1; SND.sfx('win');
+    const best = S.chest.filter(i => i.kind !== 'consumable' && i.kind !== 'tome').sort((a,b) => b.rar - a.rar)[0]; if (best && best.rar >= 2) pres({best:{k: G.lvl + ':' + G.wipes, n: String(best.name).slice(0, 60), r: best.rar}}); }
   if (G.ph === 'event' && G.evc != null && appliedEv !== G.lvl + ':' + G.wipes){ appliedEv = G.lvl + ':' + G.wipes; S.eventMsg = applyEvent(G.path.ev, G.evc); }
   if (G.ph === 'camp' && !G.nq && G.path && G.path.kind === 'event' && G.path.ev === 'shrine' && !S.quests){ S.quests = [Object.assign(C.mkQuest(3, 'blank50', unitsOf(S.world)[1 % unitsOf(S.world).length].c, Math.random), {shrine:false})]; }
   if (G.ph === 'battle' && (!prev || prev.ph !== 'battle')){ CB = null; playedR = 0; moveCd = {}; FIGHTP = false; }
@@ -3603,10 +3733,10 @@ function webHomeUI(p){ stage('home'); const hc = (location.hash.match(/join=([a-
   const setNick = () => { nick = $('nick').value.trim().slice(0, 20) || 'Player'; try { localStorage.setItem('eq5_nick', nick); } catch(e){} };
   $('jn').onclick = async () => { setNick(); const c = $('jc').value.trim().toLowerCase(); if (!/^[a-z0-9]{5}$/.test(c)){ lastErr = 'Codes are 5 letters/numbers.'; return draw(); }
     const err = saveWebEssay(true); if (err){ lastErr = err; return draw(); } lastErr = ''; $('jn').textContent = 'Connecting…'; $('jn').disabled = true;
-    try { await connect(c, false); const back = rejoinChar(c); S = back || newChar('fresh'); S.essaySrc = 'mine'; if (back) setTimeout(() => toast('Welcome back! You rejoin with everything you had.'), 900); pres({n:nick, j:code, t:now(), src:'fresh', ess:'mine'}); draw(); } catch(e){ await leave().catch(() => {}); lastErr = e.message || String(e); draw(); } };
+    try { await connect(c, false); const back = rejoinChar(c); S = back || newChar('fresh'); S.essaySrc = 'mine'; if (back) setTimeout(() => toast('Welcome back! You rejoin with everything you had.'), 900); pres({n:nick, nn:myNN, j:code, t:now(), src:'fresh', ess:'mine'}); draw(); } catch(e){ await leave().catch(() => {}); lastErr = e.message || String(e); draw(); } };
   $('mk').onclick = async () => { setNick(); lastErr = ''; let ok = false; try { ok = await keyOk($('mkey').value); } catch(e){ lastErr = e.message; return draw(); } if (!ok){ lastErr = 'That master key is not right.'; return draw(); }
     saveWebEssay(false); $('mk').textContent = 'Connecting…'; $('mk').disabled = true;
-    try { await connect(rcode(), true); S = newChar('fresh'); S.essaySrc = myEssays().web ? 'mine' : 'builtin'; hostStart({w:0, len:50, cp:true}); pres({n:nick, j:code, t:now(), src:'fresh', ess:S.essaySrc}); draw(); } catch(e){ await leave().catch(() => {}); lastErr = e.message || String(e); draw(); } }; }
+    try { await connect(rcode(), true); S = newChar('fresh'); S.essaySrc = myEssays().web ? 'mine' : 'builtin'; hostStart({w:0, len:50, cp:true}); pres({n:nick, nn:myNN, j:code, t:now(), src:'fresh', ess:S.essaySrc}); draw(); } catch(e){ await leave().catch(() => {}); lastErr = e.message || String(e); draw(); } }; }
 function webLobbyUI(p){ stage('lobby'); const ps = players(); const hostOpts = isHost && H; const u = unitsOf(0);
   p.innerHTML = `<h2>Lobby</h2><div class="code">Room code <b>${esc(code)}</b> <button class="ghost" id="cp">Copy code</button> <button class="ghost" id="cpl">Copy invite link</button></div>${rosterHTML()}
    ${hostOpts ? `<div class="box"><p><b>Run settings</b> (you're the host)</p><p class="muted small">Starting land (the party can vote to travel after every mini-boss and boss):</p><div class="row tight">${WD.map((w,i) => `<button class="${H.w===i?'':'ghost'} hw" data-w="${i}">${esc(w.name)}</button>`).join('')}</div>
@@ -3638,8 +3768,8 @@ function homeUI(p){ if (WEBV) return webHomeUI(p); stage('home');
    ${lastErr ? `<p class="bad">${esc(lastErr)}</p>` : ''}${testMode ? '<p class="muted small">Same-device test mode: open this page in another tab of this browser to play against yourself.</p>' : ''}
    <div class="row"><button class="ghost" id="back">⌂ Home</button></div>`;
   const setNick = () => { nick = $('nick').value.trim().slice(0, 20) || 'Player'; try { localStorage.setItem('eq5_nick', nick); } catch(e){} };
-  $('mk').onclick = async () => { setNick(); lastErr = ''; $('mk').textContent = 'Connecting…'; $('mk').disabled = true; try { await connect(rcode(), true); S = newChar('fresh'); hostStart({w:0, len:30, cp:false}); pres({n:nick, j:code, t:now(), src:'fresh', ess:S.essaySrc}); draw(); } catch(e){ lastErr = e.message || String(e); draw(); } };
-  $('jn').onclick = async () => { setNick(); const c = $('jc').value.trim().toLowerCase(); if (!/^[a-z0-9]{5}$/.test(c)){ lastErr = 'Codes are 5 letters/numbers.'; return draw(); } lastErr = ''; $('jn').textContent = 'Connecting…'; $('jn').disabled = true; try { await connect(c, false); S = newChar('fresh'); pres({n:nick, j:code, t:now(), src:'fresh', ess:S.essaySrc}); draw(); } catch(e){ lastErr = e.message || String(e); draw(); } };
+  $('mk').onclick = async () => { setNick(); lastErr = ''; $('mk').textContent = 'Connecting…'; $('mk').disabled = true; try { await connect(rcode(), true); S = newChar('fresh'); hostStart({w:0, len:30, cp:false}); pres({n:nick, nn:myNN, j:code, t:now(), src:'fresh', ess:S.essaySrc}); draw(); } catch(e){ lastErr = e.message || String(e); draw(); } };
+  $('jn').onclick = async () => { setNick(); const c = $('jc').value.trim().toLowerCase(); if (!/^[a-z0-9]{5}$/.test(c)){ lastErr = 'Codes are 5 letters/numbers.'; return draw(); } lastErr = ''; $('jn').textContent = 'Connecting…'; $('jn').disabled = true; try { await connect(c, false); S = newChar('fresh'); pres({n:nick, nn:myNN, j:code, t:now(), src:'fresh', ess:S.essaySrc}); draw(); } catch(e){ lastErr = e.message || String(e); draw(); } };
   if ($('tm')) $('tm').onclick = () => { testMode = true; lobbyRoom = null; online = true; draw(); };
   if (online === null) checkOnline();
   $('ess').onclick = () => { APP = 'essays'; window.__essBack = 'party'; window.drawApp(); };
@@ -3668,7 +3798,7 @@ function ensureRun(){ // first time the run begins on this client
   if (!S.snap || S.runCode !== code){ S.runCode = code; S.world = G.w; S.level = G.lvl; const E0 = C.enemyLv(G.w, 1); if ((S.hlv||1) < E0){ const add = E0 - (S.hlv||1); S.hlv = E0; S.xp = 0; S.pts += C.XPK.sp*add; S.bag.forEach(i => C.applyLevel(i, Math.max(i.lvl||1, E0))); } S.snap = clone({st:S.st, pts:S.pts, bag:S.bag, eq:S.eq, belt:S.belt, ink:S.ink, hlv:S.hlv, xp:S.xp}); appliedWipe = G.wipes; S.hp = null; saveLocal(); }
   const look = lookOf(S); const mine = me(); if (!mine || JSON.stringify(mine.presence.look) !== JSON.stringify(look)) pres({look}); }
 function mapUI(p){ ensureRun(); stage('map'); const ps = players(); const votes = ps.map(x => [x.peer, x.presence.cv]).filter(([, v]) => v && v.k === G.vk); const mineV = votes.find(([id]) => id === myPeer);
-  const desc = pth => pth.kind==='god' ? `<b>${esc(Dd.ENEMIES[pth.key][0])}</b>: a myth god (${esc(Dd.GOD_TEXT[pth.key]||'')}). Brutal. Win for a guaranteed Mythical weapon or armour` : pth.kind==='boss' ? `World boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : WD[G.w].boss)}` : pth.kind==='mini' ? `Mini-boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : '')}. Always an Epic, 45% a Legendary, 4.5% a Mythical` : pth.kind==='event' ? `<b>${esc(Dd.EVENTS[pth.ev].n)}</b>: no fight, a group choice` : ['', G.nq ? 'Lucky path: weak foes, a quick win' : 'Lucky path: 3 bonus quests each, weak foes', 'A fair fight', 'Tougher foes, better chests', 'Elite enemy, rich chests', 'Deadly. Each winner gets a Legendary', ''][pth.stars];
+  const desc = pth => pth.kind==='promised' ? `<b>${(Dd.PROMISED_DUOS[pth.key]||Dd.PROMISED_DUOS[0]).keys.map(k => esc(Dd.ENEMIES[k][0].split(',')[0])).join(' + ')}</b>: TWO bosses that call allies. Win for a guaranteed <b style="color:#ff8ad8">Promised</b> piece and a Mythical one. Far harder than a ★6` : pth.kind==='outer' ? `<b>${esc(Dd.ENEMIES[pth.key][0])}</b>: an overversal horror with colossal HP, multi-hit attacks, every status effect and two healers. Win for an <b style="color:#7df9ff">Outerversal</b> piece, a Promised piece and a Mythical one` : pth.final ? `<b>FINAL BOSS: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : WD[G.w].boss)}</b>. As strong as a ★10 horror, with healers and a second form. Beat it for a massive reward` : pth.kind==='god' ? `<b>${esc(Dd.ENEMIES[pth.key][0])}</b>: a myth god (${esc(Dd.GOD_TEXT[pth.key]||'')}). Brutal. 30% chance of a Mythical, 30% of a Legendary` : pth.kind==='boss' ? `World boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : WD[G.w].boss)}` : pth.kind==='mini' ? `Mini-boss: ${esc(pth.key ? Dd.ENEMIES[pth.key][0] : '')}. Always an Epic, 25% a Legendary, 1.5% a Mythical` : pth.kind==='event' ? `<b>${esc(Dd.EVENTS[pth.ev].n)}</b>: no fight, a group choice` : ['', G.nq ? 'Lucky path: weak foes, a quick win' : 'Lucky path: 3 bonus quests each, weak foes', 'A fair fight', 'Tougher foes, better chests', 'Elite enemy, rich chests', 'Deadly. Half the time a Legendary drops', ''][pth.stars];
   p.innerHTML = `<h2>Round ${G.lvl}/${G.len}: vote for a path</h2>${G.msg?`<p class="muted">${esc(G.msg)}</p>`:''}${tbar(deadline(), VOTE_MS)}
    <div class="paths">${G.paths.map((pth,i)=>{ const who = votes.filter(([, v]) => v.i === i).map(([id]) => nameOf(id)); return `<button class="path s${pth.stars} ${pth.kind} ${mineV && mineV[1].i===i?'voted':''}" data-i="${i}"><span class="st">${pth.kind==='event'?'? Event':stars(pth.stars)}</span><b>${esc(dungeonName(G.w, pth))}</b><small>${desc(pth)}</small><span class="votes">${who.length ? '🗳 ' + who.map(esc).join(', ') : ''}</span></button>`; }).join('')}</div>
    ${rosterHTML()}<p class="muted small">Majority wins; ties are random. No vote counts as no vote.</p>`;
@@ -3719,6 +3849,7 @@ function chestUI(p){ stage('chest-' + G.lvl); const ps = players(); const done =
   $('cont').onclick = () => { pres({cont: readyKey()}); SND.sfx('click'); draw(); }; }
 function wipeUI(p){ stage('camp'); p.innerHTML = `<h2>The party has fallen</h2><p>Everyone returns to ${G.cpLvl ? 'the checkpoint at round ' + G.cpLvl : 'round 1'} with the stats and gear you had there. Study harder. Hit harder.</p>${tbar(deadline(), 7000)}${rosterHTML()}`; }
 function endUI(p){ stage('home'); p.innerHTML = `<h2>Run complete!</h2><p>${esc(WD[G.w].boss)} is beaten. Every essay, every quote, every round: together.</p>${rosterHTML()}<div class="row"><button id="lv">Back to multiplayer</button></div>`; $('lv').onclick = async () => { await leave(); draw(); }; }
+function kickedOut(){ const c = code; toast('The host removed you from the game.'); leave().then(() => { lastErr = 'The host removed you from the game. You can join again with the same code (' + c + ').'; try { location.hash = '#join=' + c; } catch(e){} draw(); }); }
 function hostGone(){ const why = goneWhy || (WEBV ? 'The host left, so the run has ended.' : 'The host left the room.'); goneWhy = ''; toast(why); leave().then(() => { lastErr = why; draw(); }); }
 function plates(){ const ov = $('ov'); if (view !== 'battle' || !CB || !BE){ if (ov.innerHTML && ov.dataset.party) { ov.innerHTML = ''; ov.dataset.h = ''; } return; } ov.dataset.party = 1;
   const hp = (v,m,col) => `<div class="hpbar"><i style="width:${Math.max(0,v/m*100)}%;background:${col}"></i></div>`;
@@ -3729,19 +3860,33 @@ function plates(){ const ov = $('ov'); if (view !== 'battle' || !CB || !BE){ if 
 /* ---------- host-only admin console (web edition). Everything in "Your hero" changes only the host's own character on this
    device: nothing is broadcast and nobody else gets a message. The "Run" section moves the shared run, so friends see its effects. ---------- */
 let lobbyEss = false;
-let adminTab = 'hero', adminRar = 4, adminLand = 0, adminEquip = true;
+let adminTab = 'players', adminRar = 5, adminLand = 0, adminEquip = true;
+/* ---------- host controls: skip a turn, sit a player out, kick (kicked players can rejoin with the party code) ---------- */
+function hostKick(id){ if (!isHost || !H || id === myPeer) return; const p = peersP.find(x => x.peer === id); const nn = (p && p.presence.nn) || ''; H.kicked = (H.kicked || []).filter(k => k.id !== id).concat([{id, nn}]).slice(-24); try { if (lobbyRoom && lobbyRoom.kick) lobbyRoom.kick(id); } catch(e){} if (H.B && H.B.heroes.some(h => h.hid === id)) { /* hostCheck removes them from the fight next tick */ } pushState(); hostCheck(); refresh(); }
+function hostSkip(id){ if (!H || !H.B || H.ph !== 'battle' || H.B.over) return false; H.skip = H.skip || {}; H.skip[id] = H.bk + ':' + H.B.turn; hostCheck(); return true; }
+function hostSit(id){ if (!H) return; H.sit = H.sit || {}; if (H.sit[id]) delete H.sit[id]; else H.sit[id] = true; pushState(); hostCheck(); refresh(); }
+function hostSkipWaiting(){ if (!H) return 0; let n = 0; const ps = players();
+  if (H.ph === 'battle' && H.B && !H.B.over){ for (const h of H.B.heroes){ if (h.down || h.hp <= 0) continue; const p = ps.find(x => x.peer === h.hid); const a = p && p.presence.act; if (!(a && a.r === H.B.turn && a.k === H.bk)){ hostSkip(h.hid); n++; } } }
+  else if (H.ph === 'camp'){ for (const p of ps){ if (p.presence.rdy !== H.lvl + ':' + H.wipes){ H.sit = H.sit || {}; if (!H.sit[p.peer]){ H.sit[p.peer] = true; n++; } } } pushState(); hostCheck(); }
+  return n; }
 function adminAllowed(){ return WEBV && isHost && !!code; }
 function adminOpen(){ if (!adminAllowed()) return; let ov = document.getElementById('admin'); if (!ov){ ov = document.createElement('div'); ov.id = 'admin'; document.body.appendChild(ov); } ov.hidden = false; adminDraw(); }
 function adminClose(){ const ov = document.getElementById('admin'); if (ov) ov.hidden = true; }
 function adminGive(it){ if (!it){ adminMsg = 'Could not make that item.'; return adminDraw(); } S.bag.push(it); try { noteFind(it); } catch(e){} let eqd = false;
   if (adminEquip && it.kind !== 'trinket'){ const old = item(S.eq[it.kind]); if (old) old.grand = false; S.eq[it.kind] = it.uid; if (!C.canEquip(P(), it)) it.grand = true; eqd = true; try { ART3D.updateHero(P()); } catch(e){} } else S.newLoot = (S.newLoot || []).concat(it.uid);
   saveLocal(); save(); adminMsg = `${eqd ? 'Equipped' : 'Added'} ${it.name} (${Dd.RAR[it.rar].n}, Lv ${it.lvl || heroPL()})${eqd ? '' : ' to your bag'}.`; adminDraw(); refresh(); }
-let adminMsg = '';
+let adminMsg = ''; setInterval(() => { const ov = document.getElementById('admin'); if (ov && !ov.hidden && adminTab === 'players' && !ov.querySelector('.pkick[data-sure]')) adminDraw(); }, 1200);
 function adminDraw(){ const ov = document.getElementById('admin'); if (!ov || ov.hidden) return; const L = heroPL(); const R = Dd.RAR;
-  const tabs = [['hero','Your hero'],['weapon','Weapons'],['armour','Armour'],['trinket','Trinkets'],['run','Run']];
+  const tabs = [['players','👥 Players'],['hero','Your hero'],['weapon','Weapons'],['armour','Armour'],['trinket','Trinkets'],['run','Run']];
   const rarRow = `<div class="row tight">${R.map((r, i) => `<button class="${adminRar===i?'':'ghost'} arar" data-r="${i}" style="${adminRar===i?`background:${r.c};color:#111`:''}">${r.n}</button>`).join('')}</div>`;
   const landRow = `<div class="row tight">${WD.map((w, i) => `<button class="${adminLand===i?'':'ghost'} aland" data-w="${i}">${esc(w.name)}</button>`).join('')}</div>`;
   let body = '';
+  if (adminTab === 'players'){ const ps = players(); const inB = H && H.ph === 'battle' && H.B && !H.B.over; const sit = (H && H.sit) || {}; const afk = (H && H.afk) || {};
+    const stat = x => { const id = x.peer; if (!H) return ''; if (sit[id]) return '💤 sitting this round out'; if (H.ph === 'battle' && H.B){ const hh = H.B.heroes.find(q => q.hid === id); if (!hh) return 'not in this fight'; if (hh.down || hh.hp <= 0) return '💀 down'; const a = x.presence.act; const ok = a && a.r === H.B.turn && a.k === H.bk; return (afk[id] >= 2 ? '💤 AFK · ' : '') + (ok ? '✅ chose a move' : '⏳ choosing…') + ` · ${hh.hp}/${hh.max} HP`; }
+      if (H.ph === 'camp') return x.presence.rdy === H.lvl + ':' + H.wipes ? '✅ ready' : '⏳ studying…'; if (H.ph === 'map' || H.ph === 'event' || H.ph === 'terrain'){ const v = x.presence.cv; return v && v.k === H.vk ? '🗳 voted' : '⏳ not voted'; } if (H.ph === 'chest') return x.presence.cont === H.lvl + ':' + H.wipes ? '✅ ready' : '⏳ looking at loot'; return ''; };
+    body = `<p class="muted small">Phase: <b>${esc(H ? H.ph : '-')}</b> · Round ${H ? H.lvl : '-'}. Skipping a turn makes that player pass this round only (they keep playing next round). A kicked player is removed right away but <b>can rejoin with the party code</b> (they keep their hero).</p>
+      <div class="row tight"><button class="ghost" id="pskipall">⏭ Skip everyone who is still deciding</button></div>
+      <div class="adlist plist">${ps.map(x => { const id = x.peer; const you = id === myPeer; return `<div class="prow"><div><b>${esc(String(x.presence.n || 'Player').slice(0, 20))}</b>${you ? ' <em>(you)</em>' : ''}<small>${esc(stat(x))}</small></div><div class="row tight">${inB && H.B.heroes.some(h => h.hid === id && !h.down && h.hp > 0) ? `<button class="ghost pskip" data-id="${esc(id)}">⏭ Skip turn</button>` : ''}${!you ? `<button class="ghost psit" data-id="${esc(id)}">${sit[id] ? '↩ Bring back' : '💤 Sit out'}</button><button class="danger pkick" data-id="${esc(id)}">🚪 Kick</button>` : ''}</div></div>`; }).join('') || '<p class="muted">Nobody here yet.</p>'}</div>`; }
   if (adminTab === 'hero') body = `<p class="muted small">Hero Lv ${L} · ${Math.round(S.xp||0)}/100 XP · ${S.pts} stat points · ✦ ${S.meta.wisdom} Wisdom · ✒ ${S.ink} Ink</p>
     <div class="row tight"><button class="ghost ah" data-a="xp10">+10 XP</button><button class="ghost ah" data-a="xp100">+100 XP</button><button class="ghost ah" data-a="xp500">+500 XP</button><button class="ghost ah" data-a="lv1">+1 level</button><button class="ghost ah" data-a="lv5">+5 levels</button><button class="ghost ah" data-a="lv10">+10 levels</button></div>
     <div class="row tight"><button class="ghost ah" data-a="pts">+10 stat points</button><button class="ghost ah" data-a="wis">+200 Wisdom</button><button class="ghost ah" data-a="ink">+200 Ink</button><button class="ghost ah" data-a="heal">Full heal</button><button class="ghost ah" data-a="pots">Fill potion belt</button><button class="ghost ah" data-a="boons">Own every boon</button></div>`;
@@ -3755,7 +3900,7 @@ function adminDraw(){ const ov = document.getElementById('admin'); if (!ov || ov
   if (adminTab === 'run'){ const g = H || {}; body = `<p class="bad small">These change the shared run, so everyone will see the result (but not that it was you).</p>
     <p class="muted small">Round ${g.lvl || '-'} of ${g.len || 50} · ${esc(WD[g.w || 0].name)} · phase ${esc(g.ph || '-')}</p>
     <div class="row tight"><input id="ajump" type="number" min="1" max="${g.len || 50}" value="${Math.min(50, (g.lvl||1) + 1)}" style="width:5em"><button class="ghost" id="ajumpb">Jump to round</button></div>
-    <p class="muted small">Offer this next on the map (only during a map vote):</p><div class="row tight"><button class="ghost aforce" data-f="god">★6 myth god</button><button class="ghost aforce" data-f="5">★5</button><button class="ghost aforce" data-f="mini">Mini-boss</button><button class="ghost aforce" data-f="boss">Boss</button><button class="ghost aforce" data-f="event">Event</button></div>
+    <p class="muted small">Offer this next on the map (only during a map vote):</p><div class="row tight"><button class="ghost aforce" data-f="god">★6 myth god</button><button class="ghost aforce" data-f="p7">★7 duo</button><button class="ghost aforce" data-f="p10">★10 horror</button><button class="ghost aforce" data-f="final">Final boss</button><button class="ghost aforce" data-f="5">★5</button><button class="ghost aforce" data-f="mini">Mini-boss</button><button class="ghost aforce" data-f="boss">Boss</button><button class="ghost aforce" data-f="event">Event</button></div>
     <p class="muted small">Move the party to:</p>${WD.map((w, i) => `<button class="ghost amove" data-w="${i}">${esc(w.name)}</button>`).join(' ')}`; }
   ov.innerHTML = `<div class="adbox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">🛠 Admin</h2><button class="ghost" id="adx">Close</button></div>
     <p class="muted small">Only you can see this. Changes to your hero are private: no one is notified.</p>
@@ -3774,9 +3919,13 @@ function adminDraw(){ const ov = document.getElementById('admin'); if (!ov || ov
     if (t === 'L'){ const x = Dd.LEGENDS.find(l => l[0] === v); adminGive(x[2] === 'weapon' ? C.legendWeapon(w, x[3], x[4], r, v, L) : C.legendArmour(w, x[3], x[4], r, v, L)); }
     if (t === 'W') adminGive(C.makeWeapon(w, +v, adminRar, r, L)); if (t === 'A') adminGive(C.makeArmour(w, adminRar, +v, r, L));
     if (t === 'S') adminGive(C.makeSpecial(v, w, L)); if (t === 'T') adminGive(C.makeTrinket(w, +v, adminRar, L)); });
+  q('.pskip').forEach(b => b.onclick = () => { hostSkip(b.dataset.id); adminMsg = 'Skipped that turn.'; adminDraw(); });
+  q('.psit').forEach(b => b.onclick = () => { hostSit(b.dataset.id); adminDraw(); });
+  q('.pkick').forEach(b => b.onclick = () => { if (!b.dataset.sure){ b.dataset.sure = 1; b.textContent = 'Sure? Click again'; return; } hostKick(b.dataset.id); adminMsg = 'Kicked. They can rejoin with the party code.'; adminDraw(); });
+  if ($('pskipall')) $('pskipall').onclick = () => { const n = hostSkipWaiting(); adminMsg = n ? `Moved on without ${n} player${n===1?'':'s'}.` : 'Nobody was holding things up.'; adminDraw(); };
   if ($('ajumpb')) $('ajumpb').onclick = () => { if (!H) return; const n = Math.max(1, Math.min(H.len, Math.round(+$('ajump').value || 1))); H.lvl = n; H.ph = 'map'; H.msg = ''; newPaths(); pushState(); adminMsg = `The party is now on round ${n}.`; adminDraw(); };
   q('.aforce').forEach(b => b.onclick = () => { if (!H || H.ph !== 'map'){ adminMsg = 'Wait for a map vote.'; return adminDraw(); } const W = WD[H.w], f = b.dataset.f;
-    const p = f === 'god' ? {stars:6, kind:'god', theme:4, key: C.pick(W.gods, Math.random)} : f === '5' ? {stars:5, kind:'normal', theme:4} : f === 'mini' ? {stars:5, kind:'mini', theme:2, idx:0, key: C.pick(W.mini, Math.random)} : f === 'boss' ? {stars:4, kind:'boss', theme:4, key: C.pick(W.bossKeys, Math.random)} : {stars:1, kind:'event', ev: C.pick(['river','campsite','altar','aura','shrine','merchant'], Math.random), theme:0};
+    const p = f === 'p7' ? {stars:7, kind:'promised', theme:5, key: Math.floor(Math.random()*Dd.PROMISED_DUOS.length)} : f === 'p10' ? {stars:10, kind:'outer', theme:6, key: C.pick(Dd.OUTER_BOSSES, Math.random)} : f === 'final' ? {stars:10, kind:'boss', theme:6, key: C.pick(W.bossKeys, Math.random), final:true} : f === 'god' ? {stars:6, kind:'god', theme:4, key: C.pick(W.gods, Math.random)} : f === '5' ? {stars:5, kind:'normal', theme:4} : f === 'mini' ? {stars:5, kind:'mini', theme:2, idx:0, key: C.pick(W.mini, Math.random)} : f === 'boss' ? {stars:4, kind:'boss', theme:4, key: C.pick(W.bossKeys, Math.random)} : {stars:1, kind:'event', ev: C.pick(['river','campsite','altar','aura','shrine','merchant'], Math.random), theme:0};
     H.paths = [p]; H.vk = 'm' + H.lvl + ':' + H.wipes + ':' + H.seq; H.deadline = now() + VOTE_MS; pushState(); adminMsg = 'The map now offers only that path.'; adminDraw(); });
   q('.amove').forEach(b => b.onclick = () => { if (!H) return; H.w = +b.dataset.w; if (H.ph === 'map') newPaths(); pushState(); adminMsg = `The party is now in ${WD[H.w].name}.`; adminDraw(); }); }
 return {get ready(){ try { const m = me(); return !!(m && m.presence.rdy === readyKey()); } catch(e){ return false; } }, giftMenu, others: () => (code && WEBV ? others() : []), admin: adminOpen, get adminOK(){ return adminAllowed(); }, plates, draw, readyUp, leave, get on(){ return !!code; }, get code(){ return code; }, get host(){ return isHost; }, get G(){ return G; }, get BE(){ return BE; }, get peer(){ return myPeer; }, get local(){ return local; }, players, heroLooks, sendAct, _hostCheck: () => hostCheck(), _H: () => H};
