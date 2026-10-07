@@ -208,6 +208,21 @@ input,textarea{background:#120e26;border:2px solid #4a3f86;border-radius:12px;co
 input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,207,58,.2)}
 ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#5a4ea0;border-radius:6px}::-webkit-scrollbar-track{background:#17122b}
 @media (prefers-reduced-motion:reduce){body::before,.card::before,.path.s7,.path.s10,.path.final,.pill.hot,.card .nm{animation:none!important}}
+
+html,body{overflow-x:hidden;max-width:100%}.wrap{width:100%}
+body{transition:background .8s}
+body.w0{--b1:#2f6a4a;--b2:#1b3a2e;--b3:#0d1a16;--ac:#6fe08a}body.w1{--b1:#1f5a8a;--b2:#14304f;--b3:#0a1626;--ac:#6fc8ff}body.w2{--b1:#8a5a24;--b2:#4a2e1a;--b3:#1a1008;--ac:#ffc86f}body.w3{--b1:#4a7ea0;--b2:#243e58;--b3:#0c1622;--ac:#bfeaff}
+body.night{--b1:#2a2a6a;--b2:#14123a;--b3:#08071a}
+body.boss{--b1:#7a1f2f;--b2:#3a1020;--b3:#12060c;--ac:#ff6b7f}
+body.god{--b1:#8a6a14;--b2:#3d2a12;--b3:#120c06;--ac:#ffe27a}
+body.p7{--b1:#a8602a;--b2:#5a2a4a;--b3:#1a0c20;--ac:#ffd24a}
+body.p10{--b1:#4a0f6a;--b2:#1a0630;--b3:#04010a;--ac:#b04aff}
+body.w0,body.w1,body.w2,body.w3,body.night,body.boss,body.god,body.p7,body.p10{background:radial-gradient(1200px 650px at 18% -8%,var(--b1) 0,transparent 62%),radial-gradient(900px 520px at 100% 0,var(--b2) 0,transparent 58%),linear-gradient(var(--b2),var(--b3) 75%);background-attachment:fixed}
+body.boss::after,body.p10::after,body.p7::after,body.god::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 50% 120%,var(--ac) 0,transparent 55%);opacity:.22;animation:bgpulse 3s ease-in-out infinite}
+body.p10::before{background-image:radial-gradient(2px 2px at 20px 30px,#d8b0ff 50%,transparent),radial-gradient(1.5px 1.5px at 120px 90px,#ff7aa8 50%,transparent),radial-gradient(1.5px 1.5px at 70px 160px,#7df9ff 50%,transparent);opacity:.7;animation-duration:3s}
+body.w2::before{background-image:radial-gradient(2px 2px at 20px 30px,#ffb04a 50%,transparent),radial-gradient(1.5px 1.5px at 120px 90px,#ff8a3a 50%,transparent);animation-direction:reverse}
+body.w3::before{background-image:radial-gradient(3px 3px at 20px 30px,#fff 50%,transparent),radial-gradient(2px 2px at 120px 90px,#dff 50%,transparent),radial-gradient(2px 2px at 70px 160px,#fff 50%,transparent);opacity:.6;animation-duration:12s}
+@keyframes bgpulse{50%{opacity:.4}}
 </style>
 <div class="wrap">
   <div class="stage"><div id="stage3d" aria-label="game scene"></div><div id="ov"></div><div id="fx"></div></div>
@@ -2266,8 +2281,11 @@ function enemySlot(i, n, list){ const bossI = list.findIndex(e => e.boss && !e.m
   if (bossI >= 0){ const m = n - 1; const front = m; if (i === bossI) return [2.2 + 2.6*Math.max(0, m-1)/2 + (m===1 ? 1.2 : 0.4), -2.0]; const j = i > bossI ? i-1 : i; return m===1 ? [1.6, 1.8] : [1.6 + j*2.6*(m>3 ? 0.85 : 1), j%2 ? 0.9 : 2.1]; }
   return rows(i, n, 1.9, 1, 3.0); }
 function placeHero(id, P, i, n, name){ const h = GEAR3D.buildHero(P, P.look || {}); const [x, z] = heroSlot(i, n); h.position.set(x, 0, z); h.rotation.y = 1.27; h.userData.home = V3(x, 0, z); h.userData.id = id; scene.add(h); heroes[id] = h; heroOrder.push(id); if (id === 'p') hero = h; return h; }
+function pageBG(kind, o){ const th = o.theme || 0, en = o.enemies || []; let k = 'w' + (o.world || 0);
+  if (kind==='camp') k += ' night'; else if (kind==='battle'){ if (th===6) k = 'p10'; else if (th===5) k = 'p7'; else if (en.some(e => e.god)) k = 'god'; else if (en.some(e => e.boss && !e.minion)) k = 'boss ' + k; }
+  try { document.body.className = k; } catch(e){} }
 function setScene(kind, o={}){
-  endCut(); mode = kind; clearScene(); chestObj = null; enemyOrder = []; heroes = {}; heroOrder = []; camGoal = null;
+  pageBG(kind, o); endCut(); mode = kind; clearScene(); chestObj = null; enemyOrder = []; heroes = {}; heroOrder = []; camGoal = null;
   const w = o.world || 0, theme = o.theme || 0;
   if (kind==='camp'){ world(w, theme, true); campfire(1.2, 1); tent(-6, -2); const log = cyl(0.35, 0.35, 2.6, M(0x6b4426), 10); log.rotation.z = Math.PI/2; log.position.set(-2.4, 0.35, 1.2); root.add(log);
     hero = GEAR3D.buildHero(o.P, (o.P && o.P.look) || {}); hero.position.set(-2.4, 0.15, 1.2); hero.rotation.y = 1.25; sit(hero); scene.add(hero); heroes.p = hero;
