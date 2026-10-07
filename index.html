@@ -744,7 +744,7 @@ D.BOONS.push(
   ['bloodlust','Bloodlust',2,170,'+4% damage for every enemy slain this fight (up to +20%)'],
   ['scribe','Scribe',1,60,'+10 Ink from every quest you pass'],
   ['windfall','Windfall',1,80,'+25% Ink from every fight'],
-  ['endurance','Endurance',2,180,'Heavy and Special moves cost 10 less energy']);
+  ['endurance','Endurance',2,180,'Heavy and Special moves give back 10 energy']);
 // ---- elements: used to colour every attack button ----
 D.ELEMENTS = {
   phys:{n:'Physical', i:'⚔', c:'#c9c9d8'}, fire:{n:'Fire', i:'🔥', c:'#ff8a3c'}, ice:{n:'Frost', i:'❄', c:'#5cc8ff'}, thunder:{n:'Lightning', i:'⚡', c:'#ffe14d'},
@@ -756,7 +756,7 @@ D.FX_ELEMENT = {thunder:'thunder', fire:'fire', dragonfire:'fire', forge:'fire',
   wave:'water', moon:'moon', soul:'dark', underworld:'dark', raven:'dark', life:'nature', time:'arcane', wind:'wind'};
 // keyword rules, checked in order against weapon + move names
 D.EL_WORDS = [[/frost|ice\b|icy|glacier|rime|snow|blizzard|aurora|polar|winter|owl|forty winters|freez|chill|nova/i, 'ice'], [/thunder|lightning|bolt|storm|spark|static|volt|zeus|mjölnir|mjolnir|thunderclap/i, 'thunder'],
-  [/flame|fire|ember|inferno|blaze|burn|sun|scorch|magma|dragon|meteor|firebomb|phoenix|solar|ra\b|rocket|missile/i, 'fire'], [/tide|wave|harpoon|trident|sea|coral|kraken|leviathan|neptune|ocean|riptide|drown|anchor|rain|abyss/i, 'water'],
+  [/flame|fire|ember|inferno|blaze|burn|sun|scorch|magma|dragon|meteor|firebomb|phoenix|solar|rocket|missile/i, 'fire'], [/tide|wave|harpoon|trident|sea|coral|kraken|leviathan|neptune|ocean|riptide|drown|anchor|rain|abyss/i, 'water'],
   [/venom|poison|toxic|serpent|slime|bog|viper|cobra|spore|plague|laughing gas/i, 'poison'], [/shadow|death|grave|soul|reap|scythe|hollow|night|dark|void|thanatos|hades|hel\b|doom|curse/i, 'dark'],
   [/holy|light|blessed|sacred|excalibur|angel|aegis|divine|emancipat|liberty|glory/i, 'holy'], [/wind|gale|feather|hermes|gust|tornado|storm-?wing|cyclone/i, 'wind'],
   [/blood|vampir|crimson|gore|bloodlust|rip and tear|bite/i, 'blood'], [/moon|lunar|crescent|khonsu|silver/i, 'moon'], [/leaf|vine|forest|nature|thorn|root|bramble|wild|life/i, 'nature'],
@@ -2943,7 +2943,10 @@ function lightning(a, b, col=0xbfe8ff){ line(a, b, col, 0.3, 1.2); line(a, b, 0x
 function beam(a, b, col, dur=0.4, w=0.25){ const len = a.distanceTo(b); const m = new THREE.Mesh(new THREE.CylinderGeometry(w, w, len, 8, 1, true), new THREE.MeshBasicMaterial({color:col, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false}));
   m.position.copy(a).lerp(b, 0.5); m.lookAt(b); m.rotateX(Math.PI/2); fxGroup.add(m); const core = m.clone(); core.material = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, blending:THREE.AdditiveBlending}); core.scale.set(0.4, 1, 0.4); fxGroup.add(core);
   tween(dur, k => { const s = k < 0.2 ? k/0.2 : 1 - (k-0.2)/0.8; m.scale.set(s, 1, s); core.scale.set(0.4*s, 1, 0.4*s); }, () => { fxGroup.remove(m); fxGroup.remove(core); }); }
-function flashLight(pos, col, I=4){ const l = new THREE.PointLight(col, I, 12); l.position.copy(pos); fxGroup.add(l); tween(0.3, k => l.intensity = I*(1-k), () => fxGroup.remove(l)); }
+/* a fixed pool of point lights: adding/removing lights at runtime forces every material to recompile (a visible hitch) */
+let LPOOL = [], lpi = 0;
+function flashLight(pos, col, I=4){ if (!LPOOL.length) return; const l = LPOOL[lpi++ % LPOOL.length]; l.position.copy(pos); l.color.set(col); l.intensity = I; const tk = l.userData.tk = (l.userData.tk || 0) + 1;
+  tween(0.3, k => { if (l.userData.tk === tk) l.intensity = I*(1-k); }, () => { if (l.userData.tk === tk) l.intensity = 0; }); }
 function projectile(a, b, mk, dur, arcH, onHit, trailCol){ const o = mk(); o.position.copy(a); fxGroup.add(o); let last = 0;
   tween(dur, k => { const p = a.clone().lerp(b, k); p.y += Math.sin(k*Math.PI)*arcH; const prev = o.position.clone(); o.position.copy(p); if (o.userData.orient){ o.lookAt(p.clone().add(p.clone().sub(prev))); }
     if (trailCol && k - last > 0.04){ last = k; const s = sprite(trailCol, 0.4, p); tween(0.3, kk => s.material.opacity = 1 - kk, () => fxGroup.remove(s)); } }, () => { fxGroup.remove(o); if (onHit) onHit(); }); }
@@ -3040,6 +3043,9 @@ function fx(k, a, b, hid='p'){
   else if (k==='counter' && fa && h){ arc(wpos(fa, 0.2), 0xbfe8ff, {rz:2.6, spin:-8, dur:0.2}); }
   else if (k==='thorns' && h){ const c = wpos(h); for (let i=0;i<10;i++){ const sp = cone(0.08, 0.6, M(0x4fd36f, {emissive:0x2a8a3a, emissiveIntensity:0.6}), 4); sp.position.copy(c); const v = V3(Math.cos(i*0.63)*3, Math.sin(i*1.3)*2, Math.sin(i*0.63)*2); sp.lookAt(c.clone().add(v)); sp.rotateX(Math.PI/2); fxGroup.add(sp); tween(0.35, kk => sp.position.addScaledVector(v, 0.016), () => fxGroup.remove(sp)); } }
   else if (k==='phoenix' && h){ phoenixFx(hid); }
+  else if (k==='aegis'){ for (const id2 in heroes){ const hh = heroes[id2]; ring(V3(hh.position.x, 0, hh.position.z), 0xffe27a, 0.4, 3.4, 0.7, 0.08, 0.4); burst(hh, 0xffe27a, 8, true); } flashScreen(0xffe27a, 0.12); }
+  else if (k==='barrier' && fa){ const c = wpos(fa); const dome = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.max(3, (fa.userData.hw || 2.5)*1.2), 1), new THREE.MeshBasicMaterial({color:0x7fd0ff, wireframe:true, transparent:true, opacity:0.7, blending:THREE.AdditiveBlending, depthWrite:false})); dome.position.copy(c); fxGroup.add(dome); tween(1.2, kk => { dome.rotation.y += 0.04; dome.material.opacity = 0.7*(1 - Math.max(0, kk - 0.5)/0.5); dome.scale.setScalar(0.6 + Math.min(1, kk*3)*0.4); }, () => fxGroup.remove(dome)); flashLight(c, 0x7fd0ff, 6); }
+  else if (k==='standing' && h){ const gp = V3(h.position.x, 0, h.position.z); ring(gp, 0xff4a4a, 0.4, 4, 0.7, 0.08, 0.5); flashScreen(0xff2020, 0.18); slowMo(0.4, 500); burst(h, 0xffe0e0, 12, true); }
   else if (k==='frozen' && h) setIce(h, true);
   else if (k==='thaw' && h) setIce(h, false);
   else if (k==='enrage' && fa){ ring(V3(fa.position.x, 0, fa.position.z), 0xff2020, 0.5, 7, 0.6); flashLight(wpos(fa), 0xff2020, 6); const b0 = fa.userData.base; tween(0.5, kk => fa.scale.setScalar(b0*(1 + Math.sin(kk*Math.PI)*0.15)), () => { fa.userData.base = b0*1.06; fa.scale.setScalar(fa.userData.base); }); shake = Math.max(shake, 0.4); }
@@ -3517,7 +3523,7 @@ function makeEnv(){ if (ENV || !R) return ENV; try { const pm = new THREE.PMREMG
 /* ---------- per-frame upkeep for the effect state (camera springs, flashes, glitch decay) ---------- */
 let envFx = null;   // ambient particle systems of the current scene
 const W7 = [];
-function resetEnvFx(){ W7.length = 0; envFx = null; FXS.glitch = 0; FXS.flash = 0; FXS.fovKick = 0; FXS.warp = 0; FXS.tint.set(0xffffff); FXS.sat = 1.12; FXS.vig = 0.5; FXS.ca = FXS.caBase; FXS.camOff.set(0,0,0); FXS.camVel.set(0,0,0); }
+function resetEnvFx(){ W7.length = 0; LPOOL = []; lpi = 0; for (let i=0;i<5;i++){ const l = new THREE.PointLight(0xffffff, 0, 14); l.userData.pool = 1; scene.add(l); LPOOL.push(l); } envFx = null; FXS.glitch = 0; FXS.flash = 0; FXS.fovKick = 0; FXS.warp = 0; FXS.tint.set(0xffffff); FXS.sat = 1.12; FXS.vig = 0.5; FXS.ca = FXS.caBase; FXS.camOff.set(0,0,0); FXS.camVel.set(0,0,0); }
 function stepFx(dt0, dt){ const k = Math.pow(0.001, dt0); for (const f of W7) f(t, dt0);   // 0.001^dt: fast exponential decay
   FXS.flash *= Math.pow(0.0005, dt0); if (FXS.flash < 0.004) FXS.flash = 0; FXS.glitch *= Math.pow(0.06, dt0); if (FXS.glitch < 0.004) FXS.glitch = 0; FXS.ca += (FXS.caBase - FXS.ca)*Math.min(1, dt0*6);
   const a = FXS.camVel, o = FXS.camOff; o.addScaledVector(a, dt0); a.addScaledVector(o, -60*dt0).multiplyScalar(Math.pow(0.02, dt0)); if (!MOTION){ o.set(0,0,0); a.set(0,0,0); }
@@ -4455,6 +4461,7 @@ async function playEvents(ev, ctx){
     else if (e.t==='dodge'){ float(e.miss ? 'MISS' : 'DODGE', H, '#9fd6ff'); SND.sfx('dodge'); ART3D.fx('dodge', null, null, H); const x = en(e.id); ctx.log(e.miss ? `${x ? x.name : 'It'} misses ${nm==='You'?'you':nm}!` : `${nm} dodge${nm==='You'?'':'s'}!`); }
     else if (e.t==='pdmg'){ ART3D.hitHero(e.label==='charged', H); SND.sfx('hurt'); float('-'+e.v, H, '#ff6b6b', e.label==='charged'); const x = en(e.id); ctx.log(`${x ? x.name : 'It'} hits ${nm==='You'?'you':nm} for ${e.v}${e.label==='charged'?' (charged!)':''}.`); }
     else if (e.t==='pdot'){ float('-'+e.v, H, e.s==='poison' ? '#c77dff' : '#ff8a3c'); ctx.log(`${e.s==='poison' ? 'Poison' : e.s==='burn' ? 'Burn' : 'It'} deals ${e.v} to ${nm==='You'?'you':nm}.`); }
+    else if (e.t==='skipped'){ float('SKIPPED', H, '#c9d6ff'); ctx.log(`${nm} ${nm==='You'?'were':'was'} skipped (away).`); }
     else if (e.t==='down'){ ctx.log(`${nm} ${nm==='You'?'are':'is'} down!`); SND.sfx('lose'); ART3D.downHero(H); await wait(450); }
     if (ctx.track) ctx.track(e); ctx.redraw(); await wait(70);
   }
@@ -4665,7 +4672,7 @@ function peerLobby(){ const NS = 'essayquest-hsc-v1-', T = 'essayquest-hsc/v2/';
 /* host master key: only a SHA-256 hash of it is in the page */
 async function keyOk(k){ if (!window.EQ_KEYHASH) return false; if (!(window.crypto && crypto.subtle)) throw new Error('Hosting needs the secure (https) address of the site.');
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(k).trim())); const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join(''); return hex === window.EQ_KEYHASH; }
-let online = null, testMode = false, goneWhy = ''; // null = checking, true/false once known
+let online = null, testMode = !!window.EQ_TESTNET, goneWhy = ''; // null = checking, true/false once known
 async function checkOnline(){ if (WEBV){ online = true; return online; } if (online !== null) return online; try { const r = window.claude && typeof window.claude.use === 'function' ? await window.claude.use('room') : null; if (r){ lobbyRoom = r; local = false; online = true; } else online = false; } catch(e){ online = false; } if (APP === 'party' && view === 'home') draw(); return online; }
 async function getLobby(){ if (lobbyRoom) return lobbyRoom; if (WEBV && !testMode){ lobbyRoom = peerLobby(); local = false; online = true; return lobbyRoom; } if (testMode && typeof BroadcastChannel !== 'undefined'){ lobbyRoom = fakeLobby(); local = true; return lobbyRoom; }
   await checkOnline(); if (lobbyRoom) return lobbyRoom; return null; }

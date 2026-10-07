@@ -30,7 +30,7 @@ D.BOONS.push(
   ['bloodlust','Bloodlust',2,170,'+4% damage for every enemy slain this fight (up to +20%)'],
   ['scribe','Scribe',1,60,'+10 Ink from every quest you pass'],
   ['windfall','Windfall',1,80,'+25% Ink from every fight'],
-  ['endurance','Endurance',2,180,'Heavy and Special moves cost 10 less energy']);
+  ['endurance','Endurance',2,180,'Heavy and Special moves give back 10 energy']);
 // ---- elements: used to colour every attack button ----
 D.ELEMENTS = {
   phys:{n:'Physical', i:'⚔', c:'#c9c9d8'}, fire:{n:'Fire', i:'🔥', c:'#ff8a3c'}, ice:{n:'Frost', i:'❄', c:'#5cc8ff'}, thunder:{n:'Lightning', i:'⚡', c:'#ffe14d'},
@@ -42,7 +42,7 @@ D.FX_ELEMENT = {thunder:'thunder', fire:'fire', dragonfire:'fire', forge:'fire',
   wave:'water', moon:'moon', soul:'dark', underworld:'dark', raven:'dark', life:'nature', time:'arcane', wind:'wind'};
 // keyword rules, checked in order against weapon + move names
 D.EL_WORDS = [[/frost|ice\b|icy|glacier|rime|snow|blizzard|aurora|polar|winter|owl|forty winters|freez|chill|nova/i, 'ice'], [/thunder|lightning|bolt|storm|spark|static|volt|zeus|mjölnir|mjolnir|thunderclap/i, 'thunder'],
-  [/flame|fire|ember|inferno|blaze|burn|sun|scorch|magma|dragon|meteor|firebomb|phoenix|solar|ra\b|rocket|missile/i, 'fire'], [/tide|wave|harpoon|trident|sea|coral|kraken|leviathan|neptune|ocean|riptide|drown|anchor|rain|abyss/i, 'water'],
+  [/flame|fire|ember|inferno|blaze|burn|sun|scorch|magma|dragon|meteor|firebomb|phoenix|solar|rocket|missile/i, 'fire'], [/tide|wave|harpoon|trident|sea|coral|kraken|leviathan|neptune|ocean|riptide|drown|anchor|rain|abyss/i, 'water'],
   [/venom|poison|toxic|serpent|slime|bog|viper|cobra|spore|plague|laughing gas/i, 'poison'], [/shadow|death|grave|soul|reap|scythe|hollow|night|dark|void|thanatos|hades|hel\b|doom|curse/i, 'dark'],
   [/holy|light|blessed|sacred|excalibur|angel|aegis|divine|emancipat|liberty|glory/i, 'holy'], [/wind|gale|feather|hermes|gust|tornado|storm-?wing|cyclone/i, 'wind'],
   [/blood|vampir|crimson|gore|bloodlust|rip and tear|bite/i, 'blood'], [/moon|lunar|crescent|khonsu|silver/i, 'moon'], [/leaf|vine|forest|nature|thorn|root|bramble|wild|life/i, 'nature'],

@@ -76,7 +76,7 @@ function makeEnv(){ if (ENV || !R) return ENV; try { const pm = new THREE.PMREMG
 /* ---------- per-frame upkeep for the effect state (camera springs, flashes, glitch decay) ---------- */
 let envFx = null;   // ambient particle systems of the current scene
 const W7 = [];
-function resetEnvFx(){ W7.length = 0; envFx = null; FXS.glitch = 0; FXS.flash = 0; FXS.fovKick = 0; FXS.warp = 0; FXS.tint.set(0xffffff); FXS.sat = 1.12; FXS.vig = 0.5; FXS.ca = FXS.caBase; FXS.camOff.set(0,0,0); FXS.camVel.set(0,0,0); }
+function resetEnvFx(){ W7.length = 0; LPOOL = []; lpi = 0; for (let i=0;i<5;i++){ const l = new THREE.PointLight(0xffffff, 0, 14); l.userData.pool = 1; scene.add(l); LPOOL.push(l); } envFx = null; FXS.glitch = 0; FXS.flash = 0; FXS.fovKick = 0; FXS.warp = 0; FXS.tint.set(0xffffff); FXS.sat = 1.12; FXS.vig = 0.5; FXS.ca = FXS.caBase; FXS.camOff.set(0,0,0); FXS.camVel.set(0,0,0); }
 function stepFx(dt0, dt){ const k = Math.pow(0.001, dt0); for (const f of W7) f(t, dt0);   // 0.001^dt: fast exponential decay
   FXS.flash *= Math.pow(0.0005, dt0); if (FXS.flash < 0.004) FXS.flash = 0; FXS.glitch *= Math.pow(0.06, dt0); if (FXS.glitch < 0.004) FXS.glitch = 0; FXS.ca += (FXS.caBase - FXS.ca)*Math.min(1, dt0*6);
   const a = FXS.camVel, o = FXS.camOff; o.addScaledVector(a, dt0); a.addScaledVector(o, -60*dt0).multiplyScalar(Math.pow(0.02, dt0)); if (!MOTION){ o.set(0,0,0); a.set(0,0,0); }
