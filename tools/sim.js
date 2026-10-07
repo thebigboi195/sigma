@@ -50,7 +50,7 @@ if (require.main === module) {
   }
 }
 if (require.main === module && process.argv[2] === 'top') {
-  for (const n of [1, 3, 5]) {
+  for (const n of (process.env.NS || '1,3,5').split(',').map(Number)) {
     for (const tier of ['myth', 'prom', 'outer']) {
       batch('god ★6', n, 25, tier, { stars: 6, kind: 'god', key: 'zeusGod' }, 0, 30);
       batch('★7 Zeus+Atlas', n, 25, tier, { stars: 7, kind: 'promised', key: 0 }, 0, 30);

@@ -3,7 +3,7 @@
 const D = DATA;
 // ---- two new rarities above Mythical ----
 D.RAR.push({n:'Promised',    c:'#ff8ad8', m:1.55},    // 7★ dungeons: meme-tier gear of the world's most famous leaders
-           {n:'Outerversal', c:'#7df9ff', m:2.1});   // 10★ dungeons: gear from beyond every universe
+           {n:'Outerversal', c:'#7df9ff', m:1.5});   // 10★ dungeons: gear from beyond every universe
 // ---- new abilities (positive) and downsides (the downsides sit in an item's `abil` list so an item can carry several) ----
 Object.assign(D.ABIL_TEXT, {
   amp:'+{v}% to ALL damage you deal', critdmg:'Critical hits deal +{v}% more damage', vengeance:'+{v}% damage for every 10% of your HP that is missing',

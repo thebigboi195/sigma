@@ -108,5 +108,5 @@ function healerParts(key){ const V = {healVoid:{c:0xa98aff, e:0xe6d8ff, kind:'ey
 reg7('healer', 0.95, (g, e) => healerParts(e.key));
 
 // ================= registration into the enemy builder =================
-const HOVER7 = {suntyrant:1.0, firebird:1.0, darklord:0.5, moonavatar:0.8, pcpsy:0.5, healer:0.7, zeusprime:0.5, sinicon:0.6, zalgo:0.0};
+const HOVER7 = {suntyrant:1.0, firebird:1.0, darklord:0.5, moonavatar:0.8, pcpsy:0.5, healer:0.7, zeusprime:0.5, sinicon:0.6, zalgo:0.0, arceus:0.0, giratina:0.0, dialga:0.0, palkia:0.0};
 for (const k in A7) NEWART[k] = (g, e, m, dk) => { const an = []; ASM.build(A7[k](g, e), g, an); g.userData.anims = an; g.userData.is7 = true; g.userData.hover = HOVER7[k] || 0; };

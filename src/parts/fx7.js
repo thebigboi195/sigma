@@ -1,11 +1,11 @@
 /* ===== Essay Quest v7 — renderer extensions: post-processing, environment light, camera feel, effect state ===== */
 const LIGHT7 = {zeusprime:0x9fd0ff, atlas:0x6ad8ff, trainer:0xff5a4a, mechashogun:0x40e0ff, vampire:0xff2040, horseman:0x80e8e0, kaiju:0x40d0ff, leviathan:0x60c0ff, pharaohprime:0xffc83a, dragonemp:0xff6a30,
-  batgrin:0x7dff3a, suntyrant:0xff6a10, moonavatar:0x9fb8ff, madtitan:0xb04aff, darklord:0xff7a1a, sinicon:0xff2a10, firebird:0xff5a10, cthulhu:0x60ffb0, devourer:0x7a6aff, zalgo:0xff1a2a, healer:0xc0e0ff};
+  batgrin:0x7dff3a, suntyrant:0xff6a10, moonavatar:0x9fb8ff, madtitan:0xb04aff, darklord:0xff7a1a, sinicon:0xff2a10, firebird:0xff5a10, cthulhu:0x60ffb0, devourer:0x7a6aff, zalgo:0xff1a2a, healer:0xc0e0ff, arceus:0xffe9a0, giratina:0x9a40ff, dialga:0x4a90ff, palkia:0xff6ad0, giratinaclone:0x6a20c0};
 const LIGHTCSS7 = {};
 for (const k in LIGHT7){ const c = LIGHT7[k]; LIGHTCSS7[k] = `rgba(${c>>16&255},${c>>8&255},${c&255},.26)`; }
 
 /* ---------- effect state: gameplay code pokes these, the loop decays them ---------- */
-const FXS = {flash:0, flashCol:new THREE.Color(1,1,1), ca:0.0007, caBase:0.0007, glitch:0, vig:0.5, sat:1.1, tint:new THREE.Color(1,1,1), slow:1, slowUntil:0, fov:38, fovKick:0, camOff:new THREE.Vector3(), camVel:new THREE.Vector3(), warp:0};
+const FXS = {flash:0, flashCol:new THREE.Color(1,1,1), ca:0.0007, caBase:0.0007, glitch:0, vig:0.5, sat:1.1, tint:new THREE.Color(1,1,1), slow:1, slowUntil:0, fov:46, fovKick:0, camOff:new THREE.Vector3(), camVel:new THREE.Vector3(), warp:0};
 function flashScreen(col, amt){ FXS.flashCol.set(col); FXS.flash = Math.max(FXS.flash, amt); }
 function slowMo(scale, ms){ FXS.slow = scale; FXS.slowUntil = performance.now() + ms; }
 function camKick(x, y, z){ FXS.camVel.x += x; FXS.camVel.y += y; FXS.camVel.z += z; }
@@ -150,8 +150,8 @@ let cutTimer = null, cutEl = null;
 function endCut(){ clearTimeout(cutTimer); cutTimer = null; if (cutEl){ const el = cutEl; cutEl = null; el.classList.add('out'); setTimeout(() => el.remove(), 500); } }
 function cutscene(enemies, theme){ endCut(); const st = document.querySelector('.stage'); if (!st) return;
   const top = enemies.filter(e => (e.boss && !e.minion && !e.healer) || ((theme === 5 || theme === 6) && e.mini && !e.minion)); if (!top.length) return;
-  const outerSet = DATA.OUTER_BOSSES || []; const isFinal = theme === 6 && top.length === 1 && enemies.length === 3 && !outerSet.includes(top[0].key);
-  const seq = top.slice(0, 2).map(e => { const kit = (DATA.BOSSKIT || {})[e.key]; const c = isFinal ? DATA.FINAL_CUT : kit && kit.intro ? kit.intro : (DATA.CUTSCENES || {})[e.key]; return {e, title:c ? c[0] : String(e.name).toUpperCase(), line:c ? c[1] : '', tag:kit && kit.tag || ''}; });
+  const isFinal = top.some(e => e.key === 'primalArceus');
+  const seq = top.slice(0, 2).map(e => { const kit = (DATA.BOSSKIT || {})[e.key]; const c = kit && kit.intro ? kit.intro : (DATA.CUTSCENES || {})[e.key]; return {e, title:c ? c[0] : String(e.name).toUpperCase(), line:c ? c[1] : '', tag:kit && kit.tag || ''}; });
   const badge = isFinal ? 'FINAL BOSS · 10★' : theme === 6 ? 'OUTERVERSAL · 10★' : theme === 5 ? 'PROMISED · 7★' : 'BOSS';
   const el = document.createElement('div'); el.id = 'cut'; el.className = 'cut t' + (theme === 6 ? '6' : theme === 5 ? '5' : '0'); el.innerHTML = '<i class="bar t"></i><i class="bar b"></i><div class="ct"><small></small><b></b><em></em><span>click to skip</span></div>'; st.appendChild(el); cutEl = el;
   const small = el.querySelector('small'), nm = el.querySelector('b'), ln = el.querySelector('em'); el.onclick = endCut;

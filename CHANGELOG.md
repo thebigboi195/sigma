@@ -24,3 +24,10 @@ Source lives in `src/` (`src/app.html` plus `src/parts/*.js`); run `node build.j
 - Final blow no longer skips straight to the victory jump: attacks and death animations play.
 - Phoenix revival rewritten (fall animation, fire column, rise); fixed runtime light creation that caused hitches.
 - Fixed double tone-mapping that washed out the scene.
+
+## v7.1
+- **Type system**: Pokémon chart (18 types) plus **Cosmic** (only super effective against Cosmic; everything else hits Cosmic for half). Armour gives you 1–2 types; mobs use their own type(s) to attack you, so a water move hits a fire-armoured hero for double. Your weapon's type decides your own matchups (+15% when it matches your armour). Immunities are 0.25× so nothing is unwinnable. Every mob and boss has types (shown as icons above its HP bar); Outerversal gear is Cosmic and only drops from ★10.
+- **Final boss reworked**: Primal Arceus (changes type every round via Multitype; Judgment, Extreme Speed, Perish Song, Hyper Beam, Recover; summons Dialga and Palkia) and Giratina Origin Forme (Shadow Claw, Shadow Force, Hex, Destiny Bond, Shadow Clones with 5% of its HP).
+- **Trinkets**: fixed Promised/Outerversal trinket rarities producing NaN (infinite) HP; per-trinket and total caps for every trinket effect.
+- **Fixes**: no free strikes before anyone chooses a move; HP plates are docked at the top (enemies) and bottom (party) of the stage instead of following models; wider FOV, higher camera and wider monster spacing; time-based camera easing.
+- **Balance**: ★7 and ★10 and the final are much harder (re-simulated); Outerversal gear toned down.
