@@ -1995,11 +1995,11 @@ const THEME = [['tree','tree','pillar','cave','keep'],['palm','ship','cave','pal
 function clearScene(){ if (scene){ scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(m => { if (m.map) m.map.dispose(); m.dispose(); }); } }); }
   scene = new THREE.Scene(); root = new THREE.Group(); scene.add(root); fxGroup = new THREE.Group(); scene.add(fxGroup); hero = null; foes = {}; lights = {}; scene.environment = ENV || makeEnv(); resetEnvFx(); }
 function world(w, theme, night){
-  const P = WPAL[w], th = THEME[w][theme||0], dark = night || ['cave','rift','magic','keep','aurora','ember','bones'].includes(th);
-  scene.background = gradientBG(night ? '#0d1030' : th==='rift' ? '#1a0b2e' : dark ? '#3a3f5a' : P.sky[0], night ? '#2a2550' : th==='rift' ? '#4a1d6a' : dark ? '#6a6f8a' : P.sky[1]);
-  scene.fog = new THREE.Fog(night ? 0x1a1a3a : dark ? 0x4a4a66 : P.fog, 30, 75);
+  const X7 = !night && TH7[theme]; const P = X7 ? Object.assign({}, WPAL[w], X7.p) : WPAL[w], th = THEME[w][theme||0] || (X7 ? 'x7' : 0), dark = !!X7 && theme===6 || night || ['cave','rift','magic','keep','aurora','ember','bones'].includes(th);
+  scene.background = X7 ? gradientBG(X7.sky[0], X7.sky[1]) : gradientBG(night ? '#0d1030' : th==='rift' ? '#1a0b2e' : dark ? '#3a3f5a' : P.sky[0], night ? '#2a2550' : th==='rift' ? '#4a1d6a' : dark ? '#6a6f8a' : P.sky[1]);
+  scene.fog = new THREE.Fog(X7 ? X7.fog : night ? 0x1a1a3a : dark ? 0x4a4a66 : P.fog, X7 ? X7.near : 30, X7 ? X7.far : 75);
   const hemi = new THREE.HemisphereLight(night ? 0x5a6aa0 : 0xffffff, night ? 0x1a1020 : 0x6a5a40, night ? 0.3 : dark ? 0.4 : 0.55); scene.add(hemi);
-  const sun = new THREE.DirectionalLight(night ? 0x8090ff : th==='rift' ? 0xc080ff : 0xfff2dd, night ? 0.25 : dark ? 0.6 : 1.05); sun.position.set(-8, 16, 10); sun.castShadow = true;
+  const sun = new THREE.DirectionalLight(X7 ? X7.sun : night ? 0x8090ff : th==='rift' ? 0xc080ff : 0xfff2dd, night ? 0.25 : dark ? 0.6 : 1.05); sun.position.set(-8, 16, 10); sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, {left:-16, right:16, top:12, bottom:-6, near:1, far:50}); scene.add(sun); lights.sun = sun;
   const g = new THREE.PlaneGeometry(80, 40, 40, 20); g.rotateX(-Math.PI/2); const pos = g.attributes.position; for (let i=0;i<pos.count;i++){ const x = pos.getX(i), z = pos.getZ(i); if (z < -6) pos.setY(i, Math.sin(x*0.25)*0.6 + Math.cos(z*0.4)*0.4 + (-z-6)*0.15); }
   g.computeVertexNormals(); const ground = new THREE.Mesh(g, M(night ? new THREE.Color(P.ground).multiplyScalar(0.35) : P.ground, {flatShading:true})); ground.receiveShadow = true; ground.position.z = -6; root.add(ground);
@@ -2008,7 +2008,7 @@ function world(w, theme, night){
   // hills
   for (let i=0;i<7;i++){ const hl = new THREE.Mesh(new THREE.SphereGeometry(6+i%3*2, 12, 8), M(new THREE.Color(P.hill).multiplyScalar(night?0.35:dark?0.6:1), {flatShading:true})); hl.position.set(-30 + i*10, -2.5, -28 - (i%2)*6); hl.scale.y = 0.6; root.add(hl); }
   if (w===3 || th==='pine'){ for (let i=0;i<5;i++){ const m = cone(5, 10, M(0xe8f4ff, {flatShading:true}), 5); m.position.set(-24+i*12, 3, -34); root.add(m); } }
-  props(w, th, night);
+  props(w, th, night); if (X7) worldEx(theme);
   if (w===1 && !['cave','magic'].includes(th)){ const sea = new THREE.Mesh(new THREE.PlaneGeometry(90, 14), M(0x3d8fd0, {roughness:0.2, metalness:0.2, transparent:true, opacity:0.92})); sea.rotation.x = -Math.PI/2; sea.position.set(0, 0.05, -18); root.add(sea); lights.sea = sea; }
 }
 function tree(x, z, s=1, col=0x3f9a3c){ const g = new THREE.Group(); g.add(at(cyl(0.25*s, 0.35*s, 2*s, M(0x7a4b2a)), 0, s, 0)); const c = new THREE.Mesh(new THREE.IcosahedronGeometry(1.4*s, 0), M(col, {flatShading:true})); c.castShadow = true; c.position.y = 2.6*s; g.add(c); g.position.set(x, 0, z); root.add(g); }
@@ -2652,7 +2652,7 @@ function loop(){
   if (camBase){ const s = MOTION ? shake : 0; shake *= 0.9; const off = V3((Math.random()-.5)*s, (Math.random()-.5)*s, 0); cam.position.add(FXS.camOff); cam.lookAt(camBase.clone().add(off)); }
   renderFrame(); cam.position.sub(FXS.camOff);
 }
-return {downHero, reviveHero, endCut, dbg:{env:v => { scene.environment = v ? ENV : null; }, post:v => { if (post) post.on = v; else if (v) postInit(); }, q:setQuality, get state(){ return post; }, get R(){ return R; }, get scene(){ return scene; }, get env(){ return ENV; }}, flashScreen, slowMo, camKick, FXS, victory, gallery, setMotion: v => { MOTION = v; }, init, setScene, setEnemies, setHeroes, heroAttack, heroAct, enemyAttack, foeMove, hitEnemy, hitHero, healFx, killEnemy, openChest, screenPos, updateHero, equipFx, fx, frame, resize, get ready(){ return !!R; }, get heroIds(){ return heroOrder.slice(); }};
+return {downHero, reviveHero, endCut, dbg:{env:v => { scene.environment = v ? ENV : null; }, post:v => { if (post) post.on = v; else if (v) postInit(); }, q:setQuality, get state(){ return post; }, get R(){ return R; }, get scene(){ return scene; }, get envTex(){ return ENV; }}, flashScreen, slowMo, camKick, FXS, victory, gallery, setMotion: v => { MOTION = v; }, init, setScene, setEnemies, setHeroes, heroAttack, heroAct, enemyAttack, foeMove, hitEnemy, hitHero, healFx, killEnemy, openChest, screenPos, updateHero, equipFx, fx, frame, resize, get ready(){ return !!R; }, get heroIds(){ return heroOrder.slice(); }};
 })();
 
 /* ===== Essay Quest v3 — procedural music + sound effects (WebAudio) ===== */
