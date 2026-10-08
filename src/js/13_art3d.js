@@ -4,7 +4,7 @@ const ART3D = (() => {
 let MOTION = true; let R, scene, cam, clock, root, hero = null, foes = {}, fxGroup, W = 960, H = 540, host, t = 0, mode = 'title', shake = 0, camBase = null, lights = {};
 const RC = [0xc9ced6, 0x4aa3ff, 0xb06cff, 0xffb52e, 0xff4d6d];
 const M = (c, o={}) => new THREE.MeshStandardMaterial(Object.assign({color:c, roughness:0.55, metalness:0.05}, o));
-const box = (w,h,d,m) => { const g = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), m); g.castShadow = true; g.receiveShadow = true; return g; };
+const box = (w,h,d,m) => { const g = new THREE.Mesh((typeof KIT !== 'undefined' ? KIT.rboxGeo(w, h, d, Math.min(0.22, Math.min(w, h, d)*0.2), 2) : new THREE.BoxGeometry(w, h, d)), m); g.castShadow = true; g.receiveShadow = true; return g; };
 const cyl = (rt,rb,h,m,s=16) => { const g = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,s), m); g.castShadow = true; return g; };
 const sph = (r,m,ws=16,hs=12) => { const g = new THREE.Mesh(new THREE.SphereGeometry(r,ws,hs), m); g.castShadow = true; return g; };
 const cone = (r,h,m,s=12) => { const g = new THREE.Mesh(new THREE.ConeGeometry(r,h,s), m); g.castShadow = true; return g; };
@@ -139,7 +139,15 @@ const NEWART = {
   giant:(g,e,m,dk) => { const s = e.boss ? 2.0 : e.mini ? 1.7 : 1.45; const stone = e.key==='hrungnir'; const H = hum(g, {body:M(e.color, {flatShading:true, roughness: stone ? 0.95 : 0.2, metalness: stone ? 0 : 0.1, emissive: stone ? 0 : 0x305070, emissiveIntensity:0.25}), limb:dk, s}); const hd = box(1.4*s, 1.4*s, 1.4*s, M(e.color, {flatShading:true})); hd.position.y = H.headY; g.add(hd); for (const sx of [-1,1]) g.add(at(sph(0.12*s, EYE(stone ? 0xffa020 : 0x80e0ff)), sx*0.3*s, H.headY + 0.1*s, 0.71*s)); g.add(at(box(1.2*s, 0.9*s, 0.3*s, M(0xf4f8ff)), 0, H.headY - 0.7*s, 0.6*s));
     for (let i=0;i<6;i++){ const ic = cone(0.18*s, (0.7 + (i%2)*0.4)*s, M(stone ? 0x6a6a6a : 0xe8f8ff, {flatShading:true, emissive: stone ? 0 : 0x80c8ff, emissiveIntensity:0.3}), 5); ic.position.set((-1 + i*0.4)*s, (4.0 + (i%2)*0.2)*s, -0.4*s); ic.rotation.x = -0.4; g.add(ic); } if (e.key==='ymir'){ const cr = tor(0.8*s, 0.1*s, M(0xbfe8ff, {emissive:0x80c0ff, emissiveIntensity:0.8}), 5, 16); cr.rotation.x = Math.PI/2; cr.position.y = H.headY + 0.75*s; g.add(cr); } }
 };
-function buildEnemy(e){
+/* v8: smooth jointed creatures (CREATURES) replace the blocky v5 models; the v7 bespoke bosses keep their own builders */
+function buildEnemy(e){ if (typeof CREATURES === 'undefined' || !CREATURES.has(e)) return buildEnemy0(e); let g; try { g = CREATURES.build(e); } catch (err){ console.warn('v8 creature failed', e.key, err); return buildEnemy0(e); }
+  const A = e.art, boss = !!e.boss, elite = !!e.elite; g.userData.hover = g.userData.hoverY || 0;
+  if (boss || elite || e.mini){ const aura = glowSprite(boss ? (LIGHTCSS7[A] || 'rgba(255,40,40,.4)') : e.mini ? 'rgba(255,120,30,.38)' : 'rgba(255,200,60,.3)', boss ? 12 : 8); aura.position.y = 3.2; g.add(aura); g.userData.aura = aura;
+    const ring = new THREE.Mesh(new THREE.RingGeometry(2.2, 2.8, 48), new THREE.MeshBasicMaterial({color: boss ? (LIGHT7[A] || 0xff2020) : e.mini ? 0xffaa30 : 0xffcf40, transparent:true, opacity:0.45, side:THREE.DoubleSide, blending:THREE.AdditiveBlending, depthWrite:false})); ring.rotation.x = -Math.PI/2; ring.position.y = 0.05; g.add(ring); g.userData.ring = ring;
+    if (boss){ const pl = new THREE.PointLight(LIGHT7[A] || 0xff3030, 1.8, 14); pl.position.set(0, 4, 2); g.add(pl); g.userData.bossLight = pl; } }
+  const sc = (boss ? 1.0 : e.mini ? 0.85 : elite ? 0.7 : 0.6) * ({golem:0.95, giant:0.85, colossus:0.8, kraken:0.75, hydra:0.85, orochi:0.85, typhon:0.8, gashadokuro:0.85, sphinx:0.85, mammoth:0.9, eye:0.8}[A] || 1); const KS = {fenrir:1.5, skoll:1.25, cerberus:1.15, kraken:1.2, apophis:1.15}; const sc2 = sc*(KS[e.key] || 1);
+  g.scale.multiplyScalar(sc2); g.userData.base = g.scale.x; return g; }
+function buildEnemy0(e){
   const g = new THREE.Group(); const c = new THREE.Color(e.color); const m = M(c, {flatShading:true}), dk = M(c.clone().multiplyScalar(0.65), {flatShading:true});
   const boss = !!e.boss, elite = !!e.elite; const eyeC = boss ? 0xff2a2a : elite ? 0xffb52e : 0xff4040; const A = e.art;
   const blocky = (headCol, bodyCol, opts={}) => { const s = opts.s || 1; const b = new THREE.Group();
@@ -233,7 +241,7 @@ function enemyDeco(g, e){ const K = e.key, s = (e.art==='brute' || e.art==='yeti
   if (K==='fenrir' || K==='skoll'){ for (let i=0;i<4;i++){ const l = tor(0.18, 0.06, M(0x9a9aa4, {metalness:0.8}), 4, 10); l.rotation.y = i%2 ? Math.PI/2 : 0; add(l, -1.6 - i*0.25, 2.1, 0.6); } add(glowSprite(K==='skoll' ? 'rgba(255,200,80,.6)' : 'rgba(120,200,255,.6)', 3), -2.4, 2.6, 0); }
   if (K==='slime'){ add(sph(0.35, M(0x2a5a1a, {transparent:true, opacity:0.7})), 0.4, 1.0, 0.6); add(box(0.12, 0.5, 0.12, M(0x5a3a1a)), -0.5, 2.3, 0.2); }
 }
-function bossDeco(g, e){ const K = e.key, u = g.userData;
+function bossDeco(g, e){ const K = e.key, u = g.userData; if (u.v8 && ['oBrien','captain','caliban','troll','hollowKing','shadow'].includes(K)) return;
   const bb = new THREE.Box3().setFromObject(g); const top = bb.max.y / (g.scale.y || 1);
   if (K==='prospero'){ u.books = []; for (let i=0;i<3;i++){ const bk = new THREE.Group(); bk.add(box(0.9, 0.18, 0.7, M(0x6a2a1a))); bk.add(at(box(0.84, 0.12, 0.66, M(0xf4ead0)), 0, 0.1, 0)); const gl = glowSprite('rgba(170,120,255,.6)', 1.2); bk.add(gl); g.add(bk); u.books.push(bk); } }
   if (K==='oBrien'){ g.add(at(box(1.2, 0.18, 0.06, M(0x111111, {metalness:0.8})), 0, 4.75, 0.7)); const hand = glowSprite('rgba(255,60,60,.8)', 1.4); hand.position.set(1.6, 3.2, 1.0); g.add(hand); u.handGlow = hand; }
@@ -292,8 +300,8 @@ let introUntil = 0;
 function intro(id){ const f = foes[id]; if (!f) return; const goal = camGoal.clone(), look = camLook.clone(); const fp = f.position.clone(); introUntil = t + 1.7;
   const hb = new THREE.Box3().setFromObject(f); const top = hb.max.y; cam.position.set(fp.x - 1.8, top*0.75 + 1.2, fp.z + 6 + top*1.1); camBase = V3(fp.x, top*0.62, fp.z); camGoal = null;
   tween(1.7, k => { if (k < 0.45){ cam.position.x += 0.004; } else { const kk = (k-0.45)/0.55; cam.position.lerp(goal, kk*0.12); camBase.lerp(look, kk*0.12); } }, () => { camGoal = goal; camLook = look; }); }
-function addFoe(e, i, n, list){ const g = buildEnemy(e); enemyDeco(g, e); if (e.boss || e.mini) bossDeco(g, e); const [x, z] = enemySlot(i, n, list || [e]); g.position.set(x, 0, z); g.userData.tx = x; g.userData.tz = z;
-  g.rotation.y = ['wyrm','boar','wolf','cat'].includes(e.art) ? 0.3 : e.art==='eye' ? -0.9 : -1.27; g.userData.e = e; scene.add(g); foes[e.id] = g; enemyOrder.push(e.id);
+function addFoe(e, i, n, list){ const g = buildEnemy(e); if (!g.userData.v8) enemyDeco(g, e); if (e.boss || e.mini) bossDeco(g, e); const [x, z] = enemySlot(i, n, list || [e]); g.position.set(x, 0, z); g.userData.tx = x; g.userData.tz = z;
+  g.rotation.y = g.userData.v8 ? -1.2 : ['wyrm','boar','wolf','cat'].includes(e.art) ? 0.3 : e.art==='eye' ? -0.9 : -1.27; g.userData.e = e; scene.add(g); foes[e.id] = g; enemyOrder.push(e.id);
   if (e.minion){ g.scale.setScalar(0.01); const b = g.userData.base; tween(0.5, k => g.scale.setScalar(b*Math.min(1, k*1.2)), null); portal(g.position, 0xb050ff); } }
 function sit(h){ const p = h.userData.parts; p.legL.rotation.x = -1.4; p.legR.rotation.x = -1.4; p.legL.position.set(-0.5, 2.0, 0.1); p.legR.position.set(0.5, 2.0, 0.1); p.body.position.y = -2; p.armR.rotation.x = -0.6; p.armL.rotation.x = -0.6; h.userData.sitting = true; }
 function setEnemies(list){ const alive = list.filter(e => e.hp > 0); list.forEach(e => { if (!foes[e.id] && e.hp > 0) addFoe(e, alive.indexOf(e), alive.length, alive); else if (foes[e.id]) foes[e.id].userData.e = e; });
@@ -1165,7 +1173,7 @@ const rgbaS = (n, a) => `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;
 /* ---------- gallery (design sheets) ---------- */
 function gallery(kind, list, cols){ mode = 'gallery'; clearScene(); camGoal = null; scene.background = gradientBG('#3a3266', '#141128'); scene.fog = null;
   scene.add(new THREE.HemisphereLight(0xffffff, 0x50406a, 0.95)); const sun = new THREE.DirectionalLight(0xfff2dd, 1.0); sun.position.set(-6, 12, 14); scene.add(sun); const rim = new THREE.DirectionalLight(0x9fb8ff, 0.6); rim.position.set(8, 6, -10); scene.add(rim);
-  const objs = list.map(x => kind==='armour' ? GEAR3D.buildHero(x) : kind==='weapon' ? GEAR3D.weapon(x) : (() => { const g = buildEnemy(x); enemyDeco(g, x); if (x.boss || x.mini) bossDeco(g, x); return g; })());
+  const objs = list.map(x => kind==='armour' ? GEAR3D.buildHero(x) : kind==='weapon' ? GEAR3D.weapon(x) : (() => { const g = buildEnemy(x); if (!g.userData.v8) enemyDeco(g, x); if (x.boss || x.mini) bossDeco(g, x); return g; })());
   const rows = Math.ceil(objs.length / cols), SX = kind==='enemy' ? 4.6 : kind==='armour' ? 5.2 : 4.6, SY = kind==='weapon' ? 5.0 : kind==='armour' ? 6.2 : 5.6;
   objs.forEach((o, i) => { const c = i % cols, r = Math.floor(i / cols);
     if (kind==='weapon'){ const w = list[i]; o.scale.setScalar(w.arch==='fist' ? 1.25 : 0.82); if (w.myth==='dragon_scroll') o.rotation.set(0, 0.35, 0); else if (w.arch==='ranged') o.rotation.y = Math.PI/2 + 0.25; else o.rotation.set(0, 0.5, w.arch==='fist' ? 0 : -0.35); const bb0 = new THREE.Box3().setFromObject(o); const hh = bb0.max.y - bb0.min.y; if (hh > 3.6) o.scale.multiplyScalar(3.6/hh); }
@@ -1187,6 +1195,7 @@ function loop(){
     if (u.wings) u.wings.forEach((wg, k) => wg.rotation.z = (k ? -1 : 1) * Math.sin(ph*3)*0.5);
     if (u.spin) u.spin.rotation.y += dt*1.5;
     if (u.anims) ASM.tick(u.anims, t, dt);
+    if (u.J) KIT.tick(u.J, t + (+id)*0.37);
     if (u.iris){ u.iris.position.x = Math.sin(t*0.8)*0.35; }
     if (u.aura) u.aura.material.opacity = 0.7 + Math.sin(ph*2)*0.3;
     if (u.ring) u.ring.rotation.z += dt*0.8;

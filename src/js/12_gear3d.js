@@ -4,7 +4,7 @@
    Rarity layers: Common plain → Rare trim → Epic gems + runes → Legendary gold filigree, glow, sparkles → Mythical obsidian + crimson veins, orbiting shards, embers. */
 const GEAR3D = (() => {
 const M = (c, o={}) => new THREE.MeshStandardMaterial(Object.assign({color:c, roughness:0.55, metalness:0.05}, o));
-const box = (w,h,d,m) => { const g = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), m); g.castShadow = true; return g; };
+const box = (w,h,d,m) => { const g = new THREE.Mesh((typeof KIT !== 'undefined' ? KIT.rboxGeo(w, h, d, Math.min(0.22, Math.min(w, h, d)*0.2), 2) : new THREE.BoxGeometry(w, h, d)), m); g.castShadow = true; return g; };
 const cyl = (rt,rb,h,m,s=14) => { const g = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,s), m); g.castShadow = true; return g; };
 const sph = (r,m,ws=14,hs=10) => { const g = new THREE.Mesh(new THREE.SphereGeometry(r,ws,hs), m); g.castShadow = true; return g; };
 const cone = (r,h,m,s=10) => { const g = new THREE.Mesh(new THREE.ConeGeometry(r,h,s), m); g.castShadow = true; return g; };

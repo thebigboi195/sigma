@@ -1,0 +1,2 @@
+// in-page helpers for design sheets (loaded by tools/shoot.js callers via a string): enlarges the stage, hides the panel
+module.exports = `(() => { const st = document.createElement('style'); st.textContent = '.wrap{max-width:none!important;padding:0!important} #panel,#hud{display:none!important} .stage{border-radius:0!important;border:0!important;box-shadow:none!important}'; document.head.appendChild(st); window.dispatchEvent(new Event('resize')); ART3D.resize && ART3D.resize(); })();`;

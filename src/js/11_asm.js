@@ -15,7 +15,7 @@ function mat(p){ const key = [p.c, p.e, p.ei, p.mt, p.rg, p.op, p.fl, p.ds, p.bs
   if (p.e != null){ o.emissive = p.e; o.emissiveIntensity = p.ei != null ? p.ei : 1; } if (p.op != null && p.op < 1){ o.transparent = true; o.opacity = p.op; } if (p.fl) o.flatShading = true; if (p.ds) o.side = THREE.DoubleSide;
   const m = p.bs ? new THREE.MeshBasicMaterial({color:o.color, transparent:!!o.transparent, opacity:o.opacity != null ? o.opacity : 1, side:o.side, blending: p.add ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: !p.add}) : new THREE.MeshStandardMaterial(o); return (MATS[key] = m); }
 function geo(p){ const d = p.d || [1]; switch (p.k){
-  case 'box': return new THREE.BoxGeometry(d[0], d[1], d[2]);
+  case 'box': return (typeof KIT !== 'undefined' ? KIT.rboxGeo(d[0], d[1], d[2], Math.min(0.22, Math.min(d[0], d[1], d[2])*0.2), 2) : new THREE.BoxGeometry(d[0], d[1], d[2]));   // v8: soft edges
   case 'cyl': return new THREE.CylinderGeometry(d[0], d[1], d[2], d[3] || 14, 1, !!d[4]);
   case 'cone': return new THREE.ConeGeometry(d[0], d[1], d[2] || 10);
   case 'sph': return new THREE.SphereGeometry(d[0], d[1] || 14, d[2] || 10, 0, d[3] != null ? d[3] : Math.PI*2, 0, d[4] != null ? d[4] : Math.PI);
