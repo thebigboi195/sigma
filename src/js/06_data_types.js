@@ -63,8 +63,12 @@ Object.assign(D.ENEMY_TYPES, {   // hand-checked: each type follows the myth, th
 D.MOVE_HARD = {'Frozen Chapter':'ice', 'Rime Pages':'ice', 'Ice Shard':'ice', 'Frost Page':'ice', 'Frost Nova':'ice', 'Poison Arrow':'poison', 'Earthquake':'ground', 'Soul Harvest':'ghost', 'Pressure Point':'fighting', 'Focus Strike':'fighting'};
 D.MOVE_SOFT = {'Page Strike':'psychic', 'Glyph Barrage':'psychic', 'Mana Lance':'psychic', 'Chant':'fairy', 'Smiting Chant':'fairy', 'Holy Verse':'fairy', 'Jab':'fighting', 'Flurry':'fighting', 'Haymaker':'fighting', 'Reap Strike':'dark', 'Reap':'dark', 'Execution':'dark', 'Arcane Bolt':'psychic', 'Arcane Storm':'psychic', 'Arcane Lance':'psychic'};
 D.GENERIC_MOVES = new Set(['Slash','Cleave','Heavy Slash','Blade Dance','Thrust','Sweep','Impale','Phalanx','Quick Shot','Volley','Aimed Shot','Bash','Shockwave','Crushing Blow','Draw Cut','Thousand Cuts','Iaido','Toss','Ricochet','Pinning Throw','Smoke Bomb']);
+// v8: a plain weapon's four moves cover more than one type, so no foe is ever a wall (Slash is Normal, but Cleave and Heavy Slash are Steel)
+D.ARCH_TY = {fist:['fighting','dark','fighting'], blade:['normal','steel','steel'], pole:['normal','flying','steel'], ranged:['normal','flying','steel'], heavy:['normal','ground','rock'], scythe:['dark','ghost','dark'],
+  katana:['steel','normal','steel'], staff:['psychic','fire','psychic'], thrown:['steel','flying','normal']};
 D.moveTypeOf = (m, w) => { if (!m) return 'normal'; if (D.MOVE_HARD[m.n]) return D.MOVE_HARD[m.n];
-  const wt = w ? D.itemTypes(w)[0] : 'normal', imbued = w && w.rar >= 3 && wt !== 'normal';
+  if (w && D.ARCH_TY[w.arch] && m.slot != null && m.slot < 3 && (D.GENERIC_MOVES.has(m.n) || D.MOVE_SOFT[m.n] || m.fx === 'basic') && !(w.rar >= 4 && D.itemTypes(w)[0] !== 'normal')) return D.ARCH_TY[w.arch][m.slot];
+  const wt = w ? D.itemTypes(w)[0] : 'normal', imbued = w && w.rar >= 4 && wt !== 'normal';
   if (D.GENERIC_MOVES.has(m.n) || D.MOVE_SOFT[m.n]) return imbued ? wt : (D.MOVE_SOFT[m.n] || 'normal');   // a legendary weapon's own element flows through its plain moves
   const byName = classify(m.n, 1)[0]; if (byName) return byName; if (imbued) return wt;
   const byDesc = (m.slot === 3 || m.fx === 'myth1') && m.d ? classify(m.d, 1)[0] : null; return byDesc || 'normal'; };
