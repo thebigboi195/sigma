@@ -387,6 +387,7 @@ function heroMoves(w, a){ if (!w) return []; const arch = w.arch || 'blade'; con
   t1.dmg = pc(t1.mult) + ' to one foe'; t2.dmg = kind2 === 'area' ? pc(m2) + ' to every foe' : hits2 + ' hits × ' + pc(m2); t3.dmg = pc(m3) + ' to one foe';
   const ops4 = t4.sig ? D.SIGS[t4.sig][2] : t4.ops; const dOp = ops4.find(o => ['hit','all','multi','judge','gentle'].includes(o[0]));
   const cr = dOp && ((dOp[0]==='multi' ? dOp[3] : dOp[2]) || {}).crit; t4.dmg = !dOp ? 'No damage (support)' : dOp[0] === 'hit' ? pc(dOp[1]*(cr?2:1)) + ' to one foe' + (cr ? ' (sure crit)' : '') : dOp[0] === 'all' ? pc(dOp[1]) + ' to every foe' : dOp[0] === 'multi' ? dOp[1] + ' hits × ' + pc(dOp[2]) : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its current HP' : 'Kills a weakened foe outright';
+  const pw = x => Math.round(D.BASEPOW*x); t4.powTxt = !dOp ? 'support' : dOp[0] === 'hit' ? pw(dOp[1]) + ' power' + (cr ? ' · sure crit' : '') : dOp[0] === 'all' ? pw(dOp[1]) + ' power to all' : dOp[0] === 'multi' ? dOp[1] + '×' + pw(dOp[2]) + ' power' : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its HP' : 'finisher';
   const out4 = [t1, t2, t3, t4]; const wc = w.cat || (D.CASTER.includes(arch) ? 'spec' : 'phys'), b = w.bs || {}; const hyb = wc === 'phys' && (b.spa || 0) >= 0.4*(b.atk || 1);
   for (const m of out4){ m.ty = D.moveTypeOf(m, w); m.cat = wc; if (hyb && m.slot === 3) m.cat = 'spec'; if (hyb && m.slot === 1 && m.kind === 'area' && m.ty !== 'normal') m.cat = 'spec';
     m.pow = Math.round(D.BASEPOW * (m.mult || (m.slot === 3 ? 0 : 1))); } return out4; }

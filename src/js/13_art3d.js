@@ -32,38 +32,41 @@ function init(el){
   cam = new THREE.PerspectiveCamera(46, 16/9, 0.1, 200); clock = new THREE.Clock(); resize(); makeEnv(); postInit();
   window.addEventListener('resize', resize); requestAnimationFrame(loop);
 }
-function resize(){ if (!host) return; const w = host.clientWidth || 960; const h = Math.round(w*9/16); R.setSize(w, h, false); W = w; H = h; cam.aspect = w/h; cam.updateProjectionMatrix(); if (typeof postResize === 'function' && post) postResize(); }
+function resize(){ if (!host) return; const w = host.clientWidth || 960; const h = host.clientHeight > 80 ? host.clientHeight : Math.round(w*9/16); /* v8: the stage fills the window */ R.setSize(w, h, false); W = w; H = h; cam.aspect = w/h; cam.updateProjectionMatrix(); if (typeof postResize === 'function' && post) postResize(); }
 
 const WPAL = [
   {sky:['#7cc6ff','#e2f4ff'], ground:0x6cc35a, ground2:0x4a9a3e, fog:0xcfeaff, hill:0x5aa64e},
   {sky:['#5a8fc9','#cfe8f7'], ground:0xf0d999, ground2:0xd9bd73, fog:0xbfe0f5, hill:0x3f8a6a},
   {sky:['#f08a3a','#ffd9a0'], ground:0xe8b86a, ground2:0xcf9a4a, fog:0xffcf9a, hill:0xc07a3a},
-  {sky:['#8fcff0','#f4fbff'], ground:0xf4fbff, ground2:0xd5e9f3, fog:0xe6f5ff, hill:0xbcdcee}];
-const THEME = [['tree','tree','pillar','cave','keep'],['palm','ship','cave','palm','magic'],['cactus','ember','pillar','bones','rift'],['pine','cave','lake','aurora','barn']];
+  {sky:['#8fcff0','#f4fbff'], ground:0xf4fbff, ground2:0xd5e9f3, fog:0xe6f5ff, hill:0xbcdcee},
+  {sky:['#f6a8bc','#ffe8ee'], ground:0x86b56e, ground2:0x6e9a58, fog:0xffe0ea, hill:0x5e8c62},   // Yamato
+  {sky:['#4fa6ee','#e8f6ff'], ground:0xb8b07a, ground2:0xd6c8a0, fog:0xd0e8f8, hill:0x7a9a5a}];  // Hellas
+const THEME = [['tree','tree','pillar','cave','keep'],['palm','ship','cave','palm','magic'],['cactus','ember','pillar','bones','rift'],['pine','cave','lake','aurora','barn'],['bamboo','sakura','mountain','onsen','castle'],['olive','agora','labyrinth','cyclopscave','temple']];
 function clearScene(){ if (scene){ scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(m => { if (m.map) m.map.dispose(); m.dispose(); }); } }); }
   scene = new THREE.Scene(); root = new THREE.Group(); scene.add(root); fxGroup = new THREE.Group(); scene.add(fxGroup); hero = null; foes = {}; lights = {}; scene.environment = ENV || makeEnv(); resetEnvFx(); }
 function world(w, theme, night){
-  const X7 = !night && TH7[theme]; const P = X7 ? Object.assign({}, WPAL[w], X7.p) : WPAL[w], th = THEME[w][theme||0] || (X7 ? 'x7' : 0), dark = !!X7 && theme===6 || night || ['cave','rift','magic','keep','aurora','ember','bones'].includes(th);
+  const X7 = !night && TH7[theme]; const P = X7 ? Object.assign({}, WPAL[w], X7.p) : WPAL[w], th = THEME[w][theme||0] || (X7 ? 'x7' : 0), dark = !!X7 && theme===6 || night || ['cave','rift','magic','keep','aurora','ember','bones'].includes(th) || (typeof MAPS !== 'undefined' && MAPS.DARK.has(th));
   scene.background = X7 ? gradientBG(X7.sky[0], X7.sky[1]) : gradientBG(night ? '#0d1030' : th==='rift' ? '#1a0b2e' : dark ? '#3a3f5a' : P.sky[0], night ? '#2a2550' : th==='rift' ? '#4a1d6a' : dark ? '#6a6f8a' : P.sky[1]);
   scene.fog = new THREE.Fog(X7 ? X7.fog : night ? 0x1a1a3a : dark ? 0x4a4a66 : P.fog, X7 ? X7.near : 30, X7 ? X7.far : 75);
   const hemi = new THREE.HemisphereLight(night ? 0x5a6aa0 : 0xffffff, night ? 0x1a1020 : 0x6a5a40, night ? 0.3 : dark ? 0.4 : 0.55); scene.add(hemi);
   const sun = new THREE.DirectionalLight(X7 ? X7.sun : night ? 0x8090ff : th==='rift' ? 0xc080ff : 0xfff2dd, night ? 0.25 : dark ? 0.6 : 1.05); sun.position.set(-8, 16, 10); sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, {left:-16, right:16, top:12, bottom:-6, near:1, far:50}); scene.add(sun); lights.sun = sun;
   const g = new THREE.PlaneGeometry(80, 40, 40, 20); g.rotateX(-Math.PI/2); const pos = g.attributes.position; for (let i=0;i<pos.count;i++){ const x = pos.getX(i), z = pos.getZ(i); if (z < -6) pos.setY(i, Math.sin(x*0.25)*0.6 + Math.cos(z*0.4)*0.4 + (-z-6)*0.15); }
-  g.computeVertexNormals(); const ground = new THREE.Mesh(g, M(night ? new THREE.Color(P.ground).multiplyScalar(0.35) : P.ground, {flatShading:true})); ground.receiveShadow = true; ground.position.z = -6; root.add(ground);
+  g.computeVertexNormals(); const ground = new THREE.Mesh(g, M(night ? new THREE.Color(P.ground).multiplyScalar(0.35) : P.ground, {roughness:0.95})); ground.receiveShadow = true; ground.position.z = -6; root.add(ground);
   // battle pad
   const pad = new THREE.Mesh(new THREE.CircleGeometry(9, 40), M(new THREE.Color(P.ground2).multiplyScalar(night ? 0.4 : 1), {roughness:0.9})); pad.rotation.x = -Math.PI/2; pad.position.set(0, 0.02, 0); pad.receiveShadow = true; root.add(pad);
   // hills
-  for (let i=0;i<7;i++){ const hl = new THREE.Mesh(new THREE.SphereGeometry(6+i%3*2, 12, 8), M(new THREE.Color(P.hill).multiplyScalar(night?0.35:dark?0.6:1), {flatShading:true})); hl.position.set(-30 + i*10, -2.5, -28 - (i%2)*6); hl.scale.y = 0.6; root.add(hl); }
+  for (let i=0;i<7;i++){ const hl = new THREE.Mesh(new THREE.SphereGeometry(6+i%3*2, 24, 16), M(new THREE.Color(P.hill).multiplyScalar(night?0.35:dark?0.6:1), {roughness:0.95})); hl.position.set(-30 + i*10, -2.5, -28 - (i%2)*6); hl.scale.y = 0.6; root.add(hl); }
   if (w===3 || th==='pine'){ for (let i=0;i<5;i++){ const m = cone(5, 10, M(0xe8f4ff, {flatShading:true}), 5); m.position.set(-24+i*12, 3, -34); root.add(m); } }
   props(w, th, night); if (X7) worldEx(theme);
   if (w===1 && !['cave','magic'].includes(th)){ const sea = new THREE.Mesh(new THREE.PlaneGeometry(90, 14), M(0x3d8fd0, {roughness:0.2, metalness:0.2, transparent:true, opacity:0.92})); sea.rotation.x = -Math.PI/2; sea.position.set(0, 0.05, -18); root.add(sea); lights.sea = sea; }
 }
 function tree(x, z, s=1, col=0x3f9a3c){ const g = new THREE.Group(); g.add(at(cyl(0.25*s, 0.35*s, 2*s, M(0x7a4b2a)), 0, s, 0)); const c = new THREE.Mesh(new THREE.IcosahedronGeometry(1.4*s, 0), M(col, {flatShading:true})); c.castShadow = true; c.position.y = 2.6*s; g.add(c); g.position.set(x, 0, z); root.add(g); }
 function props(w, th, night){
+  if (typeof MAPS !== 'undefined' && MAPS.props(th, root, fxGroup)) return;   // v8: Yamato and Hellas
   const L = [[-12,-5],[-9,-10],[10,-8],[13,-4],[-15,-12],[16,-13],[4,-14],[-5,-15]];
-  if (th==='tree') L.forEach(([x,z],i) => tree(x, z, 0.9 + (i%3)*0.25, i%2 ? 0x3f9a3c : 0x5cbf55));
-  if (th==='pine') L.forEach(([x,z],i) => { const g = new THREE.Group(); g.add(at(cyl(0.2,0.3,1.2,M(0x6b4426)),0,0.6,0)); for (let k=0;k<3;k++){ g.add(at(cone(1.4-k*0.35, 1.6, M(0x2f6f5a,{flatShading:true}), 7), 0, 1.6+k*0.9, 0)); g.add(at(cone(1.0-k*0.3, 0.5, M(0xffffff), 7), 0, 2.2+k*0.9, 0)); } g.position.set(x,0,z); g.scale.setScalar(1+(i%3)*0.3); root.add(g); });
+  if (th==='tree') L.forEach(([x,z],i) => typeof MAPS !== 'undefined' ? MAPS.tree(root, x, z, 0.9 + (i%3)*0.25, i%2 ? 0x3f9a3c : 0x5cbf55) : tree(x, z, 0.9 + (i%3)*0.25, i%2 ? 0x3f9a3c : 0x5cbf55));
+  if (th==='pine' && typeof MAPS !== 'undefined'){ L.forEach(([x,z],i) => MAPS.pine(root, x, z, 1+(i%3)*0.3, 0x2f6f5a, true)); } else if (th==='pine') L.forEach(([x,z],i) => { const g = new THREE.Group(); g.add(at(cyl(0.2,0.3,1.2,M(0x6b4426)),0,0.6,0)); for (let k=0;k<3;k++){ g.add(at(cone(1.4-k*0.35, 1.6, M(0x2f6f5a,{flatShading:true}), 7), 0, 1.6+k*0.9, 0)); g.add(at(cone(1.0-k*0.3, 0.5, M(0xffffff), 7), 0, 2.2+k*0.9, 0)); } g.position.set(x,0,z); g.scale.setScalar(1+(i%3)*0.3); root.add(g); });
   if (th==='palm') L.forEach(([x,z],i) => { const g = new THREE.Group(); for (let k=0;k<6;k++) g.add(at(cyl(0.22,0.26,0.6,M(0x9a6b3a)), k*0.08, 0.3+k*0.55, 0)); for (let k=0;k<6;k++){ const lf = box(2.4, 0.08, 0.6, M(0x3faa4a)); lf.position.set(0.4, 3.4, 0); lf.rotation.y = k*1.05; lf.rotation.z = -0.4; lf.translateX(1); g.add(lf); } g.position.set(x,0,z); root.add(g); });
   if (th==='cactus') L.forEach(([x,z],i) => { const m = M(0x4f9a4a, {flatShading:true}); const g = new THREE.Group(); g.add(at(cyl(0.45,0.5,3.2,m,8),0,1.6,0)); g.add(at(cyl(0.3,0.3,1.2,m,8),-0.8,1.8,0)); g.add(at(cyl(0.3,0.3,1.4,m,8),0.8,2.2,0)); g.position.set(x,0,z); root.add(g); });
   if (th==='pillar' || th==='keep') L.slice(0,6).forEach(([x,z],i) => { const m = M(w===2 ? 0xd9b98a : 0x9aa3ab, {flatShading:true}); const h = th==='keep' ? 7 : 2 + (i%3)*1.6; root.add(at(box(1.4, h, 1.4, m), x, h/2, z)); root.add(at(box(1.8, 0.4, 1.8, m), x, h+0.2, z));

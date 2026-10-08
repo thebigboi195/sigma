@@ -273,11 +273,93 @@ body.w3::before{background-image:radial-gradient(3px 3px at 20px 30px,#fff 50%,t
 .mvb .ty7{font:700 .7rem var(--head);letter-spacing:.06em;text-transform:uppercase;opacity:.8}.mvb .el{display:flex;align-items:center;gap:5px;font:700 .72rem var(--head);opacity:.95}.mvb .el .tyi{font-size:.7rem}
 .efx{display:inline-block;font:800 .72rem var(--head);border-radius:7px;padding:2px 8px;margin-top:2px}.efx.se{background:#2fd06a;color:#04210f;box-shadow:0 0 12px rgba(47,208,106,.7)}.efx.nve{background:#d04a5a;color:#fff}.efx.imm{background:#6a1a2a;color:#ffb0b8}
 .mvb.se{outline:3px solid #2fd06a;box-shadow:0 0 18px rgba(47,208,106,.55)}.mvb.nve{filter:saturate(.55) brightness(.85);outline:2px solid #d04a5a}.mvb.imm{filter:saturate(.3) brightness(.7);outline:2px solid #6a1a2a}
+
+/* ===== v8 layout: the battlefield fills the screen; panels float over it as glass ===== */
+html,body{height:100%}
+body{overflow:hidden;background:#0d0b18}
+.wrap{max-width:none;margin:0;padding:0;height:100vh;display:block;position:relative}
+.stage{position:fixed;inset:0;width:100vw;height:100vh;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}
+#hud{position:fixed;top:10px;left:12px;right:110px;z-index:30;pointer-events:none;align-items:center}
+#hud>*{pointer-events:auto}
+#hud .pill{background:rgba(24,20,44,.72);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12)}
+#panel{position:fixed;z-index:20;right:12px;top:60px;bottom:12px;width:min(620px,42vw);overflow:auto;overscroll-behavior:contain;
+  background:linear-gradient(180deg,rgba(34,28,66,.86),rgba(20,16,40,.9));backdrop-filter:blur(10px);border:1px solid rgba(160,140,255,.28);border-radius:18px;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s}
+body[data-view="battle"] #panel{left:50%;right:auto;top:auto;bottom:10px;width:min(1180px,calc(100vw - 24px));max-height:46vh;transform:translateX(-50%)}
+body[data-view="quest"] #panel,body.wide #panel{width:min(880px,60vw)}
+body.panel-min #panel{transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none}
+body.panel-min[data-view="battle"] #panel{transform:translate(-50%,calc(100% + 24px))}
+#dockbtns{position:fixed;top:8px;right:12px;z-index:31;display:flex;gap:6px}
+#dockbtns button{padding:6px 11px;font-size:1.05rem;background:rgba(24,20,44,.78);backdrop-filter:blur(6px)}
+/* activity feed: the transparent column on the left that used to sit under the game */
+#feed{position:fixed;z-index:12;left:12px;top:64px;bottom:200px;width:min(320px,26vw);pointer-events:none;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 30%);mask-image:linear-gradient(to bottom,transparent 0,#000 30%)}
+#feed div{background:rgba(8,6,18,.42);border-left:3px solid var(--fc,#8a7aff);border-radius:8px;padding:4px 9px;font:600 .8rem/1.35 var(--text);color:#efeaff;text-shadow:0 1px 2px #000;animation:feedin .35s ease-out both}
+#feed div.loot{--fc:#ffcf3a}#feed div.bad{--fc:#ff5a6a}#feed div.chat{--fc:#5fd0ff}#feed div.lv{--fc:#4fd36f}
+@keyframes feedin{from{opacity:0;transform:translateX(-12px)}}
+body[data-view="battle"] #feed{bottom:calc(46vh + 24px)}
+/* chat */
+#chat{position:fixed;z-index:22;left:12px;bottom:12px;width:min(340px,30vw);background:rgba(12,10,26,.62);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:6px}
+body[data-view="battle"] #chat{bottom:calc(46vh + 22px)}
+#chatlog{max-height:150px;overflow:auto;display:flex;flex-direction:column;gap:2px;font:.82rem/1.35 var(--text);padding:2px 4px 6px}
+#chatlog b{color:#9fd8ff}#chatlog .me b{color:#ffcf3a}#chatlog i{color:var(--muted);font-style:normal;font-size:.72rem;margin-left:4px}
+#chatf{display:flex;gap:6px}#chatf input{flex:1;min-width:0;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:var(--ink);padding:7px 9px;font:600 .85rem var(--text)}
+#chatf button{padding:6px 12px;box-shadow:none}
+/* stats: both systems side by side; hover tooltip on the HUD */
+.statpanel{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:rgba(0,0,0,.25);border-radius:12px;padding:10px}
+.statpanel h4{margin:0 0 6px;font:700 .95rem var(--head);color:var(--gold)}.statpanel h4 small{color:var(--muted);font-weight:600}
+.bsl{display:grid;grid-template-columns:5.5em 3.4em 1fr;gap:6px;align-items:baseline;font-size:.82rem;padding:2px 0;border-bottom:1px dashed rgba(255,255,255,.07)}
+.bsl span{color:var(--muted)}.bsl b{font-variant-numeric:tabular-nums}.bsl small{color:#9a92c0;font-size:.72rem}
+.statpill{position:relative;cursor:help}.statpill .tip{display:none;position:absolute;top:120%;left:0;width:min(560px,90vw);z-index:40;font:500 .85rem var(--text);background:rgba(20,16,40,.96);border:1px solid #6a5cc0;border-radius:12px;padding:6px}
+.statpill:hover .tip,.statpill:focus .tip{display:block}
+.bsrow{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}.bs{font:700 .72rem var(--text);background:rgba(255,255,255,.08);border-radius:6px;padding:2px 6px}.bs i{font-style:normal;color:var(--muted);margin-right:2px}
+.bs em{font-style:normal;margin-left:4px}.bs em.up{color:#4fd36f}.bs em.dn{color:#ff6b7f}.bs.bs-hp{background:rgba(79,211,111,.16)}.bs.bs-atk{background:rgba(255,138,60,.16)}.bs.bs-spa{background:rgba(176,108,255,.18)}.bs.bs-def{background:rgba(90,160,255,.16)}.bs.bs-spd{background:rgba(120,220,220,.16)}.bs.bs-spe{background:rgba(255,230,90,.14)}.bs.dodge{background:rgba(255,255,255,.05)}
+.stat .plus5{padding:6px 10px;font-size:.85rem;margin-left:4px}
+/* the four move bars */
+.battlebar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:stretch}
+.mvgrid.bars{grid-template-columns:repeat(2,1fr);gap:8px;margin:0}
+.mvgrid.bars button.bar{min-height:0;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;row-gap:2px;align-items:center;padding:8px 12px;position:relative}
+.mvb.bar .mk{grid-row:span 2;display:flex;flex-direction:column;align-items:center;gap:2px}.mvb.bar .mk em{font:800 .7rem var(--head);opacity:.7;font-style:normal}
+.mvb.bar .mk .tyi{font-size:1.25rem}
+.mvb.bar .mn b{font-size:1.02rem;display:block;line-height:1.1}.mvb.bar .mn small{font:700 .7rem var(--text);opacity:.85}
+.mvb.bar .mstat{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}.mvb.bar .mstat i{font:700 .72rem var(--text);font-style:normal;background:rgba(0,0,0,.35);border-radius:6px;padding:2px 6px}
+.mvb.bar .meff{grid-column:2/4;font:700 .72rem var(--text);opacity:.95}.mvb.bar .meff.se{color:#5ff08a}.mvb.bar .meff.nve{color:#ff9aa6}.mvb.bar .meff.imm{color:#ff6b7f}
+.acts.side{display:flex;flex-direction:column;gap:6px;min-width:150px}.acts.side button{padding:7px 10px;font-size:.88rem;text-align:left}.acts.side small{display:block;font-size:.66rem;opacity:.75}
+.enrow{font:700 .8rem var(--head);text-align:center;opacity:.85}
+/* plates: hover for stats */
+.plate{pointer-events:auto}
+.plate .ptip{display:none;position:absolute;left:50%;bottom:105%;transform:translateX(-50%);width:max-content;max-width:420px;background:rgba(14,11,30,.97);border:1px solid #6a5cc0;border-radius:10px;padding:6px 8px;font:500 .74rem/1.35 var(--text);z-index:50;text-align:left;white-space:normal}
+.plate:hover .ptip{display:block}.ptip .statpanel{padding:4px;gap:8px}.ptip .bsl{grid-template-columns:5em 3em 1fr}
+/* customiser */
+.cust{display:grid;gap:10px}.cust .opt{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.cust .opt>span{width:7em;font:700 .85rem var(--head);color:var(--muted)}
+.cust .sw{width:30px;height:30px;border-radius:50%;padding:0;box-shadow:none;border:3px solid transparent}.cust .sw.on{border-color:var(--gold)}
+.cust .ch{padding:5px 10px;font-size:.85rem;box-shadow:none}.cust .ch.on{background:var(--gold);color:#2a1d00}
+@media (max-width:760px){
+  #panel{left:8px;right:8px;width:auto;top:auto;bottom:8px;max-height:55vh}
+  body[data-view="battle"] #panel{left:8px;right:8px;width:auto;transform:none;max-height:55vh}
+  body.panel-min #panel{transform:translateY(calc(100% + 20px))}
+  #feed{display:none} #chat{width:auto;right:8px;left:8px;bottom:auto;top:52px} #chatlog{max-height:70px}
+  .battlebar{grid-template-columns:1fr}.mvgrid.bars{grid-template-columns:1fr}.statpanel{grid-template-columns:1fr}
+}
+/* battle: a compact dock under the battlefield; the 3D stage shrinks to sit above it */
+body[data-view="battle"] .stage{height:calc(100vh - var(--dockH,236px))}
+body[data-view="battle"] #panel{max-height:var(--dockH,236px);height:var(--dockH,236px);bottom:0;border-radius:18px 18px 0 0;padding:10px 14px;gap:8px}
+body[data-view="battle"].panel-min .stage{height:100vh}
+body[data-view="battle"] #feed{bottom:calc(var(--dockH,236px) + 70px);top:64px;width:min(260px,22vw)}
+body[data-view="battle"] #chat{bottom:calc(var(--dockH,236px) + 8px);width:min(280px,24vw)}
+body[data-view="battle"] #chatlog{max-height:0;padding:0;transition:max-height .25s}
+body[data-view="battle"] #chat:hover #chatlog,body[data-view="battle"] #chat:focus-within #chatlog{max-height:140px;padding:2px 4px 6px}
+.bhint{margin:0}
+.plate{width:min(var(--pw,15%),210px)!important;font-size:.7rem}
+#hud{gap:5px}#hud .pill{font-size:.78rem;padding:3px 9px}#hud button.mute{padding:4px 9px;font-size:.78rem}
+@media (max-width:760px){ body[data-view="battle"] .stage{height:calc(100vh - 52vh)} body[data-view="battle"] #panel{height:52vh;max-height:52vh} }
 </style>
 <div class="wrap">
   <div class="stage"><div id="stage3d" aria-label="game scene"></div><div id="ov"></div><div id="fx"></div></div>
   <div id="hud"></div>
   <div id="panel" aria-live="polite"></div>
+  <aside id="feed" aria-label="recent activity"></aside>
+  <div id="chat" hidden><div id="chatlog" aria-live="polite"></div><form id="chatf" autocomplete="off"><input id="chatin" maxlength="120" placeholder="Chat with your party…" aria-label="chat message"><button aria-label="send">➤</button></form></div>
+  <div id="dockbtns"><button class="ghost" id="pnbtn" title="Show / hide the panel">◧</button><button class="ghost" id="fsbtn" title="Full screen">⛶</button></div>
 </div>
 <script>
 /* ---- 01_data.js ---- */
@@ -2278,6 +2360,7 @@ function heroMoves(w, a){ if (!w) return []; const arch = w.arch || 'blade'; con
   t1.dmg = pc(t1.mult) + ' to one foe'; t2.dmg = kind2 === 'area' ? pc(m2) + ' to every foe' : hits2 + ' hits × ' + pc(m2); t3.dmg = pc(m3) + ' to one foe';
   const ops4 = t4.sig ? D.SIGS[t4.sig][2] : t4.ops; const dOp = ops4.find(o => ['hit','all','multi','judge','gentle'].includes(o[0]));
   const cr = dOp && ((dOp[0]==='multi' ? dOp[3] : dOp[2]) || {}).crit; t4.dmg = !dOp ? 'No damage (support)' : dOp[0] === 'hit' ? pc(dOp[1]*(cr?2:1)) + ' to one foe' + (cr ? ' (sure crit)' : '') : dOp[0] === 'all' ? pc(dOp[1]) + ' to every foe' : dOp[0] === 'multi' ? dOp[1] + ' hits × ' + pc(dOp[2]) : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its current HP' : 'Kills a weakened foe outright';
+  const pw = x => Math.round(D.BASEPOW*x); t4.powTxt = !dOp ? 'support' : dOp[0] === 'hit' ? pw(dOp[1]) + ' power' + (cr ? ' · sure crit' : '') : dOp[0] === 'all' ? pw(dOp[1]) + ' power to all' : dOp[0] === 'multi' ? dOp[1] + '×' + pw(dOp[2]) + ' power' : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its HP' : 'finisher';
   const out4 = [t1, t2, t3, t4]; const wc = w.cat || (D.CASTER.includes(arch) ? 'spec' : 'phys'), b = w.bs || {}; const hyb = wc === 'phys' && (b.spa || 0) >= 0.4*(b.atk || 1);
   for (const m of out4){ m.ty = D.moveTypeOf(m, w); m.cat = wc; if (hyb && m.slot === 3) m.cat = 'spec'; if (hyb && m.slot === 1 && m.kind === 'area' && m.ty !== 'normal') m.cat = 'spec';
     m.pow = Math.round(D.BASEPOW * (m.mult || (m.slot === 3 ? 0 : 1))); } return out4; }
@@ -3963,6 +4046,64 @@ const has = e => !!(ART[e.art] && DEF[ART[e.art]]);
 return {build, has, beastHead, faceHead, quad, biped, dragon, serpent, flyer, arthro, spirit, golem};
 })();
 
+/* ---- 12e_v8_maps.js ---- */
+/* ===== Essay Quest v8 — MAPS: battlefields for the two new countries, and smoother trees for the old lands.
+   MAPS.props(theme, root, fx) builds a theme's set dressing; the renderer calls it from its own props(). ===== */
+const MAPS = (() => {
+const {mat, rbox, sweep, blob, sph, cyl, cone, tor, grp, rot, sprite, shade} = KIT;
+const PI = Math.PI;
+const SPOTS = [[-12, -5], [-9, -10], [10, -8], [13, -4], [-15, -12], [16, -13], [4, -14], [-5, -15], [-19, -7], [19, -9]];
+/* a smooth broadleaf tree: a swept trunk and a few lumpy canopy blobs */
+function tree(root, x, z, s, leaf, trunk, o){ o = o || {}; const g = grp(x, 0, z); const T = mat(trunk || 0x6a4428, 'leather', {roughness:0.9});
+  g.add(sweep([[0, 0, 0], [0.15*s, 1.2*s, 0.05], [o.lean || 0, 2.4*s, 0.1]], [0.32*s, 0.18*s], T, {radial:8}));
+  const L = mat(leaf, 'fur'); const n = o.lobes || 4; for (let i = 0; i < n; i++){ const a = i/n*PI*2; g.add(blob(1.05*s, 1, 0.8, 1, L, (o.lean || 0) + Math.cos(a)*0.7*s, 2.9*s + (i%2)*0.35*s, Math.sin(a)*0.6*s, 0.09, i + 1)); }
+  g.add(blob(1.2*s, 1, 0.85, 1, L, o.lean || 0, 3.3*s, 0, 0.08, 9)); g.traverse(m => { if (m.isMesh) m.castShadow = true; }); root.add(g); return g; }
+function pine(root, x, z, s, c, snow){ const g = grp(x, 0, z); g.add(cyl(0.18*s, 0.28*s, 1.4*s, mat(0x5a3a22, 'leather'), 0, 0.7*s, 0, 8)); const L = mat(c || 0x2f6a4a, 'fur');
+  for (let k = 0; k < 4; k++){ g.add(cone((1.5 - k*0.3)*s, 1.5*s, L, 0, (1.5 + k*0.85)*s, 0, 14)); if (snow) g.add(cone((1.0 - k*0.22)*s, 0.45*s, mat(0xf4fbff, 'fur'), 0, (2.0 + k*0.85)*s, 0, 14)); } root.add(g); return g; }
+function lantern(root, x, z, s, lit){ const g = grp(x, 0, z); const st = mat(0xa8a090, 'scale', {roughness:0.95}); g.add(cyl(0.18*s, 0.24*s, 1.4*s, st, 0, 0.7*s, 0, 8)); g.add(rbox(0.9*s, 0.12*s, 0.9*s, 0.04, st, 0, 1.45*s, 0)); g.add(rbox(0.6*s, 0.5*s, 0.6*s, 0.08, lit ? mat(0xffc060, 'glow') : st, 0, 1.8*s, 0)); g.add(rot(cone(0.65*s, 0.45*s, st, 0, 2.25*s, 0, 4), 0, PI/4, 0)); if (lit){ const sp = sprite(0xffb040, 2.2*s); sp.position.y = 1.8*s; g.add(sp); } root.add(g); return g; }
+function torii(root, x, z, s, rotY){ const g = grp(x, 0, z); const R = mat(0xc8281e, 'leather', {roughness:0.6}), K = mat(0x1a1414, 'leather');
+  for (const sx of [-1, 1]) g.add(cyl(0.24*s, 0.28*s, 4.6*s, R, sx*2.0*s, 2.3*s, 0, 12)); g.add(rbox(5.4*s, 0.32*s, 0.5*s, 0.1, R, 0, 3.7*s, 0));
+  const top = sweep([[-3.4*s, 4.55*s, 0], [0, 4.3*s, 0], [3.4*s, 4.55*s, 0]], 0.26*s, K, {radial:6, ey:0.6}); g.add(top); g.add(sweep([[-3.1*s, 4.3*s, 0], [0, 4.05*s, 0], [3.1*s, 4.3*s, 0]], 0.22*s, R, {radial:6, ey:0.6})); g.rotation.y = rotY || 0; root.add(g); return g; }
+function sakura(root, x, z, s){ const g = grp(x, 0, z); const T = mat(0x4a3028, 'leather');
+  g.add(sweep([[0, 0, 0], [0.3*s, 1.0*s, 0], [-0.2*s, 2.0*s, 0.2*s], [0.4*s, 2.8*s, 0]], [0.35*s, 0.16*s], T, {radial:8})); for (const sx of [-1, 1]) g.add(sweep([[0, 2.2*s, 0], [sx*1.0*s, 2.9*s, 0.2*s], [sx*1.8*s, 3.1*s, 0]], [0.14*s, 0.05*s], T, {radial:6}));
+  const P1 = mat(0xffb8d0, 'fur'), P2 = mat(0xff9ac0, 'fur'); for (let i = 0; i < 7; i++){ const a = i/7*PI*2; g.add(blob(0.95*s, 1, 0.75, 1, i % 2 ? P1 : P2, Math.cos(a)*1.4*s, 3.3*s + (i%3)*0.3*s, Math.sin(a)*0.8*s, 0.1, i + 3)); }
+  g.add(blob(1.2*s, 1, 0.7, 1, P1, 0, 3.8*s, 0, 0.1, 11)); root.add(g); return g; }
+function column(root, x, z, h, s, broken){ const g = grp(x, 0, z); const W = mat(0xf2ede2, 'scale', {roughness:0.7}); g.add(rbox(1.6*s, 0.3*s, 1.6*s, 0.06, W, 0, 0.15*s, 0)); const H = broken ? h*0.6 : h;
+  const shaft = cyl(0.55*s, 0.62*s, H, W, 0, 0.3*s + H/2, 0, 20); g.add(shaft); for (let i = 0; i < 12; i++){ const a = i/12*PI*2; g.add(rbox(0.06*s, H*0.98, 0.06*s, 0.02, mat(0xd8d2c4, 'scale'), Math.cos(a)*0.6*s, 0.3*s + H/2, Math.sin(a)*0.6*s)); }
+  if (!broken){ g.add(cyl(0.8*s, 0.6*s, 0.3*s, W, 0, 0.45*s + H, 0, 20)); g.add(rbox(1.8*s, 0.3*s, 1.8*s, 0.05, W, 0, 0.75*s + H, 0)); } root.add(g); return g; }
+function olive(root, x, z, s){ const g = grp(x, 0, z); const T = mat(0x6a5a48, 'leather', {roughness:0.95}); g.add(sweep([[0, 0, 0], [0.5*s, 0.8*s, 0.2*s], [-0.3*s, 1.6*s, -0.1*s], [0.2*s, 2.3*s, 0]], [0.45*s, 0.2*s], T, {radial:9}));
+  const L = mat(0x8aa06a, 'fur'), L2 = mat(0x9ab27a, 'fur'); for (let i = 0; i < 6; i++){ const a = i/6*PI*2; g.add(blob(0.9*s, 1, 0.6, 1, i % 2 ? L : L2, Math.cos(a)*1.3*s, 2.7*s + (i%2)*0.3*s, Math.sin(a)*0.9*s, 0.12, i + 5)); } root.add(g); return g; }
+function rock(root, x, y, z, r, c){ const m = blob(r, 1.2, 0.75, 1, mat(c || 0x8a8478, 'scale', {roughness:0.95}), x, y, z, 0.12, (x*7 + z*3)|0); root.add(m); return m; }
+function petals(fx, n, c){ for (let i = 0; i < n; i++){ const s = sprite(c, 0.35); s.position.set(-16 + Math.random()*32, Math.random()*8, -10 + Math.random()*12); s.userData.ember = 1; fx.add(s); } }
+function mist(fx, n, c){ for (let i = 0; i < n; i++){ const s = sprite(c || 'rgba(240,244,255,.35)', 7 + Math.random()*5); s.material.blending = THREE.NormalBlending; s.position.set(-20 + i*40/n, 1 + Math.random()*2, -12 - Math.random()*8); s.userData.float = i; fx.add(s); } }
+/* ---------- theme builders ---------- */
+const T = {
+  bamboo(root, fx){ const G = mat(0x6fae4a, 'leather', {roughness:0.5}), K = mat(0x4f8a34, 'leather'); for (const [x, z] of SPOTS.concat([[-7, -8], [7, -11], [-17, -16], [15, -17]])) for (let k = 0; k < 4; k++){ const g = grp(x + Math.cos(k*1.7)*0.9, 0, z + Math.sin(k*2.3)*0.9); const h = 7 + (k%3)*2; for (let j = 0; j < 6; j++){ g.add(cyl(0.16, 0.17, h/6, G, 0, h/6*(j + 0.5), 0, 10)); g.add(cyl(0.19, 0.19, 0.06, K, 0, h/6*(j + 1), 0, 10)); } for (let j = 0; j < 4; j++) g.add(rot(blob(0.5, 1.6, 0.12, 0.45, mat(0x7fc85a, 'fur'), 0.4, h*0.6 + j*0.6, 0), 0, j*1.5, 0.6)); g.rotation.z = (k - 1.5)*0.04; root.add(g); } mist(fx, 5, 'rgba(220,255,220,.25)'); },
+  sakura(root, fx){ torii(root, 0, -13, 1.1); torii(root, 0, -18, 0.95); [[-11, -6], [11, -7], [-15, -12], [15, -11], [-7, -15], [8, -15]].forEach(([x, z], i) => sakura(root, x, z, 0.95 + (i%3)*0.2)); [[-4.5, -10], [4.5, -10], [-6, -6], [6, -6]].forEach(([x, z]) => lantern(root, x, z, 1, false)); petals(fx, 40, 0xffc0d8);
+    const path = new THREE.Mesh(new THREE.PlaneGeometry(4, 20), mat(0xb8b0a0, 'scale', {roughness:0.95})); path.rotation.x = -PI/2; path.position.set(0, 0.03, -12); root.add(path); },
+  mountain(root, fx){ const fuji = grp(0, -2, -55); fuji.add(cone(28, 26, mat(0x5a6a8a, 'scale', {roughness:0.9}), 0, 13, 0, 40)); fuji.add(cone(10, 9, mat(0xf4f8ff, 'fur'), 0, 22.6, 0, 40)); root.add(fuji); SPOTS.forEach(([x, z], i) => pine(root, x, z, 1 + (i%3)*0.3, 0x2f5a4a)); for (let i = 0; i < 8; i++) rock(root, -16 + i*4.5, 0.4, -6 - (i%3)*3, 0.9 + (i%2)*0.5, 0x7a7a80); mist(fx, 8); torii(root, 12, -12, 0.7, -0.3); },
+  onsen(root, fx){ const R = 0x5a5048; for (let i = 0; i < 16; i++) rock(root, -20 + i*2.6, 0.6, -9 - (i%3)*3, 1.4 + (i%4)*0.6, R); for (let i = 0; i < 8; i++){ const st = cone(0.5, 2.5 + (i%3), mat(R, 'scale'), -12 + i*3.4, 9, -6 - (i%2)*4, 8); st.rotation.x = PI; root.add(st); }
+    for (const [x, z, r] of [[-8, -8, 3.2], [9, -9, 2.6]]){ const pool = new THREE.Mesh(new THREE.CircleGeometry(r, 32), mat(0x7fd8d0, 'glass')); pool.rotation.x = -PI/2; pool.position.set(x, 0.06, z); root.add(pool); for (let i = 0; i < 6; i++) rock(root, x + Math.cos(i)*r, 0.2, z + Math.sin(i)*r, 0.5, 0x6a6058); for (let i = 0; i < 4; i++){ const s = sprite('rgba(255,255,255,.35)', 3); s.material.blending = THREE.NormalBlending; s.position.set(x + Math.cos(i*1.6)*r*0.5, 1 + i*0.6, z); s.userData.float = i; fx.add(s); } }
+    [[-4, -5], [4, -5], [0, -12]].forEach(([x, z]) => lantern(root, x, z, 0.9, true)); },
+  castle(root, fx){ const c = grp(0, 0, -26); const W = mat(0xf0ece2, 'scale'), Rf = mat(0x2a3440, 'scale', {roughness:0.5}), St = mat(0x8a8478, 'scale', {roughness:0.95});
+    c.add(rbox(16, 5, 10, 0.4, St, 0, 2.5, 0)); for (let k = 0; k < 4; k++){ const w = 11 - k*2.4, y = 5 + k*3.1; c.add(rbox(w, 2.4, w*0.62, 0.15, W, 0, y + 1.2, 0)); const roof = rot(cone(w*0.82, 1.6, Rf, 0, y + 3.0, 0, 4), 0, PI/4, 0); roof.scale.z = 0.62; c.add(roof); for (const sx of [-1, 1]) c.add(rot(cone(0.25, 1.0, Rf, sx*w*0.55, y + 2.6, 0, 5), 0, 0, -sx*0.9)); }
+    c.add(rot(sweep([[-0.6, 0, 0], [0, 0.6, 0], [0.6, 0, 0]], 0.18, mat(0xd8a838, 'gold'), {radial:6}), 0, 0, 0).translateY(18.5)); root.add(c); [[-9, -9], [9, -9], [-14, -4], [14, -4]].forEach(([x, z]) => lantern(root, x, z, 1.1, true)); torii(root, -12, -14, 0.8, 0.3); petals(fx, 25, 0xff6040); },
+  olive(root, fx){ SPOTS.forEach(([x, z], i) => olive(root, x, z, 0.95 + (i%3)*0.2)); const sea = new THREE.Mesh(new THREE.PlaneGeometry(120, 30), mat(0x2f80c8, 'metal', {roughness:0.15, metalness:0.3})); sea.rotation.x = -PI/2; sea.position.set(0, -1.2, -38); root.add(sea); for (let i = 0; i < 8; i++) rock(root, -18 + i*5, 0.3, -6 - (i%2)*5, 0.6 + (i%3)*0.3, 0xe8e0d0); column(root, 13, -12, 4, 1, true); column(root, -14, -13, 4, 1, true); },
+  agora(root, fx){ for (let i = 0; i < 6; i++){ column(root, -15 + i*6, -14, 6.5, 1, i === 4); } for (let i = 0; i < 3; i++) root.add(rbox(40 - i*2, 0.4, 3 - i*0.6, 0.06, mat(0xe8e2d4, 'scale'), 0, 0.2 + i*0.4, -16.5 + i*0.3));
+    const st = grp(11, 0, -8); st.add(rbox(1.6, 1.2, 1.6, 0.08, mat(0xe8e2d4, 'scale'), 0, 0.6, 0)); st.add(blob(0.5, 1, 2.0, 0.8, mat(0xf2ede2, 'scale'), 0, 2.4, 0)); st.add(sph(0.38, mat(0xf2ede2, 'scale'), 0, 3.8, 0, 16)); root.add(st); SPOTS.slice(5).forEach(([x, z], i) => olive(root, x, z, 0.9)); },
+  labyrinth(root, fx){ const W = mat(0x8a7a62, 'scale', {roughness:0.95}); for (const [x, z, w, d] of [[-12, -8, 1, 10], [12, -8, 1, 10], [-6, -14, 12, 1], [6, -11, 1, 7], [-16, -14, 8, 1], [16, -13, 8, 1], [-9, -4, 6, 1], [9, -4, 6, 1]]) root.add(rbox(w, 4, d, 0.2, W, x, 2, z));
+    for (let i = 0; i < 6; i++){ const t = grp(-11 + i*4.4, 4.2, -14); t.add(cyl(0.08, 0.1, 0.6, mat(0x4a3020, 'leather'), 0, 0, 0, 6)); t.add(sprite(0xff9a30, 1.4).translateY(0.4)); root.add(t); } },
+  cyclopscave(root, fx){ T.onsen0(root, fx, 0x4a4038); const forge = grp(8, 0, -9); forge.add(rbox(3, 1.6, 2, 0.2, mat(0x3a3434, 'metal'), 0, 0.8, 0)); forge.add(sph(0.9, mat(0xff6020, 'glow'), 0, 1.7, 0, 16)); forge.add(sprite(0xff6020, 5).translateY(2)); root.add(forge);
+    for (let i = 0; i < 30; i++){ const s = sprite(0xff8a30, 0.35); s.position.set(6 + Math.random()*4, Math.random()*5, -10 + Math.random()*2); s.userData.ember = 1; fx.add(s); } },
+  onsen0(root, fx, R){ for (let i = 0; i < 16; i++) rock(root, -20 + i*2.6, 0.6, -9 - (i%3)*3, 1.4 + (i%4)*0.6, R); for (let i = 0; i < 8; i++){ const st = cone(0.5, 2.5 + (i%3), mat(R, 'scale'), -12 + i*3.4, 9, -6 - (i%2)*4, 8); st.rotation.x = PI; root.add(st); } },
+  temple(root, fx){ const t = grp(0, 0, -24); const W = mat(0xf2ede2, 'scale', {roughness:0.65}); for (let i = 0; i < 3; i++) t.add(rbox(26 - i*1.4, 0.6, 12 - i*1.0, 0.08, W, 0, 0.3 + i*0.6, 0));
+    for (let i = 0; i < 8; i++) column(t, -10.5 + i*3, 4, 8, 1.05); t.add(rbox(25, 1.2, 10, 0.1, W, 0, 11.2, 0)); const sh = new THREE.Shape([new THREE.Vector2(-12.6, 0), new THREE.Vector2(12.6, 0), new THREE.Vector2(0, 3.2)]); const ped = KIT.mesh(new THREE.ExtrudeGeometry(sh, {depth:9.6, bevelEnabled:false}), W); ped.position.set(0, 11.8, -4.8); t.add(ped); root.add(t);
+    [[-7, -7], [7, -7]].forEach(([x, z]) => { const b = grp(x, 0, z); b.add(cyl(0.3, 0.5, 2.4, mat(0xc88a3a, 'gold'), 0, 1.2, 0, 10)); b.add(cyl(0.9, 0.5, 0.6, mat(0xc88a3a, 'gold'), 0, 2.6, 0, 14)); b.add(sprite(0xff9a30, 3.4).translateY(3.2)); root.add(b); }); }};
+const DARK = new Set(['onsen', 'castle', 'labyrinth', 'cyclopscave']);
+function props(th, root, fx){ if (!T[th]) return false; T[th](root, fx); return true; }
+return {props, tree, pine, has: th => !!T[th], DARK};
+})();
+
 /* ---- 13_art3d.js ---- */
 
 /* ===== Essay Quest v5 — 3D blocky (Roblox-style) renderer on three.js r128 ===== */
@@ -3998,38 +4139,41 @@ function init(el){
   cam = new THREE.PerspectiveCamera(46, 16/9, 0.1, 200); clock = new THREE.Clock(); resize(); makeEnv(); postInit();
   window.addEventListener('resize', resize); requestAnimationFrame(loop);
 }
-function resize(){ if (!host) return; const w = host.clientWidth || 960; const h = Math.round(w*9/16); R.setSize(w, h, false); W = w; H = h; cam.aspect = w/h; cam.updateProjectionMatrix(); if (typeof postResize === 'function' && post) postResize(); }
+function resize(){ if (!host) return; const w = host.clientWidth || 960; const h = host.clientHeight > 80 ? host.clientHeight : Math.round(w*9/16); /* v8: the stage fills the window */ R.setSize(w, h, false); W = w; H = h; cam.aspect = w/h; cam.updateProjectionMatrix(); if (typeof postResize === 'function' && post) postResize(); }
 
 const WPAL = [
   {sky:['#7cc6ff','#e2f4ff'], ground:0x6cc35a, ground2:0x4a9a3e, fog:0xcfeaff, hill:0x5aa64e},
   {sky:['#5a8fc9','#cfe8f7'], ground:0xf0d999, ground2:0xd9bd73, fog:0xbfe0f5, hill:0x3f8a6a},
   {sky:['#f08a3a','#ffd9a0'], ground:0xe8b86a, ground2:0xcf9a4a, fog:0xffcf9a, hill:0xc07a3a},
-  {sky:['#8fcff0','#f4fbff'], ground:0xf4fbff, ground2:0xd5e9f3, fog:0xe6f5ff, hill:0xbcdcee}];
-const THEME = [['tree','tree','pillar','cave','keep'],['palm','ship','cave','palm','magic'],['cactus','ember','pillar','bones','rift'],['pine','cave','lake','aurora','barn']];
+  {sky:['#8fcff0','#f4fbff'], ground:0xf4fbff, ground2:0xd5e9f3, fog:0xe6f5ff, hill:0xbcdcee},
+  {sky:['#f6a8bc','#ffe8ee'], ground:0x86b56e, ground2:0x6e9a58, fog:0xffe0ea, hill:0x5e8c62},   // Yamato
+  {sky:['#4fa6ee','#e8f6ff'], ground:0xb8b07a, ground2:0xd6c8a0, fog:0xd0e8f8, hill:0x7a9a5a}];  // Hellas
+const THEME = [['tree','tree','pillar','cave','keep'],['palm','ship','cave','palm','magic'],['cactus','ember','pillar','bones','rift'],['pine','cave','lake','aurora','barn'],['bamboo','sakura','mountain','onsen','castle'],['olive','agora','labyrinth','cyclopscave','temple']];
 function clearScene(){ if (scene){ scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(m => { if (m.map) m.map.dispose(); m.dispose(); }); } }); }
   scene = new THREE.Scene(); root = new THREE.Group(); scene.add(root); fxGroup = new THREE.Group(); scene.add(fxGroup); hero = null; foes = {}; lights = {}; scene.environment = ENV || makeEnv(); resetEnvFx(); }
 function world(w, theme, night){
-  const X7 = !night && TH7[theme]; const P = X7 ? Object.assign({}, WPAL[w], X7.p) : WPAL[w], th = THEME[w][theme||0] || (X7 ? 'x7' : 0), dark = !!X7 && theme===6 || night || ['cave','rift','magic','keep','aurora','ember','bones'].includes(th);
+  const X7 = !night && TH7[theme]; const P = X7 ? Object.assign({}, WPAL[w], X7.p) : WPAL[w], th = THEME[w][theme||0] || (X7 ? 'x7' : 0), dark = !!X7 && theme===6 || night || ['cave','rift','magic','keep','aurora','ember','bones'].includes(th) || (typeof MAPS !== 'undefined' && MAPS.DARK.has(th));
   scene.background = X7 ? gradientBG(X7.sky[0], X7.sky[1]) : gradientBG(night ? '#0d1030' : th==='rift' ? '#1a0b2e' : dark ? '#3a3f5a' : P.sky[0], night ? '#2a2550' : th==='rift' ? '#4a1d6a' : dark ? '#6a6f8a' : P.sky[1]);
   scene.fog = new THREE.Fog(X7 ? X7.fog : night ? 0x1a1a3a : dark ? 0x4a4a66 : P.fog, X7 ? X7.near : 30, X7 ? X7.far : 75);
   const hemi = new THREE.HemisphereLight(night ? 0x5a6aa0 : 0xffffff, night ? 0x1a1020 : 0x6a5a40, night ? 0.3 : dark ? 0.4 : 0.55); scene.add(hemi);
   const sun = new THREE.DirectionalLight(X7 ? X7.sun : night ? 0x8090ff : th==='rift' ? 0xc080ff : 0xfff2dd, night ? 0.25 : dark ? 0.6 : 1.05); sun.position.set(-8, 16, 10); sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, {left:-16, right:16, top:12, bottom:-6, near:1, far:50}); scene.add(sun); lights.sun = sun;
   const g = new THREE.PlaneGeometry(80, 40, 40, 20); g.rotateX(-Math.PI/2); const pos = g.attributes.position; for (let i=0;i<pos.count;i++){ const x = pos.getX(i), z = pos.getZ(i); if (z < -6) pos.setY(i, Math.sin(x*0.25)*0.6 + Math.cos(z*0.4)*0.4 + (-z-6)*0.15); }
-  g.computeVertexNormals(); const ground = new THREE.Mesh(g, M(night ? new THREE.Color(P.ground).multiplyScalar(0.35) : P.ground, {flatShading:true})); ground.receiveShadow = true; ground.position.z = -6; root.add(ground);
+  g.computeVertexNormals(); const ground = new THREE.Mesh(g, M(night ? new THREE.Color(P.ground).multiplyScalar(0.35) : P.ground, {roughness:0.95})); ground.receiveShadow = true; ground.position.z = -6; root.add(ground);
   // battle pad
   const pad = new THREE.Mesh(new THREE.CircleGeometry(9, 40), M(new THREE.Color(P.ground2).multiplyScalar(night ? 0.4 : 1), {roughness:0.9})); pad.rotation.x = -Math.PI/2; pad.position.set(0, 0.02, 0); pad.receiveShadow = true; root.add(pad);
   // hills
-  for (let i=0;i<7;i++){ const hl = new THREE.Mesh(new THREE.SphereGeometry(6+i%3*2, 12, 8), M(new THREE.Color(P.hill).multiplyScalar(night?0.35:dark?0.6:1), {flatShading:true})); hl.position.set(-30 + i*10, -2.5, -28 - (i%2)*6); hl.scale.y = 0.6; root.add(hl); }
+  for (let i=0;i<7;i++){ const hl = new THREE.Mesh(new THREE.SphereGeometry(6+i%3*2, 24, 16), M(new THREE.Color(P.hill).multiplyScalar(night?0.35:dark?0.6:1), {roughness:0.95})); hl.position.set(-30 + i*10, -2.5, -28 - (i%2)*6); hl.scale.y = 0.6; root.add(hl); }
   if (w===3 || th==='pine'){ for (let i=0;i<5;i++){ const m = cone(5, 10, M(0xe8f4ff, {flatShading:true}), 5); m.position.set(-24+i*12, 3, -34); root.add(m); } }
   props(w, th, night); if (X7) worldEx(theme);
   if (w===1 && !['cave','magic'].includes(th)){ const sea = new THREE.Mesh(new THREE.PlaneGeometry(90, 14), M(0x3d8fd0, {roughness:0.2, metalness:0.2, transparent:true, opacity:0.92})); sea.rotation.x = -Math.PI/2; sea.position.set(0, 0.05, -18); root.add(sea); lights.sea = sea; }
 }
 function tree(x, z, s=1, col=0x3f9a3c){ const g = new THREE.Group(); g.add(at(cyl(0.25*s, 0.35*s, 2*s, M(0x7a4b2a)), 0, s, 0)); const c = new THREE.Mesh(new THREE.IcosahedronGeometry(1.4*s, 0), M(col, {flatShading:true})); c.castShadow = true; c.position.y = 2.6*s; g.add(c); g.position.set(x, 0, z); root.add(g); }
 function props(w, th, night){
+  if (typeof MAPS !== 'undefined' && MAPS.props(th, root, fxGroup)) return;   // v8: Yamato and Hellas
   const L = [[-12,-5],[-9,-10],[10,-8],[13,-4],[-15,-12],[16,-13],[4,-14],[-5,-15]];
-  if (th==='tree') L.forEach(([x,z],i) => tree(x, z, 0.9 + (i%3)*0.25, i%2 ? 0x3f9a3c : 0x5cbf55));
-  if (th==='pine') L.forEach(([x,z],i) => { const g = new THREE.Group(); g.add(at(cyl(0.2,0.3,1.2,M(0x6b4426)),0,0.6,0)); for (let k=0;k<3;k++){ g.add(at(cone(1.4-k*0.35, 1.6, M(0x2f6f5a,{flatShading:true}), 7), 0, 1.6+k*0.9, 0)); g.add(at(cone(1.0-k*0.3, 0.5, M(0xffffff), 7), 0, 2.2+k*0.9, 0)); } g.position.set(x,0,z); g.scale.setScalar(1+(i%3)*0.3); root.add(g); });
+  if (th==='tree') L.forEach(([x,z],i) => typeof MAPS !== 'undefined' ? MAPS.tree(root, x, z, 0.9 + (i%3)*0.25, i%2 ? 0x3f9a3c : 0x5cbf55) : tree(x, z, 0.9 + (i%3)*0.25, i%2 ? 0x3f9a3c : 0x5cbf55));
+  if (th==='pine' && typeof MAPS !== 'undefined'){ L.forEach(([x,z],i) => MAPS.pine(root, x, z, 1+(i%3)*0.3, 0x2f6f5a, true)); } else if (th==='pine') L.forEach(([x,z],i) => { const g = new THREE.Group(); g.add(at(cyl(0.2,0.3,1.2,M(0x6b4426)),0,0.6,0)); for (let k=0;k<3;k++){ g.add(at(cone(1.4-k*0.35, 1.6, M(0x2f6f5a,{flatShading:true}), 7), 0, 1.6+k*0.9, 0)); g.add(at(cone(1.0-k*0.3, 0.5, M(0xffffff), 7), 0, 2.2+k*0.9, 0)); } g.position.set(x,0,z); g.scale.setScalar(1+(i%3)*0.3); root.add(g); });
   if (th==='palm') L.forEach(([x,z],i) => { const g = new THREE.Group(); for (let k=0;k<6;k++) g.add(at(cyl(0.22,0.26,0.6,M(0x9a6b3a)), k*0.08, 0.3+k*0.55, 0)); for (let k=0;k<6;k++){ const lf = box(2.4, 0.08, 0.6, M(0x3faa4a)); lf.position.set(0.4, 3.4, 0); lf.rotation.y = k*1.05; lf.rotation.z = -0.4; lf.translateX(1); g.add(lf); } g.position.set(x,0,z); root.add(g); });
   if (th==='cactus') L.forEach(([x,z],i) => { const m = M(0x4f9a4a, {flatShading:true}); const g = new THREE.Group(); g.add(at(cyl(0.45,0.5,3.2,m,8),0,1.6,0)); g.add(at(cyl(0.3,0.3,1.2,m,8),-0.8,1.8,0)); g.add(at(cyl(0.3,0.3,1.4,m,8),0.8,2.2,0)); g.position.set(x,0,z); root.add(g); });
   if (th==='pillar' || th==='keep') L.slice(0,6).forEach(([x,z],i) => { const m = M(w===2 ? 0xd9b98a : 0x9aa3ab, {flatShading:true}); const h = th==='keep' ? 7 : 2 + (i%3)*1.6; root.add(at(box(1.4, h, 1.4, m), x, h/2, z)); root.add(at(box(1.8, 0.4, 1.8, m), x, h+0.2, z));
@@ -5301,7 +5445,7 @@ function splitSentences(p){ const toks = p.replace(/\s+/g, ' ').trim().split(' '
 function parseEssay(text, key){ const L = {common:'C', moda:'A', modb:'B', modc:'M', web:'W'}[key]; let paras = text.replace(/\r/g, '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
   if (paras.length === 1 && /\n/.test(paras[0])) paras = paras[0].split(/\n/).map(x => x.trim()).filter(Boolean);
   const n = paras.length; return paras.map((para, i) => ({c:`U${L}-${i+1}`, e:key, n: key==='modc' ? `Part ${i+1}` : n >= 3 ? (i===0 ? 'Introduction' : i===n-1 ? 'Conclusion' : `Body ${i}`) : `Paragraph ${i+1}`, s: splitSentences(para), mine:true})).filter(u => u.s.length); }
-const STATS = {STR:'Strength: +2.5% damage each', AGI:'Agility: +0.4% dodge (max 10% at 25 AGI), +0.2% crit and faster initiative each', FOR:'Fortitude: +5 max HP each', WPN:'Weapon: unlocks better weapons; +1% damage per point above the requirement'};
+const STATS = {STR:'Strength: needed by swords, spears, heavy weapons, scythes and plate armour', AGI:'Agility: needed by fists, bows, katanas, thrown weapons and leather armour', INT:'Intelligence: needed by staves, tomes, lyres, robes and vestments', FOR:'Fortitude: needed by every armour, and the strongest weapons', WPN:'Weapon: every weapon needs it'};
 const QN = {sentStarts:'First letter of every sentence → write it all', read:'Read it through', order1:'Logical progression (sentences)', order2:'Logical progression (half-sentences)', order3:'Logical progression (thirds)', summary:'Dot-point summary',
   next:'Flashcard: what comes next?', unscramble:'Unscramble the sentence (phrases)', spot:'Spot the 4 changed words', tsRecall:'Recall the topic sentence', closer:'Recall the linking sentence', missing:'Fill the missing sentence',
   blank25:'Fill the gaps (a quarter, word bank)', blank33:'Fill the gaps (a third of the words)', blank50:'Fill the gaps (half the words)', blank85:'Fill the gaps (almost every word)', quoteHint:'Quote recall (first word given)', quotes:'Quote recall',
@@ -5312,10 +5456,10 @@ const halfOf = t => { const w = C.words(t); return w.slice(0, Math.ceil(w.length
 const firstHint = w => w ? w[0] + '_'.repeat(Math.max(1, w.length-1)) : '';
 const TIERC = ['', '#9fe0a0', '#7fc0ff', '#c79bff', '#ff9a6b', '#ffe27a'];
 /* the belt holds at most BELTCAP of each consumable; extras melt into Ink */
-const BELTCAP = C.BELTCAP; function addBelt(k, n=1){ const have = S.belt[k]||0, room = Math.max(0, BELTCAP - have), put = Math.min(room, n); S.belt[k] = have + put; if (n > put){ S.ink = (S.ink||0) + 10*(n-put); } return put; }
+const BELTCAP0 = C.BELTCAP; const beltCap = () => BELTCAP0 + (S && S.meta && S.meta.equipped.includes('pockets') ? 2 : 0); function addBelt(k, n=1){ const BELTCAP = beltCap(); const have = S.belt[k]||0, room = Math.max(0, BELTCAP - have), put = Math.min(room, n); S.belt[k] = have + put; if (n > put){ S.ink = (S.ink||0) + 10*(n-put); } return put; }
 let S = null, BAT = null, SEL = null, campTab = 'gear', busy = false, sceneKey = '';
 const clone = o => JSON.parse(JSON.stringify(o));
-const fresh = () => { const s0 = C.starter(); return {v:3, world:0, level:1, hlv:1, xp:0, phase:'title', st:{STR:0,AGI:0,FOR:0,WPN:0}, pts:0, hp:null, ink:20,
+const fresh = () => { const s0 = C.starter(); return {v:3, v8:1, world:0, level:1, hlv:1, xp:0, phase:'title', st:{STR:0,AGI:0,INT:0,FOR:0,WPN:0}, pts:Dd.SP_START, hp:null, ink:20,
   bag:[s0.weapon, s0.armour], eq:{weapon:s0.weapon.uid, armour:s0.armour.uid, trinkets:[null,null]}, belt:{hp:2}, souls:0, paths:null, path:null, quests:null, lastKinds:[],
   snap:null, cp:null, checkpointOn:false, cleared:[false,false,false,false], essay:null, deaths:0, mastery:{}, inspired:0, newLoot:[], chest:null, uid:C.getUID(), wins:0, rested:false,
   meta:{wisdom:0, owned:[], equipped:[]}, half:false}; };
@@ -5341,7 +5485,9 @@ function loadLegacy(){ try { const s = null; if (s && s.v===3){ S = s; C.setUID(
   return; } } catch(e){} S = fresh(); S.build = BUILD; }
 function save(){ if (S && S.party){ try { localStorage.setItem('eq5_party', JSON.stringify({code: PARTY.code, S})); if (S.meta) localStorage.setItem('eq5_partymeta', JSON.stringify({wisdom: S.meta.wisdom, owned: S.meta.owned, equipped: S.meta.equipped})); } catch(e){} return; } if (SLOT == null || !S) return; S.uid = C.getUID(); S.played = Date.now(); try { localStorage.setItem(SKEY(SLOT), JSON.stringify(S)); } catch(e){} }
 const item = uid => uid==null ? null : S.bag.find(i => i.uid === uid) || null;
-const P = () => ({lv:S.hlv||1, st:S.st, boons:S.meta.equipped, eq:{weapon:item(S.eq.weapon), armour:item(S.eq.armour), trinkets:S.eq.trinkets.map(item)}});
+const LOOKKEY = 'eq8_look'; function myLook(){ try { return Object.assign({}, HERO8.DEFAULT_LOOK, JSON.parse(localStorage.getItem(LOOKKEY) || '{}')); } catch(e){ return Object.assign({}, HERO8.DEFAULT_LOOK); } }
+function saveLook(L){ try { localStorage.setItem(LOOKKEY, JSON.stringify(L)); } catch(e){} }
+const P = () => ({lv:S.hlv||1, st:S.st, boons:S.meta.equipped, look:myLook(), eq:{weapon:item(S.eq.weapon), armour:item(S.eq.armour), trinkets:S.eq.trinkets.map(item)}});
 const maxHP = () => C.derive(P()).max;
 const curHP = () => { const m = maxHP(); if (S.hp == null || S.hp > m) S.hp = m; return S.hp; };
 /* hero level + gear growth: every level the hero gains, equipped gear gains too (if you meet its new requirement) */
@@ -5350,7 +5496,7 @@ const foeLv = () => C.enemyLv(S.world, S.level);
 /* study XP → hero levels: each level is +3 stat points, a 20% heal, and your equipped gear grows one level */
 function gainXP(xp){ S.xp = (S.xp||0) + xp; let ups = 0; while (S.xp >= C.XPK.perLevel){ S.xp -= C.XPK.perLevel; S.hlv = (S.hlv||1) + 1; S.pts += C.XPK.sp; ups++; growGear(1); S.hp = Math.min(maxHP(), curHP() + Math.round(maxHP()*0.2)); } if (ups){ syncPL(); setTimeout(() => toast(`⬆ Level up! Hero Lv ${S.hlv} (+${C.XPK.sp*ups} stat points)`), 500); SND.sfx('level'); } return ups; }
 function syncPL(){ if (S && S.bag) C.setPL(heroPL()); }
-function growGear(steps){ if (!(steps > 0)) return; const grown = [], held = [];
+function growGear(steps){ return; /* v8: gear never levels */ if (!(steps > 0)) return; const grown = [], held = [];
   for (const uid of [S.eq.weapon, S.eq.armour, ...S.eq.trinkets]){ const it = item(uid); if (!it || it.kind === 'consumable') continue; let ok = 0;
     for (let i=0;i<steps;i++){ C.applyLevel(it, (it.lvl||1) + 1); ok++; } if (!C.canEquip(P(), it)){ it.grand = true; held.push(it.name); }
     if (ok) grown.push(`${it.name} → Lv ${it.lvl}`); }
@@ -5358,10 +5504,10 @@ function growGear(steps){ if (!(steps > 0)) return; const grown = [], held = [];
 const GONE_KINDS = ['summary','handwrite','photo','recall','ltq','firstOnly','letters','letters1','blank85','placeEssay','missing','chain'];
 function migrateHero(){ if (!S) return; if (S.hlv == null){ S.hlv = Math.max(1, C.plOf(S.world||0, S.level||1)); S.xp = 0; }
   if (S.quests && S.quests.some(q => q.tier > 3 || GONE_KINDS.includes(q.kind))) { S.quests = S.quests.filter(q => q.tier <= 3 && !GONE_KINDS.includes(q.kind)); if (!S.quests.length) S.quests = null; } }
-function migrateItems(){ for (const it of (S.bag||[])) if (it && it.kind !== 'consumable' && it.lvl == null) C.applyLevel(it, (it.world||0)*30 + 1); }
+function migrateItems(){ if (S.st && S.st.INT == null) S.st.INT = 0; for (const it of (S.bag||[])) if (it && it.kind !== 'consumable' && it.kind !== 'tome' && (!it.bs || it.lvl != null)) C.statItem(it); }
 const stars = n => n > 5 ? '★'.repeat(n) : '★'.repeat(n) + '☆'.repeat(5-n);
 const dungeonName = (w, pth) => pth.kind === 'god' && pth.key ? 'Temple of ' + Dd.ENEMIES[pth.key][0].split(',')[0] : pth.kind === 'promised' ? (Dd.PROMISED_DUOS[pth.key] || Dd.PROMISED_DUOS[0]).name : pth.kind === 'outer' ? 'The ' + Dd.ENEMIES[pth.key][0].replace(/^The /, '').split(',')[0] : pth.final ? 'The Final Examination' : WD[w].dungeons[pth.theme];
-const slotsUsed = () => S.meta.equipped.reduce((a,id) => a + (Dd.BOONS.find(b=>b[0]===id)||[0,0,0])[2], 0);
+const BOONSLOTS = 6; const slotsUsed = () => S.meta.equipped.reduce((a,id) => a + (Dd.BOONS.find(b=>b[0]===id)||[0,0,0])[2], 0);
 
 /* ---------- AI marking ---------- */
 let SAMPLE;
@@ -5405,7 +5551,7 @@ function hud(){
   if (S.phase==='title' && APP !== 'party'){ $('hud').innerHTML = `<button class="ghost mute" id="home">⌂ Home</button><button class="ghost mute" id="mute">${SND.muted?'Sound off':'Sound on'}</button>`; $('mute').onclick = muteBtn; $('home').onclick = goHome; return; }
   const d = C.derive(P()); const h = curHP();
   $('hud').innerHTML = `${APP==='party'?`<span class="pill hot">Party ${esc(PARTY.code)}</span>`:''}<span class="pill w">${esc(WD[S.world].name)} · ${APP==='party'?'Round':'Lv'} ${S.level}/${C.LMAX}</span><span class="pill hero xpp"><i style="width:${Math.min(100, S.xp||0)}%"></i><b>Hero Lv ${heroPL()} · ${Math.round(S.xp||0)}/100 XP</b></span><span class="pill hpp"><i style="width:${h/d.max*100}%"></i><b>♥ ${h}/${d.max}</b></span>
-   <span class="pill">STR ${d.s.STR}</span><span class="pill">AGI ${d.s.AGI}</span><span class="pill">FOR ${d.s.FOR}</span><span class="pill">WPN ${d.s.WPN}</span>
+   <span class="pill statpill" tabindex="0">📊 Stats<span class="tip">${statSummary()}</span></span>
    <span class="pill ink">✒ ${S.ink} Ink</span><span class="pill wis">✦ ${S.meta.wisdom} Wisdom</span>
    ${S.inspired?`<span class="pill insp">Inspired ×${S.inspired}</span>`:''}${S.pts?`<span class="pill hot">${S.pts} point${S.pts>1?'s':''} to spend</span>`:''}${APP==='party' && PARTY.adminOK ? '<button class="ghost mute" id="adm">🛠</button>' : ''}<button class="ghost mute" id="home">${APP==='party'?'⌂ Leave':'⌂ Home'}</button><button class="ghost mute" id="mute">${SND.muted?'Sound off':'Sound on'}</button>`;
   $('mute').onclick = muteBtn; $('home').onclick = goHome; if ($('adm')) $('adm').onclick = () => PARTY.admin();
@@ -5416,7 +5562,8 @@ function muteBtn(){ SET.muted = !SET.muted; saveSet(); hud(); }
 /* ---------- moves and status chips (shared by solo and party battles) ---------- */
 const ARCHN = {tome:'mana tome (support)', grimoire:'frost grimoire (support)', psalter:'warding psalter (support)', lyre:'war lyre (support)', fist:'fist weapon', blade:'blade', pole:'polearm', ranged:'ranged', heavy:'heavy weapon', scythe:'scythe', katana:'katana', staff:'staff', thrown:'thrown'};
 const MTYPE = ['', 'Basic', 'Multi', 'Heavy', 'Special'];
-function moveInfo(m){ return `${m.cost ? m.cost + ' energy' : '+' + (m.gain||15) + ' energy'} · ${m.acc}% acc${m.cd ? ' · every ' + m.cd + ' rds' : ''}`; }
+function moveInfo(m){ const TI = Dd.TYPE_INFO[m.ty] || Dd.TYPE_INFO.normal; return `${TI[0]} · ${m.cat === 'spec' ? 'Special' : 'Physical'} · ${movePow(m)} · ${m.cost ? m.cost + ' energy' : '+' + (m.gain||15) + ' energy'} · ${m.acc}% acc${m.cd ? ' · every ' + m.cd + ' rds' : ''}`; }
+function movePow(m){ if (m.type === 2) return m.kind === 'area' ? `${Math.round(Dd.BASEPOW*m.mult)} power to all` : `${m.hits}×${Math.round(Dd.BASEPOW*m.mult)} power`; if (m.type === 4) return m.powTxt || m.dmg || 'special'; return `${Math.round(Dd.BASEPOW*(m.mult||1))} power`; }
 function moveListHTML(w){ const ms = C.heroMoves(w); if (!ms.length) return ''; const my = (w.rar||0) >= 4;
   return `<div class="movelist">${ms.map(m => `<div class="t${m.type}"><b>${m.type}. ${esc(m.n)}</b> <small>(${MTYPE[m.type]}${m.type===1 && m.rider ? ', Mythical' : m.type===4 && m.sig ? (my ? ', Mythical' : ', Legendary') : ''} · ${moveInfo(m)})</small> ${esc(m.d)}</div>`).join('')}</div>`; }
 /* what colour does an attack feel like? (frost lance = blue, firebomb = orange, ...) */
@@ -5426,29 +5573,38 @@ function elementOf(m, w){ w = w || {}; const byWords = str => { for (const [re, 
   if (w.world === 3 && !w.myth && (!el || el === 'earth')) el = 'ice'; if (!el) el = (!w.myth && Dd.WORLD_ELEMENT[w.world || 0]) || 'phys'; return el; }
 function targetTypesNow(){ try { if (APP === 'party') return window.__ptt ? window.__ptt() : null; const L = BAT ? BAT.B.es : []; const e = L.find(x => x.id === SEL && x.hp > 0) || L.find(x => x.hp > 0); return e ? eTypes(e) : null; } catch(err){ return null; } }
 function effOf(ty, defs){ if (!defs) return 1; return Dd.typeMul(ty, defs); }
-function moveBtns(ms, energy, mcd, turn, lock, myth, wpn){ const tt = targetTypesNow(); const arm = (typeof P === 'function' && S && S.eq) ? null : null; return ms.map(m => { const ty = m.ty || 'normal', TI = Dd.TYPE_INFO[ty] || Dd.TYPE_INFO.normal; const mult = effOf(ty, tt); const ec = mult >= 1.9 ? 'se' : mult <= 0.26 ? 'imm' : mult <= 0.6 ? 'nve' : '';
+/* the four move bars: type, physical / special, power, accuracy, energy, cooldown and how well it works on your target */
+function moveBtns(ms, energy, mcd, turn, lock, myth, wpn){ const tt = targetTypesNow(); let myTypes = []; try { myTypes = Dd.itemTypes(P().eq.armour); } catch(e){}
+  return ms.map(m => { const ty = m.ty || 'normal', TI = Dd.TYPE_INFO[ty] || Dd.TYPE_INFO.normal; const mult = effOf(ty, tt); const ec = mult >= 1.9 ? 'se' : mult <= 0.26 ? 'imm' : mult <= 0.6 ? 'nve' : ''; const stab = myTypes.includes(ty);
   const cdLeft = m.cd && (mcd[m.slot] || 0) > turn ? (mcd[m.slot] - turn) : 0; const short = energy < (m.cost||0); const ok = !lock && !short && !cdLeft;
-  const why = cdLeft ? `Ready in ${cdLeft} round${cdLeft>1?'s':''}` : short ? `Needs ${m.cost} energy (you have ${energy})` : '';
+  const why = cdLeft ? `Ready in ${cdLeft} round${cdLeft>1?'s':''}` : short ? `Needs ${m.cost} energy` : '';
   const effTxt = ec === 'se' ? `Super effective ×${mult}` : ec === 'imm' ? `Barely affects it ×${mult}` : ec === 'nve' ? `Not very effective ×${mult}` : '';
-  return `<button class="mvb t${m.type}${myth && (m.type===4 || (m.type===1 && m.rider)) ? ' myth' : ''} ${ec}" data-el="${ty}" style="--ec:${TI[2]}" data-slot="${m.slot}" ${ok ? '' : 'disabled'}><span class="ty">${m.type}. ${MTYPE[m.type]}${myth && (m.type===4 || (m.type===1 && m.rider)) ? ' · Mythical' : ''}</span><span class="el"><i class="tyi" style="--tc:${TI[2]}">${TI[1]}</i> ${TI[0]}-type</span><b>${esc(m.n)}</b>
-    <span class="st"><i>⚔ ${esc(m.dmg||'')}</i><i>🎯 ${m.acc}%</i><i>⚡ ${m.cost ? m.cost : '+' + (m.gain||15)}</i>${m.cd ? `<i>⟳ ${m.cd} rds</i>` : ''}</span>${effTxt ? `<span class="efx ${ec}">${effTxt}</span>` : ''}<small class="ef">${esc(m.d)}</small>${why ? `<em class="why">${why}</em>` : ''}</button>`; }).join(''); }
+  const isMy = myth && (m.type===4 || (m.type===1 && m.rider));
+  return `<button class="mvb bar t${m.type}${isMy ? ' myth' : ''} ${ec}" data-el="${ty}" style="--ec:${TI[2]}" data-slot="${m.slot}" ${ok ? '' : 'disabled'} title="${esc(m.d)}">
+    <span class="mk"><i class="tyi" style="--tc:${TI[2]}">${TI[1]}</i><em>${m.slot + 1}</em></span>
+    <span class="mn"><b>${esc(m.n)}</b><small>${TI[0]} · ${m.cat === 'spec' ? '✨ Special' : '⚔ Physical'}${stab ? ' · STAB ×1.5' : ''}${isMy ? ' · Mythical' : ''}</small></span>
+    <span class="mstat"><i title="Power">💥 ${esc(movePow(m))}</i><i title="Accuracy">🎯 ${m.acc}%</i><i title="Energy">⚡ ${m.cost ? m.cost : '+' + (m.gain||15)}</i>${m.cd ? `<i title="Cooldown">⟳ ${m.cd}</i>` : ''}</span>
+    <span class="meff ${ec}">${why ? `<em class="why">${why}</em>` : effTxt}</span></button>`; }).join(''); }
 const STN = {burn:'Burn', poison:'Poison', freeze:'Frozen', blind:'Blind', slow:'Slow', weak:'Weak', vuln:'Exposed', recharge:'Recharge', empower:'Empowered', swift:'Swift', enlight:'Enlightened', god:'GODHOOD'};
 function heroChips(st){ return Object.keys(st||{}).filter(k => STN[k] && st[k] > 0).map(k => `<span class="s-${k}" title="${esc(Dd.STATUS_TEXT[k]||'')}">${STN[k]}${st[k] > 1 && k !== 'freeze' && k !== 'recharge' ? ' ' + st[k] : ''}</span>`).join(''); }
 function foeChips(s){ s = s || {}; let h = ''; for (const k of ['burn','poison','blind','slow','weak','vuln','empower']) if (s[k] > 0) h += `<span class="s-${k}" title="${esc(Dd.STATUS_TEXT[k]||'')}">${STN[k]}</span>`; if (s.stun) h += '<span class="s-freeze">Stunned</span>'; if (s.dodge > 0) h += `<span class="s-dodge">Dodge ${Math.round(s.dodge*100)}%</span>`; return h; }
 function abilLines(it){ const L = []; (it.abil||[]).forEach(([a,v]) => L.push(Dd.ABIL_TEXT[a].replace('{v}', v))); if (it.down) L.push(Dd.ABIL_TEXT[it.down[0]].replace('{v}', it.down[1]));
   if (it.kind==='trinket') L.push(it.eff==='BOSSBANE' ? `Each hit on a boss deals at least ${it.v}% of its max HP` : Dd.TRINKET_TEXT[it.eff].replace('{v}', it.v)); return L; }
-function sellVal(it){ return 5 + (it.rar||0)*8 + Math.floor((it.lvl||1)/5); }
+const BSN = {hp:'HP', atk:'Atk', def:'Def', spa:'Sp.Atk', spd:'Sp.Def', spe:'Speed'};
+function bsChips(it, cmp){ const b = it.bs || {}, c = (cmp && cmp.bs) || null; return `<div class="bsrow">${Dd.BSTATS.filter(k => (b[k] || 0) || (c && c[k])).map(k => { const d = c ? (b[k]||0) - (c[k]||0) : 0;
+  return `<span class="bs bs-${k}" title="${esc(Dd.BSTAT_INFO[k][1])}"><i>${BSN[k]}</i> ${b[k] > 0 ? '+' : ''}${b[k]||0}${c && d ? `<em class="${d > 0 ? 'up' : 'dn'}">${d > 0 ? '▲' : '▼'}${Math.abs(d)}</em>` : ''}</span>`; }).join('')}${(b.spe||0) > 0 && it.kind === 'armour' ? `<span class="bs dodge" title="Speed from gear gives 0.33% dodge a point (max 40%)"><i>Dodge</i> +${(b.spe*Dd.DODGE_PER_SPE*100).toFixed(1)}%</span>` : ''}</div>`; }
+function sellVal(it){ return 5 + (it.rar||0)*10; }
 function card(it, actions='', compare=null){
   if (!it) return `<div class="card empty">Empty slot</div>`;
   if (it.kind==='consumable'){ const c = Dd.CONSUMABLES[it.key]; return `<div class="card" style="--rc:#7fe0a0"><div class="rar">Consumable</div><div class="nm">${esc(c.n)}</div><div class="sm">${esc(c.d)}</div></div>`; }
   if (it.kind==='tome') return `<div class="card r3" style="--rc:#c9a2ff"><div class="rar">Wisdom</div><div class="nm">${esc(it.name)}</div><div class="sm">+${it.wis} Wisdom (kept forever, spend it on Boons)</div></div>`;
-  if (it.kind==='soul') return `<div class="card r3" style="--rc:#ff8a3c"><div class="rar">Boss Soul</div><div class="nm">${esc(it.name)}</div><div class="sm">Spend at the Forge in camp to craft Legendary gear.</div></div>`;
-  const r = Dd.RAR[it.rar]; const main = it.kind==='weapon' ? `${it.dmg} damage · ${ARCHN[it.arch] || it.arch}` : it.kind==='armour' ? `+${it.hp} HP · ${it.role==='plate'?'heavy plate':it.role==='leather'?'coat / leathers':it.role==='vestment'?'healer vestments (support)':'robe / suit'}` : '';
+  const r = Dd.RAR[it.rar] || Dd.RAR[0]; if ((it.kind==='weapon' || it.kind==='armour') && !it.bs) C.statItem(it);
+  const role = {plate:'heavy plate', leather:'leathers', vestment:'healer vestments (support)', robe:'robe'}[it.role] || '';
+  const main = it.kind==='weapon' ? `${ARCHN[it.arch] || it.arch} · <b>${it.cat === 'spec' ? 'Special' : 'Physical'}</b> moves` : it.kind==='armour' ? `${role}` : '';
   const req = Object.entries(it.req||{}).map(([k,v]) => `${k} ${v}`).join(' · '); const miss = C.missing(P(), it);
-  let delta = ''; if (compare){ const d = it.kind==='weapon' ? it.dmg - compare.dmg : it.kind==='armour' ? it.hp - compare.hp : null; if (d !== null) delta = `<span class="${d>=0?'up':'dn'}">${d>=0?'▲':'▼'} ${Math.abs(d)} vs equipped</span>`; }
-  const from = (it.world !== S.world && it.ti !== -1) ? `<span class="from">· ${esc(WD[it.world].name)}</span>` : '';
-  return `<div class="card r${it.rar}${it.special?' special':''}${it.myth?' myth':''}" style="--rc:${r.c}"><div class="rar">${it.lvl ? `<span class="lvl">Lv ${it.lvl}</span> ` : ''}${r.n} ${it.kind}${it.myth ? ' · ' + esc(it.origin) + ' legend' : it.type?' · '+esc(it.type):''} ${from}</div><div class="nm">${esc(it.name)}</div>${it.kind==='weapon'||it.kind==='armour' ? tyRow(Dd.itemTypes(it)) : ''}${main?`<div class="sm">${main}</div>`:''}${it.kind==='weapon' ? moveListHTML(it) : ''}
-    ${abilLines(it).map(l=>`<div class="ab ${l.startsWith('DOWNSIDE')?'down':''}">${esc(l)}</div>`).join('')}${it.lore?`<div class="lore">${esc(it.lore)}</div>`:''}${req?`<div class="req ${miss.length?'no':''}">Needs ${req}${miss.length?' (missing '+miss.join(', ')+')':''}</div>`:''}${delta}${actions}</div>`;
+  const from = (it.world !== S.world && it.ti !== -1 && WD[it.world]) ? `<span class="from">· ${esc(WD[it.world].name)}</span>` : '';
+  return `<div class="card r${it.rar}${it.special?' special':''}${it.myth?' myth':''}" style="--rc:${r.c}"><div class="rar">${r.n} ${it.kind}${it.myth && it.origin ? ' · ' + esc(it.origin) : it.type?' · '+esc(it.type):''} ${from}</div><div class="nm">${esc(it.name)}</div>${it.kind==='weapon'||it.kind==='armour' ? tyRow(Dd.itemTypes(it)) : ''}${main?`<div class="sm">${main}</div>`:''}${it.kind==='weapon'||it.kind==='armour' ? bsChips(it, compare) : ''}${it.kind==='weapon' ? moveListHTML(it) : ''}
+    ${abilLines(it).map(l=>`<div class="ab ${l.startsWith('DOWNSIDE')?'down':''}">${esc(l)}</div>`).join('')}${it.lore?`<div class="lore">${esc(it.lore)}</div>`:''}${req?`<div class="req ${miss.length?'no':''}">Requires ${req}${miss.length?' (missing '+miss.join(', ')+')':''}</div>`:''}${actions}</div>`;
 }
 
 /* ---------- flow ---------- */
@@ -5487,9 +5643,11 @@ function mapScreen(p){
   p.querySelectorAll('.path').forEach(b => b.onclick = () => { SND.sfx('click'); S.path = S.paths[+b.dataset.i]; S.quests = null; campTab = 'gear'; S.resume = 'camp'; go('camp'); });
   $('worlds').onclick = () => go('title');
 }
-function statsHTML(){ const d = C.derive(P()); return `<div class="statgrid">${Object.keys(STATS).map(k=>`<div class="stat"><div><b>${k} ${S.st[k]}${d.s[k]!==S.st[k]?` <span class="up">(+${d.s[k]-S.st[k]})</span>`:''}</b><small>${STATS[k]}</small></div><button class="plus" data-k="${k}" ${S.pts?'':'disabled'} aria-label="add a point to ${k}">+1</button></div>`).join('')}</div>
-  <p class="muted">Max HP ${d.max} · dodge ${Math.round(d.dodge*100)}% · crit ${Math.round(d.crit*100)}% · damage ×${d.mult.toFixed(2)} · speed ${d.speed.toFixed(1)}</p>`; }
-function wireStats(root){ root.querySelectorAll('.plus').forEach(b => b.onclick = () => { if (!S.pts) return; const before = maxHP(); S.st[b.dataset.k]++; S.pts--; if (b.dataset.k==='FOR') S.hp = curHP() + (maxHP() - before); SND.sfx('level'); save(); draw(); }); }
+function statSummary(){ const d = C.derive(P()); const row = k => `<div class="bsl"><span>${Dd.BSTAT_INFO[k][0]}</span><b>${k === 'hp' ? d.max : d[k]}</b><small>${k === 'hp' ? `base ${d.base.hp} + gear ${d.gear.hp}` : `base ${d.base[k]} + gear ${d.gear[k]}`}</small></div>`;
+  return `<div class="statpanel"><div><h4>Battle stats <small>from level + gear</small></h4>${Dd.BSTATS.map(row).join('')}<div class="bsl"><span>Dodge</span><b>${Math.round(d.dodge*1000)/10}%</b><small>gear Speed × 0.33% (max 40%)</small></div><div class="bsl"><span>Crit</span><b>${Math.round(d.crit*100)}%</b><small>×1.5 damage</small></div></div>
+    <div><h4>Requirement stats <small>for equipping</small></h4>${Dd.REQ_STATS.map(k => `<div class="bsl"><span>${Dd.REQ_INFO[k][0]}</span><b>${d.s[k]}</b><small>${esc(Dd.REQ_INFO[k][1])}</small></div>`).join('')}${S.pts ? `<p class="hot">${S.pts} point${S.pts > 1 ? 's' : ''} to spend (Stats tab)</p>` : ''}</div></div>`; }
+function statsHTML(){ const d = C.derive(P()); return `<p class="muted small">You gain ${C.XPK.sp} requirement points every level in a ${C.LMAX}-round run. They only decide what you can equip: your battle stats come from your level and your gear.</p><div class="statgrid">${Object.keys(STATS).map(k=>`<div class="stat"><div><b>${k} ${S.st[k]||0}${d.s[k]!==(S.st[k]||0)?` <span class="up">(+${d.s[k]-(S.st[k]||0)})</span>`:''}</b><small>${STATS[k]}</small></div><button class="plus" data-k="${k}" ${S.pts?'':'disabled'} aria-label="add a point to ${k}">+1</button>${S.pts >= 5 ? `<button class="plus5 ghost" data-k="${k}">+5</button>` : ''}</div>`).join('')}</div>${statSummary()}`; }
+function wireStats(root){ const add = (k, n) => { n = Math.min(n, S.pts); if (!n) return; S.st[k] = (S.st[k] || 0) + n; S.pts -= n; SND.sfx('level'); save(); draw(); }; root.querySelectorAll('.plus').forEach(b => b.onclick = () => add(b.dataset.k, 1)); root.querySelectorAll('.plus5').forEach(b => b.onclick = () => add(b.dataset.k, 5)); }
 const NQMODE = () => APP === 'party' && PARTY.on && PARTY.G && !!PARTY.G.nq;
 function campScreen(p){
   if (!S.rested){ S.rested = true; const m = maxHP(); const before = curHP(); S.hp = Math.min(m, before + Math.round(m * (S.meta.equipped.includes('rested') ? 0.5 : 0.3))); S.restMsg = S.hp - before; save(); }
@@ -5498,16 +5656,16 @@ function campScreen(p){
   const tabs = [['gear','Gear'],['stats',`Stats${S.pts?' ('+S.pts+')':''}`],['belt','Items'],['shop','Potion Seller'],['tavern','Tavern · Boons'],['codex','Codex'],['journal','Journal'],['settings','Settings']].filter(t => !(S.party && ['journal','settings'].includes(t[0]))).concat(S.level===C.LMAX ? [['essay','Essay forge ★']] : []);
   let body = '';
   if (campTab==='gear'){
-    const lvb = it => it ? `<div class="row tight"><button class="ghost lvup" data-u="${it.uid}" ${S.meta.wisdom>=1 && (it.lvl||1) < heroPL()+5 ?'':'disabled'}>▲ Lv ${it.lvl||1}→${(it.lvl||1)+1} · 1 ✦</button></div>` : '';
-    body = `${S.growMsg ? `<p class="ok">${esc(S.growMsg)}</p>` : ''}<p class="muted small">Gear has its own level. Equipped gear levels up with you each level (if you meet its new requirement), and you can spend 1 Wisdom to raise any item 1 level (up to Hero Lv + 5). Drops arrive at or just above your Hero level (Lv ${heroPL()}). Hero levels come from ${NQMODE() ? 'battle' : 'study'} XP.</p><h3>Equipped</h3><div class="cards">${card(pl.eq.weapon, lvb(pl.eq.weapon))}${card(pl.eq.armour, lvb(pl.eq.armour))}${card(pl.eq.trinkets[0], pl.eq.trinkets[0]?'<div class="row tight"><button class="ghost un" data-s="0">Unequip</button></div>':'')}${card(pl.eq.trinkets[1], pl.eq.trinkets[1]?'<div class="row tight"><button class="ghost un" data-s="1">Unequip</button></div>':'')}</div>
+    const lvb = () => '';
+    body = `${statSummary()}<p class="muted small">Your weapon and armour give your battle stats. Each piece has fixed requirements (STR, AGI, INT, FOR, WPN) that never change: plan your stat points to reach the gear you want. Legendary gear drops only from ★6 and ★7 dungeons and bosses; Mythical only from ★7 dungeons and main bosses; Outerversal only from ★10.</p><h3>Equipped</h3><div class="cards">${card(pl.eq.weapon, lvb(pl.eq.weapon))}${card(pl.eq.armour, lvb(pl.eq.armour))}${card(pl.eq.trinkets[0], pl.eq.trinkets[0]?'<div class="row tight"><button class="ghost un" data-s="0">Unequip</button></div>':'')}${card(pl.eq.trinkets[1], pl.eq.trinkets[1]?'<div class="row tight"><button class="ghost un" data-s="1">Unequip</button></div>':'')}</div>
      <h3>Bag (${bag.length})</h3><div class="cards">${bag.map(it => { const ok = C.canEquip(pl, it); const cmp = it.kind==='weapon' ? pl.eq.weapon : it.kind==='armour' ? pl.eq.armour : null;
-       return card(it, `<div class="row tight">${ok?`<button class="eq" data-u="${it.uid}">Equip</button>`:''}<button class="ghost sell" data-u="${it.uid}">Sell +${sellVal(it)}</button>${S.party && PARTY.on && PARTY.others().length ? `<button class="ghost gift" data-u="${it.uid}">🎁 Gift</button>` : ''}<button class="ghost lvup" data-u="${it.uid}" ${S.meta.wisdom>=1 && (it.lvl||1) < heroPL()+5 ?'':'disabled'}>▲ Lv ${it.lvl||1}→${(it.lvl||1)+1} · 1 ✦</button>${S.newLoot.includes(it.uid)?'<span class="new">NEW</span>':''}</div>`, cmp); }).join('') || '<p class="muted">Win fights to fill your bag.</p>'}</div>`;
+       return card(it, `<div class="row tight">${ok?`<button class="eq" data-u="${it.uid}">Equip</button>`:''}<button class="ghost sell" data-u="${it.uid}">Sell +${sellVal(it)}</button>${S.party && PARTY.on && PARTY.others().length ? `<button class="ghost gift" data-u="${it.uid}">🎁 Gift</button>` : ''}${S.newLoot.includes(it.uid)?'<span class="new">NEW</span>':''}</div>`, cmp); }).join('') || '<p class="muted">Win fights to fill your bag.</p>'}</div>`;
   } else if (campTab==='stats') body = statsHTML();
   else if (campTab==='belt'){ const ks = Object.keys(S.belt).filter(k=>S.belt[k]>0); body = ks.length ? `<div class="cards">${ks.map(k=>`<div class="card" style="--rc:#7fe0a0"><div class="rar">×${S.belt[k]}</div><div class="nm">${esc(Dd.CONSUMABLES[k].n)}</div><div class="sm">${esc(Dd.CONSUMABLES[k].d)}</div>${k.startsWith('hp')||k==='cleanse'?`<div class="row tight"><button class="drink" data-k="${k}">Drink now</button></div>`:''}</div>`).join('')}</div>` : '<p class="muted">No items. Chests and the Potion Seller have them.</p>'; }
-  else if (campTab==='shop'){ const half = S.half; body = `<p class="muted">You have ✒ ${S.ink} Ink. Ink comes from quests and fights.${S.cleared[0]?'':' Phoenix Feathers unlock after you beat the Greenlands boss.'}${half?' <b>Half price today!</b>':''}</p><div class="cards">${Object.entries(Dd.SHOP).filter(([k]) => k !== 'phoenix' || S.cleared[0]).map(([k,c])=>{ const cost = half ? Math.ceil(c/2) : c; return `<div class="card" style="--rc:#7fe0a0"><div class="nm">${esc(Dd.CONSUMABLES[k].n)}</div><div class="sm">${esc(Dd.CONSUMABLES[k].d)}</div><div class="row tight"><button class="buy" data-k="${k}" data-c="${cost}" ${S.ink>=cost?'':'disabled'}>Buy · ${cost} Ink</button><span class="muted">have ${S.belt[k]||0}</span></div></div>`; }).join('')}</div>`; }
+  else if (campTab==='shop'){ const half = S.half; body = `<p class="muted">You have ✒ ${S.ink} Ink. Ink comes from quests and fights.${S.cleared[0]?'':' Phoenix Feathers unlock after you beat the Greenlands boss.'}${half?' <b>Half price today!</b>':''}</p><div class="cards">${Object.entries(Dd.SHOP).filter(([k]) => k !== 'phoenix' || S.cleared[0]).map(([k,c])=>{ const cost = Math.ceil((half ? c/2 : c) * (S.meta.equipped.includes('haggler') ? 0.8 : 1)); return `<div class="card" style="--rc:#7fe0a0"><div class="nm">${esc(Dd.CONSUMABLES[k].n)}</div><div class="sm">${esc(Dd.CONSUMABLES[k].d)}</div><div class="row tight"><button class="buy" data-k="${k}" data-c="${cost}" ${S.ink>=cost?'':'disabled'}>Buy · ${cost} Ink</button><span class="muted">have ${S.belt[k]||0}</span></div></div>`; }).join('')}</div>`; }
   else if (campTab==='forge'){ body = `<p>Boss Souls come from mini-bosses and bosses. <b>1 Soul + 60 Ink</b> forges a Legendary of your choice from this world.</p><p class="muted">Souls: ${S.souls} · Ink: ${S.ink}</p><div class="cards">${WD[S.world].types.map((t,i)=>`<div class="card r3" style="--rc:#ffb52e"><div class="rar">Legendary ${esc(t[0])}</div><div class="nm">${esc(t[2][3])}</div><div class="row tight"><button class="forge" data-k="w${i}" ${S.souls>=1&&S.ink>=60?'':'disabled'}>Forge</button></div></div>`).join('')}${[0,1,2].map(i=>`<div class="card r3" style="--rc:#ffb52e"><div class="rar">Legendary ${Dd.ARM_ROLE[i]}</div><div class="nm">${esc(WD[S.world].armour[3][i])}</div><div class="row tight"><button class="forge" data-k="a${i}" ${S.souls>=1&&S.ink>=60?'':'disabled'}>Forge</button></div></div>`).join('')}</div>`; }
-  else if (campTab==='tavern'){ const used = slotsUsed(); body = `<p>Boons are <b>permanent</b>: buy them with Wisdom (earned by passing quests, never lost). Equip up to <b>5 slots</b>. Slots used: ${used}/5 · ✦ ${S.meta.wisdom} Wisdom</p><div class="cards">${Dd.BOONS.map(([id,n,sl,cost,txt])=>{ const own = S.meta.owned.includes(id), on = S.meta.equipped.includes(id);
-      return `<div class="card ${on?'r3':''}" style="--rc:${on?'#ffb52e':'#7fc0ff'}"><div class="rar">${sl} slot${sl>1?'s':''}${own?' · owned':''}</div><div class="nm">${esc(n)}</div><div class="sm">${esc(txt)}</div><div class="row tight">${!own?`<button class="boonbuy" data-id="${id}" ${S.meta.wisdom>=cost?'':'disabled'}>Unlock · ${cost} Wisdom</button>`: on ? `<button class="ghost boonoff" data-id="${id}">Unequip</button>` : `<button class="boonon" data-id="${id}" ${used+sl<=5?'':'disabled'}>Equip</button>`}</div></div>`; }).join('')}</div>`; }
+  else if (campTab==='tavern'){ const used = slotsUsed(); body = `<p>Boons are <b>permanent</b>: buy them with Wisdom (earned by passing quests, never lost). Equip up to <b>${BOONSLOTS} slots</b>. Slots used: ${used}/${BOONSLOTS} · Double Loot and Lucky Find are the rarest (and dearest) of all · ✦ ${S.meta.wisdom} Wisdom</p><div class="cards">${Dd.BOONS.map(([id,n,sl,cost,txt])=>{ const own = S.meta.owned.includes(id), on = S.meta.equipped.includes(id);
+      return `<div class="card ${on?'r3':''}" style="--rc:${on?'#ffb52e':'#7fc0ff'}"><div class="rar">${sl} slot${sl>1?'s':''}${own?' · owned':''}</div><div class="nm">${esc(n)}</div><div class="sm">${esc(txt)}</div><div class="row tight">${!own?`<button class="boonbuy" data-id="${id}" ${S.meta.wisdom>=cost?'':'disabled'}>Unlock · ${cost} Wisdom</button>`: on ? `<button class="ghost boonoff" data-id="${id}">Unequip</button>` : `<button class="boonon" data-id="${id}" ${used+sl<=BOONSLOTS?'':'disabled'}>Equip</button>`}</div></div>`; }).join('')}</div>`; }
   else if (campTab==='codex'){ body = `<p class="muted">How well you know each paragraph. Weak ones come up more often.</p><div class="codex">${unitsOf(S.world).map(u => { const m = S.mastery[u.c] || {pass:0, fail:0}; const lvl = Math.max(0, Math.min(5, m.pass - m.fail));
       return `<div class="cx"><b>${esc(u.c)}</b><span>${esc(u.n)}</span><em>${'●'.repeat(lvl)}${'○'.repeat(5-lvl)}</em><small>${m.pass} passed · ${m.fail} failed</small></div>`; }).join('')}</div>`; }
   else if (campTab==='journal') body = journalHTML();
@@ -5529,10 +5687,10 @@ function campScreen(p){
   p.querySelectorAll('.lvup').forEach(b => b.onclick = () => { const it = item(+b.dataset.u); if (!it || S.meta.wisdom < 1) return; if ((it.lvl||1) >= heroPL() + 5){ toast(`Max Hero Lv + 5 (Lv ${heroPL() + 5}). Level up to raise it further.`); return; } const keep = JSON.stringify(it); C.applyLevel(it, (it.lvl||1) + 1); const equipped = [S.eq.weapon, S.eq.armour, ...S.eq.trinkets].includes(it.uid);
     if (equipped && !C.canEquip(P(), it)) it.grand = true; S.meta.wisdom -= 1; if (equipped && it.kind==='armour') S.hp = Math.min(maxHP(), curHP() + 0); if (equipped) ART3D.updateHero(P()); SND.sfx('level'); save(); draw(); });
   p.querySelectorAll('.drink').forEach(b => b.onclick = () => { const k = b.dataset.k; if (!(S.belt[k]>0)) return; S.belt[k]--; S.hp = Math.min(maxHP(), curHP() + Math.round(maxHP()*({hp:0.35,hp2:0.65,cleanse:0.13}[k])*(S.meta.equipped.includes('potion') ? 1.2 : 1))); SND.sfx('heal'); save(); draw(); });
-  p.querySelectorAll('.buy').forEach(b => b.onclick = () => { const c = +b.dataset.c; if (S.ink < c) return; if ((S.belt[b.dataset.k]||0) >= BELTCAP){ toast(`Your belt holds ${BELTCAP} of each.`); return; } S.ink -= c; S.belt[b.dataset.k] = (S.belt[b.dataset.k]||0) + 1; SND.sfx('coin'); save(); draw(); });
+  p.querySelectorAll('.buy').forEach(b => b.onclick = () => { const c = +b.dataset.c; if (S.ink < c) return; if ((S.belt[b.dataset.k]||0) >= beltCap()){ toast(`Your belt holds ${beltCap()} of each.`); return; } S.ink -= c; S.belt[b.dataset.k] = (S.belt[b.dataset.k]||0) + 1; SND.sfx('coin'); save(); draw(); });
   p.querySelectorAll('.forge').forEach(b => b.onclick = () => { if (S.souls < 1 || S.ink < 60) return; S.souls--; S.ink -= 60; const k = b.dataset.k; const it = k[0]==='w' ? C.makeWeapon(S.world, +k.slice(1), 3) : C.makeArmour(S.world, 3, +k.slice(1)); S.bag.push(it); S.newLoot.push(it.uid); SND.sfx('chest'); campTab = 'gear'; save(); draw(); });
   p.querySelectorAll('.boonbuy').forEach(b => b.onclick = () => { const bn = Dd.BOONS.find(x=>x[0]===b.dataset.id); if (S.meta.wisdom < bn[3]) return; S.meta.wisdom -= bn[3]; S.meta.owned.push(bn[0]); SND.sfx('perfect'); save(); draw(); });
-  p.querySelectorAll('.boonon').forEach(b => b.onclick = () => { const bn = Dd.BOONS.find(x=>x[0]===b.dataset.id); if (slotsUsed() + bn[2] > 5) return; const before = maxHP(); S.meta.equipped.push(bn[0]); S.hp = Math.min(maxHP(), curHP() + Math.max(0, maxHP()-before)); save(); draw(); });
+  p.querySelectorAll('.boonon').forEach(b => b.onclick = () => { const bn = Dd.BOONS.find(x=>x[0]===b.dataset.id); if (slotsUsed() + bn[2] > BOONSLOTS) return; const before = maxHP(); S.meta.equipped.push(bn[0]); S.hp = Math.min(maxHP(), curHP() + Math.max(0, maxHP()-before)); save(); draw(); });
   p.querySelectorAll('.boonoff').forEach(b => b.onclick = () => { S.meta.equipped = S.meta.equipped.filter(x => x !== b.dataset.id); save(); draw(); });
   if ($('cpt')) $('cpt').onclick = () => { S.checkpointOn = !S.checkpointOn; save(); draw(); };
   if ($('snd')) $('snd').onclick = () => { SET.muted = !SET.muted; saveSet(); draw(); };
@@ -5561,9 +5719,15 @@ const ACH = [
   ['myth','Myth Made Real','Find a Mythical item', s => Object.values(s.stats.found).some(r => r >= 4)],
   ['codex','Master of the Codex','Fill one paragraph’s Codex to ●●●●●', s => Object.values(s.mastery).some(m => m.pass - m.fail >= 5)]];
 function noteFind(it){ if (!it || !S || !S.stats) return; if (it.name && it.kind !== 'consumable') S.stats.found[it.name] = Math.max(S.stats.found[it.name]||0, it.rar||0); if (it.myth){ S.stats.myth = S.stats.myth || {}; S.stats.myth[it.myth] = Math.max(S.stats.myth[it.myth]||0, (it.world||0)+1); } }
-function legendBanner(loot){ const L = (loot||[]).filter(i => i.myth || i.special).sort((a,b)=>b.rar-a.rar)[0]; if (!L) return ''; return `<div class="legend-banner r${L.rar}"><span>${L.rar===6?'OUTERVERSAL RELIC':L.rar===5?'PROMISED RELIC':L.rar===4?'MYTHICAL RELIC':'LEGENDARY RELIC'}</span><b>${esc(L.name)}</b><em>${esc(L.lore||'')}</em></div>`; }
+function legendBanner(loot){ const L = (loot||[]).filter(i => i.myth || i.special).sort((a,b)=>b.rar-a.rar)[0]; if (!L) return ''; return `<div class="legend-banner r${L.rar}"><span>${L.rar===6?'OUTERVERSAL RELIC':L.rar===5?'MYTHICAL RELIC':L.rar===4?'LEGENDARY RELIC':'EPIC FIND'}</span><b>${esc(L.name)}</b><em>${esc(L.lore||'')}</em></div>`; }
 function checkAch(){ if (!S || !S.stats) return; for (const [id, n, d, f] of ACH){ if (!S.stats.ach.includes(id) && f(S)){ S.stats.ach.push(id); S.meta.wisdom += 10; toast(`🏆 Achievement: ${n} (+10 Wisdom) · title unlocked`); if (!S.stats.title) S.stats.title = n; } } save(); }
-function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); SND.sfx('perfect'); setTimeout(() => d.remove(), 3500); }
+function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); SND.sfx('perfect'); setTimeout(() => d.remove(), 3500); feed(t, /level up|lv /i.test(t) ? 'lv' : /legend|myth|outerversal|equipped/i.test(t) ? 'loot' : ''); }
+/* v8: the activity feed — a transparent column of recent events on the left of the battlefield */
+function feed(t, cls){ const f = $('feed'); if (!f || !t) return; const d = document.createElement('div'); d.textContent = t; if (cls) d.className = cls; f.appendChild(d); while (f.children.length > 16) f.firstChild.remove(); setTimeout(() => { d.style.transition = 'opacity 2s'; d.style.opacity = '.5'; }, 15000); }
+(function dockButtons(){ const wire = () => { const pn = $('pnbtn'), fs = $('fsbtn'); if (!pn || !fs) return setTimeout(wire, 200);
+  pn.onclick = () => { document.body.classList.toggle('panel-min'); pn.textContent = document.body.classList.contains('panel-min') ? '◨' : '◧'; };
+  fs.onclick = () => { try { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); } catch(e){} };
+  document.addEventListener('fullscreenchange', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 120); }); }; wire(); })();
 function journalHTML(){ const st = S.stats; const units = unitsOf(S.world); const allKeys = WD.flatMap(w => [...w.enemies, ...(Array.isArray(w.mini)?w.mini:[w.mini]), ...(w.bossKeys || [w.bossKey])]);
   const avg = a => a && a.length ? Math.round(a.slice(-5).reduce((x,y)=>x+y,0)/Math.min(5,a.length)) : null;
   return `<h3>Study stats</h3><p class="muted">${Math.round(st.time/60)} min studied · ${st.quests} quests passed · ${st.perfects} perfect</p>
@@ -5609,7 +5773,7 @@ function runQuest(i){
     const st = S.stats; (st.units[u.c] = st.units[u.c] || []).push(Math.round(score*100)); if (st.units[u.c].length > 30) st.units[u.c].shift(); st.time += Math.min(900, Math.round((Date.now() - (q.t0||Date.now()))/1000)); q.t0 = Date.now();
     if (pass){ st.quests++; if (score >= 0.999){ st.perfects++; if (K.startsWith('quote')) st.quotePerf++; } } setTimeout(checkAch, 400);
     if (pass){ q.done = true; q.passed = true; q.best = score; m.pass++; const quill = P().eq.trinkets.filter(Boolean).reduce((a,t)=>a+(t.eff==='QUILL'?t.v:0),0) + (S.meta.equipped.includes('scholar') && q.tier >= 3 ? 1 : 0);
-      const gap = (S.hlv||1) - foeLv(); const gm = C.gapMod(gap); let gain = Math.round(C.questXP(q.pts + quill, S.level, gap)); if (q.peeked) gain = Math.max(1, Math.floor(gain/2)); q.why = [`${C.TIERS[q.tier].n} quest`].concat(quill ? [`+${quill} Quill/Scholar`] : [], (S.len||30) === 15 ? ['×2 short game'] : [], Math.abs(gm - 1) > 0.02 ? [gap > 0 ? `×${gm.toFixed(2)}: you’re ${gap} level${gap>1?'s':''} above the enemies` : `×${gm.toFixed(2)} catch-up: you’re ${-gap} below`] : []).join(', '); if (q.shrine) S.pts += 5; q.gain = gain; q.ups = gainXP(gain); S.ink += q.pts*5 + (S.meta.equipped.includes('scribe') ? 10 : 0); S.meta.wisdom += q.pts*2; S.hp = Math.min(maxHP(), curHP() + Math.round(maxHP()*(score>=0.999 ? 0.15 : 0.1)));
+      const gap = (S.hlv||1) - foeLv(); const gm = C.gapMod(gap); let gain = Math.round(C.questXP(q.pts + quill, S.level, gap) * (S.meta.equipped.includes('studious') ? 1.2 : 1)); if (q.peeked) gain = Math.max(1, Math.floor(gain/2)); q.why = [`${C.TIERS[q.tier].n} quest`].concat(quill ? [`+${quill} Quill/Scholar`] : [], (S.len||30) === 15 ? ['×2 short game'] : [], Math.abs(gm - 1) > 0.02 ? [gap > 0 ? `×${gm.toFixed(2)}: you’re ${gap} level${gap>1?'s':''} above the enemies` : `×${gm.toFixed(2)} catch-up: you’re ${-gap} below`] : []).join(', '); if (q.shrine) S.pts += 5; q.gain = gain; q.ups = gainXP(gain); S.ink += q.pts*5 + (S.meta.equipped.includes('scribe') ? 10 : 0); S.meta.wisdom += Math.round(q.pts*2*(S.meta.equipped.includes('seeker') ? 1.25 : 1)); S.hp = Math.min(maxHP(), curHP() + Math.round(maxHP()*(score>=0.999 ? 0.15 : 0.1)));
       SND.sfx(score >= 0.999 ? 'perfect' : 'pass'); }
     else { m.fail++; if (q.tries >= q.maxTries){ q.done = true; q.passed = false; } SND.sfx('fail'); }
     let inspMsg = '';
@@ -6129,9 +6293,9 @@ function hallClear(){ const h = loadHall(); const k = code + ':' + (G ? G.wipes 
 function saveMeta(){ try { if (S && S.party && S.meta) localStorage.setItem(MKEY, JSON.stringify({wisdom: S.meta.wisdom, owned: S.meta.owned, equipped: S.meta.equipped})); } catch(e){} }
 function saveLocal(){ saveMeta(); try { localStorage.setItem(PKEY, JSON.stringify({code, S, nick})); } catch(e){} }
 function lookOf(st){ const it = uid => st.bag.find(i => i.uid === uid) || null; const w = it(st.eq.weapon), a = it(st.eq.armour);
-  const sl = x => x ? {type:x.type, arch:x.arch, rar:x.rar, world:x.world, special:x.special, ti:x.ti, role:x.role, kind:x.kind, myth:x.myth, fx:x.fx, types:C.itemTypes(x)} : null; return {lv: st.hlv || 1, eq:{weapon: sl(w), armour: sl(a), trinkets:[]}}; }
+  const sl = x => x ? {type:x.type, arch:x.arch, rar:x.rar, world:x.world, special:x.special, ti:x.ti, role:x.role, kind:x.kind, myth:x.myth, fx:x.fx, design:x.design, types:C.itemTypes(x)} : null; return {lv: st.hlv || 1, look: myLook(), eq:{weapon: sl(w), armour: sl(a), trinkets:[]}}; }
 function heroSnap(){ const pl = P(); const strip = x => x ? (C.itemTypes(x), Object.assign({}, x, {name: undefined, lore: undefined})) : null;
-  return {P:{st:pl.st, boons:pl.boons, eq:{weapon:strip(pl.eq.weapon), armour:strip(pl.eq.armour), trinkets:pl.eq.trinkets.filter(Boolean).map(strip)}}, belt:S.belt, hp: (S.meta.equipped.includes('second') && curHP() < maxHP()*0.5) ? Math.min(maxHP(), curHP() + Math.round(maxHP()*0.2)) : curHP(), insp:S.inspired||0}; }
+  return {P:{lv:pl.lv, st:pl.st, boons:pl.boons, eq:{weapon:strip(pl.eq.weapon), armour:strip(pl.eq.armour), trinkets:pl.eq.trinkets.filter(Boolean).map(strip)}}, belt:S.belt, hp: (S.meta.equipped.includes('second') && curHP() < maxHP()*0.5) ? Math.min(maxHP(), curHP() + Math.round(maxHP()*0.2)) : curHP(), insp:S.inspired||0}; }
 function newChar(src){ let st = fresh(); if (st.bag) st.bag.forEach(i => C.applyLevel(i, i.lvl || 1)); if (src && src.startsWith('slot')){ const s = readSlot(+src.slice(4)); if (s){ st = fresh(); Object.assign(st, {hlv: s.hlv || C.plOf(s.world, s.level), xp: s.xp || 0, st: clone(s.st), bag: clone(s.bag.filter(i => [s.eq.weapon, s.eq.armour, ...s.eq.trinkets].includes(i.uid))), eq: clone(s.eq), meta:{wisdom:0, owned:[], equipped: clone(s.meta.equipped)}, mastery: clone(s.mastery||{})}); } }
   { const mm = loadMeta(); if (mm){ const eqd = (st.meta.equipped && st.meta.equipped.length) ? st.meta.equipped : mm.equipped; st.meta = {wisdom: mm.wisdom, owned: mm.owned.concat((st.meta.equipped||[]).filter(x => !mm.owned.includes(x))), equipped: eqd}; } }
   { const hh = loadHall(); if (hh.clears){ st.pts = (st.pts || 0) + Math.min(10, 2*hh.clears); st.legacy = hh.clears; } }
@@ -6226,9 +6390,9 @@ function onState(prev){ if (!G) return; if (!isHost && myPeer && (G.kicked || []
   if (G.ph === 'map' && C.miniLv().includes(G.lvl) && (!S.cp || S.cp.level < G.lvl)) S.cp = clone({st:S.st, pts:S.pts, bag:S.bag, eq:S.eq, belt:S.belt, ink:S.ink, level:G.lvl, hlv:S.hlv, xp:S.xp});
   if (G.ph === 'camp' && (!prev || prev.ph !== 'camp' || prev.lvl !== G.lvl)){ S.path = G.path; S.phase = 'camp'; campTab = 'gear'; myAct = null; }
   if (G.ph === 'chest' && G.res && myPeer && G.res[myPeer] && appliedRes !== G.lvl + ':' + G.wipes){ appliedRes = G.lvl + ':' + G.wipes; const r = G.res[myPeer]; if (r.belt) S.belt = r.belt; if (r.revive){ S.down = false; S.hp = Math.round(maxHP()*0.5); setTimeout(() => toast('You are revived at half HP!'), 600); } else if (r.down){ S.down = true; S.hp = 0; } else if (r.hp != null){ S.hp = r.hp; S.down = false; } if (G.path){ const share = r.xs != null ? r.xs : 0; const kx = Math.round(C.killXP(G.path.stars, G.path.kind, heroPL() - C.enemyLv(G.w, G.lvl)) * share); if (kx > 0){ gainXP(kx); setTimeout(() => toast(r.down ? `+${kx} XP for the foes beaten before you fell` : `+${kx} party XP for the fight`), 300); } }
-    const ck = G.path.final ? 'final' : G.path.kind; S.chest = C.rollChest(Math.random, S.world, G.path.stars, ck, (G.path.aura ? 1 : 0) + (S.meta.equipped.includes('hunter') ? 1 : 0), S.meta.equipped.includes('lucky')); S.ink += Math.round((5 + Math.min(7, G.path.stars)*3 + (G.path.kind==='boss' ? 40 : G.path.kind==='mini' ? 20 : G.path.kind==='promised' ? 60 : G.path.kind==='outer' ? 120 : 0) + (G.path.final ? 300 : 0) + (G.nq ? 15 : 0)) * (S.meta.equipped.includes('windfall') ? 1.25 : 1)); if (G.nq && !(G.res && G.res[myPeer] && G.res[myPeer].down)){ S.meta.wisdom += 6; saveMeta(); }
+    const ck = G.path.final ? 'final' : G.path.kind; S.chest = C.rollChest(Math.random, S.world, G.path.stars, ck, (G.path.aura ? 1 : 0) + 0, S.meta.equipped.includes('lucky'), S.meta.equipped.includes('hunter')); S.ink += Math.round((5 + Math.min(7, G.path.stars)*3 + (G.path.kind==='boss' ? 40 : G.path.kind==='mini' ? 20 : G.path.kind==='promised' ? 60 : G.path.kind==='outer' ? 120 : 0) + (G.path.final ? 300 : 0) + (G.nq ? 15 : 0)) * (S.meta.equipped.includes('windfall') ? 1.25 : 1) * (S.meta.equipped.includes('inkrich') ? 1.4 : 1)); if (S.meta.equipped.includes('firstaid') && !(G.res && G.res[myPeer] && G.res[myPeer].down)) S.hp = Math.min(maxHP(), (S.hp || 0) + Math.round(maxHP()*0.1)); if (G.nq && !(G.res && G.res[myPeer] && G.res[myPeer].down)){ S.meta.wisdom += 6; saveMeta(); }
     if (G.path.final && !(G.res && G.res[myPeer] && G.res[myPeer].down)) hallClear();
-    for (const it of S.chest){ noteFind(it); if (it.kind==='consumable') addBelt(it.key); else if (it.kind==='tome'){ S.meta.wisdom += it.wis; saveMeta(); } else { S.bag.push(it); S.newLoot.push(it.uid); } } S.wins = (S.wins||0) + 1; SND.sfx('win');
+    for (const it of S.chest){ noteFind(it); if (it.kind==='consumable') addBelt(it.key); else if (it.kind==='tome'){ S.meta.wisdom += Math.round(it.wis*(S.meta.equipped.includes('seeker') ? 1.25 : 1)); saveMeta(); } else { S.bag.push(it); S.newLoot.push(it.uid); } } S.wins = (S.wins||0) + 1; SND.sfx('win');
     const best = S.chest.filter(i => i.kind !== 'consumable' && i.kind !== 'tome').sort((a,b) => b.rar - a.rar)[0]; if (best && best.rar >= 2) pres({best:{k: G.lvl + ':' + G.wipes, n: String(best.name).slice(0, 60), r: best.rar}}); }
   if (G.ph === 'event' && G.evc != null && appliedEv !== G.lvl + ':' + G.wipes){ appliedEv = G.lvl + ':' + G.wipes; S.eventMsg = applyEvent(G.path.ev, G.evc); }
   if (G.ph === 'camp' && !G.nq && G.path && G.path.kind === 'event' && G.path.ev === 'shrine' && !S.quests){ S.quests = [Object.assign(C.mkQuest(3, 'blank50', unitsOf(S.world)[1 % unitsOf(S.world).length].c, Math.random), {shrine:false})]; }
@@ -6254,7 +6418,7 @@ async function onBattle(){ if (!BE || !S || !S.party) return; const b = BE;
     // HP bars move as each hit lands: start from the last shown values and apply events one by one
     CB.disp = {es: Object.fromEntries(CB.es.map(e => [e.id, e.hp])), hs: Object.fromEntries((CB.hs||[]).map(h => [h[0], h[1]])), hmax: Object.fromEntries((CB.hs||[]).map(h => [h[0], h[2]]))};
     for (const a of b.es) if (CB.disp.es[a[0]] == null) CB.disp.es[a[0]] = a[3];
-    const ctx = {es: () => CB.es, heroName: h => h === myPeer ? 'You' : nameOf(h), mine: h => h === myPeer, log: t => { CB.log.push(t); if (CB.log.length > 40) CB.log.shift(); }, redraw: () => { if (view === 'battle') battleUI(); },
+    const ctx = {es: () => CB.es, heroName: h => h === myPeer ? 'You' : nameOf(h), mine: h => h === myPeer, log: t => { CB.log.push(t); if (CB.log.length > 40) CB.log.shift(); feed(t, /falls|fallen|down/i.test(t) ? 'bad' : ''); }, redraw: () => { if (view === 'battle') battleUI(); },
       track: e => { dispTrack(CB.disp, e, id => (CB.es.find(x => x.id === id)||{}).max); for (const x of CB.es) if (CB.disp.es[x.id] != null) x.hp = CB.disp.es[x.id]; }};
     // re-sync names for summons before playing
     for (const a of b.es) if (!CB.es.find(x => x.id === a[0])) CB.es.push(unpackEnemy(a));
@@ -6279,11 +6443,44 @@ function timerBar(d, total){ const left = Math.max(0, d - now()); return `<div c
 let rafT = null; function refresh(){ if (APP !== 'party') return; clearTimeout(rafT); rafT = setTimeout(() => {
     if (view === 'lobby' && lobbyEss && G && G.ph === 'lobby' && $('wes')) return; // don't wipe an essay being typed
     if (view === 'camp' && G && G.ph === 'camp' && campKey === 'camp:' + G.lvl + ':' + G.wipes + ':' + S.phase + ':' + S.qi && $('pstrip')){ const el = $('pstrip'); const html = stripHTML(); if (el.outerHTML !== html){ el.outerHTML = html; if ($('unready')) $('unready').onclick = () => { pres({rdy:null}); campKey = ''; draw(); }; } hud(); return; }
-    draw(); }, 30); }
+    draw(); }, 30); chatDraw(); }
 setInterval(() => { if (APP === 'party' && ['map','event','battle','chest','wipe'].includes(view)){ document.querySelectorAll('.tbar').forEach(el => { const d = +el.dataset.d, tot = +el.dataset.t; const left = Math.max(0, d - now()); const i = el.querySelector('i'), s = el.querySelector('span'); if (i) i.style.width = Math.min(100, left/tot*100) + '%'; if (s) s.textContent = Math.ceil(left/1000) + 's'; }); } }, 250);
 const tbar = (d, tot) => `<div class="tbar" data-d="${d}" data-t="${tot}"><i style="width:${Math.min(100, Math.max(0, d - now())/tot*100)}%"></i><span>${Math.ceil(Math.max(0, d - now())/1000)}s</span></div>`;
 function rosterHTML(){ const ps = players(); return `<div class="roster">${ps.map(p => { const pr = p.presence; const host = G && G.host === p.peer || (isHost && p.peer === myPeer); return `<span class="who ${p.peer===myPeer?'me':''}"><b>${esc(String(pr.n||'Player').slice(0,20))}</b>${host?' <em>host</em>':''}${p.peer===myPeer?' <em>you</em>':''}</span>`; }).join('')}</div>`; }
-function draw(){ const p = $('panel'); hud();
+let lastView = ''; function draw(){ const p = $('panel'); hud(); draw0(p); const v = view === 'camp' && S && S.phase === 'quest' ? 'quest' : view; document.body.dataset.view = v; if (v !== lastView){ lastView = v; setTimeout(() => window.dispatchEvent(new Event('resize')), 60); } chatDraw(); }
+/* ---------- v8 party chat: each player keeps their last few lines in their presence; everyone merges them ---------- */
+let myChat = []; let chatSeen = 0; let custom = false;
+/* ---------- v8 character customiser: skin, hair, eyes, face, build and cape colour (saved on this device, shown to your party) ---------- */
+function customUI(p){ const L = myLook(); const K = HERO8.LOOK; const hex = c => '#' + c.toString(16).padStart(6, '0');
+  if (sceneKey !== 'custom:' + JSON.stringify(L)){ sceneKey = 'custom:' + JSON.stringify(L); const st = S && S.bag ? S : fresh(); const pl = {lv:1, st:st.st, boons:[], look:L, eq:{weapon: (st.bag.find(i => i.uid === st.eq.weapon) || st.bag[0]), armour: L.preview ? null : (st.bag.find(i => i.uid === st.eq.armour) || null), trinkets:[]}};
+    ART3D.setScene('title', {world: G ? G.w : 0, P: pl}); SND.music('title'); }
+  const sw = (k, list, cur) => list.map((c, i) => `<button class="sw ${cur === i ? 'on' : ''}" data-k="${k}" data-v="${i}" style="background:${typeof c === 'number' ? hex(c) : c}" aria-label="${k} ${i + 1}"></button>`).join('');
+  const ch = (k, list, cur) => list.map(v => `<button class="ch ghost ${cur === v ? 'on' : ''}" data-k="${k}" data-v="${v}">${v}</button>`).join('');
+  p.innerHTML = `<h2>Customise your hero</h2><p class="muted small">Your look is saved on this device and your party sees it. Armour covers some of it: tick “Preview without armour” to see the whole hero.</p>
+   <div class="cust"><div class="opt"><span>Skin</span>${sw('skin', K.skin, L.skin)}</div><div class="opt"><span>Hair colour</span>${sw('hair', K.hair, L.hair)}</div><div class="opt"><span>Hair style</span>${ch('hairStyle', K.hairStyle, L.hairStyle)}</div>
+   <div class="opt"><span>Eyes</span>${sw('eye', K.eye, L.eye)}</div><div class="opt"><span>Face</span>${ch('face', K.face, L.face)}</div><div class="opt"><span>Build</span>${ch('build', K.build, L.build)}</div>
+   <div class="opt"><span>Cape colour</span><button class="ch ghost ${L.capeCol == null ? 'on' : ''}" data-k="capeCol" data-v="">armour’s own</button>${sw('capeCol', [0xc01818, 0x1a3a9a, 0x1a6a2a, 0x6a1a8a, 0x101014, 0xf4f4f0, 0xd8a838], [0xc01818, 0x1a3a9a, 0x1a6a2a, 0x6a1a8a, 0x101014, 0xf4f4f0, 0xd8a838].indexOf(L.capeCol))}</div>
+   <div class="opt"><span>Helmet</span><button class="ch ghost ${L.showHelm !== false ? 'on' : ''}" data-k="showHelm" data-v="1">shown</button><button class="ch ghost ${L.showHelm === false ? 'on' : ''}" data-k="showHelm" data-v="0">hidden</button></div>
+   <label class="small"><input type="checkbox" id="cprev" ${L.preview ? 'checked' : ''}> Preview without armour</label></div>
+   <div class="row"><button id="cdone">Done</button><button class="ghost" id="creset">Reset</button></div>`;
+  const setL = (k, v) => { const N = myLook(); if (k === 'capeCol') N.capeCol = v === '' ? null : [0xc01818, 0x1a3a9a, 0x1a6a2a, 0x6a1a8a, 0x101014, 0xf4f4f0, 0xd8a838][+v];
+    else if (k === 'showHelm') N.showHelm = v === '1'; else if (['skin', 'hair', 'eye'].includes(k)) N[k] = +v; else N[k] = v; saveLook(N); SND.sfx('click'); draw(); };
+  p.querySelectorAll('.sw,.ch').forEach(b => b.onclick = () => setL(b.dataset.k, b.dataset.v));
+  $('cprev').onchange = () => { const N = myLook(); N.preview = $('cprev').checked; saveLook(N); draw(); };
+  $('creset').onclick = () => { saveLook(Object.assign({}, HERO8.DEFAULT_LOOK)); draw(); };
+  $('cdone').onclick = () => { const N = myLook(); delete N.preview; saveLook(N); custom = false; sceneKey = ''; if (code && S && S.bag) pres({look: lookOf(S)}); draw(); }; }
+/* hover a hero's plate: your own shows both stat systems; other players show only HP (the host's admin view shows everything) */
+function heroTip(id, hp, max){ if (id === myPeer) return `<div class="ptip">${statSummary()}</div>`;
+  const pp = peersP.find(x => x.peer === id); const hs = pp && pp.presence.hero; if (!adminAllowed() || !hs || !hs.P) return `<div class="ptip"><b>${esc(nameOf(id))}</b> · ♥ ${hp} / ${max}</div>`;
+  try { const lk = pp.presence.look || {}; const d = C.derive(Object.assign({}, hs.P, {lv: hs.P.lv || lk.lv || 1})); const row = k => `<div class="bsl"><span>${Dd.BSTAT_INFO[k][0]}</span><b>${k === 'hp' ? d.max : d[k]}</b><small></small></div>`;
+    return `<div class="ptip"><b>${esc(nameOf(id))}</b> · admin view<div class="statpanel"><div>${Dd.BSTATS.map(row).join('')}<div class="bsl"><span>Dodge</span><b>${Math.round(d.dodge*100)}%</b></div></div><div>${Dd.REQ_STATS.map(k => `<div class="bsl"><span>${k}</span><b>${d.s[k]}</b></div>`).join('')}</div></div></div>`; } catch(e){ return `<div class="ptip">♥ ${hp} / ${max}</div>`; } }
+function chatSend(t){ t = String(t || '').trim().slice(0, 120); if (!t || !code) return; myChat = myChat.concat([{i:Math.random().toString(36).slice(2, 7), t:now(), m:t}]).slice(-3); pres({chat: myChat}); chatDraw(); }
+function chatAll(){ const out = []; for (const p of players()){ for (const c of (p.presence.chat || [])) out.push({who:p.peer, n:String(p.presence.n || 'Player').slice(0, 20), t:c.t, m:String(c.m || '').slice(0, 120), i:c.i}); } return out.sort((a, b) => a.t - b.t).slice(-30); }
+function chatDraw(){ const box = $('chat'); if (!box) return; box.hidden = !code; if (!code) return; const L = chatAll(); const log = $('chatlog'); const html = L.map(c => `<div class="${c.who === myPeer ? 'me' : ''}"><b>${esc(c.n)}</b>: ${esc(c.m)}</div>`).join('') || '<div class="muted">Say hi to your party!</div>';
+  if (log.dataset.h !== html){ log.innerHTML = html; log.dataset.h = html; log.scrollTop = log.scrollHeight; const fresh = L.filter(c => c.t > chatSeen && c.who !== myPeer); fresh.forEach(c => feed(`💬 ${c.n}: ${c.m}`, 'chat')); if (L.length) chatSeen = Math.max(chatSeen, L[L.length - 1].t); }
+  const f = $('chatf'); if (f && !f.dataset.w){ f.dataset.w = 1; f.onsubmit = ev => { ev.preventDefault(); const i = $('chatin'); chatSend(i.value); i.value = ''; }; } }
+function draw0(p){
+  if (custom){ view = 'custom'; return customUI(p); }
   if (!code){ view = 'home'; return homeUI(p); }
   if (!G || G.ph === 'lobby'){ view = 'lobby'; return lobbyUI(p); }
   if (G.ph === 'map'){ view = 'map'; return mapUI(p); }
@@ -6309,12 +6506,14 @@ function saveWebEssay(required){ const t = ($('wes') ? $('wes').value : '').trim
   try { const E = myEssays(); if (u.length) E.web = {text:t, units:u}; else delete E.web; localStorage.setItem(ESSAYS_KEY, JSON.stringify(E)); } catch(e){ if (required) return 'Could not save your essay (is browser storage blocked?).'; }
   return ''; }
 function webHomeUI(p){ stage('home'); const hc = (location.hash.match(/join=([a-z0-9]{5})/i) || [])[1] || '';
-  p.innerHTML = `<h2>Essay Quest · Online</h2><p>Your class runs one adventure together (30 or 50 rounds). Everyone studies <b>their own essay</b> at camp, then the party fights side by side. Every path, land and attack is voted on a 15-second timer. Mini-bosses every ten rounds from round 5, bosses every 10th round, and a final boss with a second form at the end.</p>
+  p.innerHTML = `<h2>Essay Quest · Online</h2><p>Your class runs one adventure together (20, 30 or 50 rounds). Everyone studies <b>their own essay</b> at camp, then the party fights side by side. Every path, land and attack is voted on a 15-second timer. Mini-bosses every ten rounds from round 5, bosses every 10th round, and a final boss with a second form at the end.</p>
    <label class="lab">Your name<input class="wide" id="nick" maxlength="20" value="${esc(nick)}" placeholder="What should the party call you?" autocomplete="off"></label>
    ${webEssayBox()}
    <div class="paths"><div class="path" style="cursor:default"><b>Join a game</b><small>Type the 5-character code your host shows on screen.</small><div class="row tight"><input class="wide" id="jc" maxlength="5" value="${esc(hc)}" placeholder="code" autocomplete="off" autocapitalize="off" style="max-width:9em"><button id="jn">Join</button></div></div>
    <div class="path" style="cursor:default"><b>Host a game</b><small>Hosting needs the master key. Paste your own essay above to study it (or leave it empty for the built-in essays). You can change it in the lobby too.</small><div class="row tight"><input class="wide" id="mkey" type="password" placeholder="master key" autocomplete="off" style="max-width:12em"><button id="mk">Host</button></div></div></div>
+   <div class="row"><button class="ghost" id="cust">🎨 Customise your hero</button></div>
    ${lastErr ? `<p class="bad">${esc(lastErr)}</p>` : ''}<p class="muted small">Up to ${MAXP} players. If the host leaves, the run ends. Your essay stays on this device only.</p>`;
+  $('cust').onclick = () => { custom = true; draw(); };
   wireEssayBox();
   const setNick = () => { nick = $('nick').value.trim().slice(0, 20) || 'Player'; try { localStorage.setItem('eq5_nick', nick); } catch(e){} };
   $('jn').onclick = async () => { setNick(); const c = $('jc').value.trim().toLowerCase(); if (!/^[a-z0-9]{5}$/.test(c)){ lastErr = 'Codes are 5 letters/numbers.'; return draw(); }
@@ -6326,15 +6525,16 @@ function webHomeUI(p){ stage('home'); const hc = (location.hash.match(/join=([a-
 function webLobbyUI(p){ stage('lobby'); const ps = players(); const hostOpts = isHost && H; const u = unitsOf(0);
   p.innerHTML = `<h2>Lobby</h2><div class="code">Room code <b>${esc(code)}</b> <button class="ghost" id="cp">Copy code</button> <button class="ghost" id="cpl">Copy invite link</button></div>${rosterHTML()}
    ${hostOpts ? `<div class="box"><p><b>Run settings</b> (you're the host)</p><p class="muted small">Starting land (the party can vote to travel after every mini-boss and boss):</p><div class="row tight">${WD.map((w,i) => `<button class="${H.w===i?'':'ghost'} hw" data-w="${i}">${esc(w.name)}</button>`).join('')}</div>
-     <div class="row tight"><button class="${H.len===30?'':'ghost'} hlen" data-l="30">30 rounds</button><button class="${H.len===50?'':'ghost'} hlen" data-l="50">50 rounds</button><span class="muted small">${H.len===30 ? 'Mini-bosses at 5, 15, 25 · bosses at 10, 20 and the final boss at 30' : 'Mini-bosses at 5, 15, 25, 35, 45 · bosses every 10th round · final boss at 50'}</span></div>
+     <div class="row tight">${[20, 30, 50].map(n => `<button class="${H.len===n?'':'ghost'} hlen" data-l="${n}">${n} rounds</button>`).join('')}<span class="muted small">${H.len===20 ? 'Quick run: mini-bosses at 5 and 15 · boss at 10 · final boss at 20 · 4 stat points a level' : H.len===30 ? 'Mini-bosses at 5, 15, 25 · bosses at 10, 20 · final boss at 30 · 3 stat points a level' : 'Mini-bosses at 5, 15, 25, 35, 45 · bosses every 10th round · final boss at 50 · 2 stat points a level'}</span></div>
      <div class="row tight">${Object.entries(C.DIFFS).map(([k, d]) => `<button class="${(H.diff||'hard')===k?'':'ghost'} hdf" data-d="${k}">${d.n}</button>`).join('')}<span class="muted small">Difficulty: mob health ×${C.DIFFS[H.diff||'hard'].hp}, damage ×${C.DIFFS[H.diff||'hard'].atk}. Hard is the intended experience.</span></div>
      <div class="row tight"><button class="${H.cp?'':'ghost'}" id="hcp">Checkpoints ${H.cp?'on':'off'}</button><span class="muted small">On: a wipe sends the party back to the last mini-boss round instead of round 1.</span></div>
      <div class="row tight"><button class="${H.nq?'ghost':''} hnq" data-q="0">📖 Essay Quest</button><button class="${H.nq?'':'ghost'} hnq" data-q="1">⚔ Battle only</button><span class="muted small">${H.nq ? 'No study quests: XP, Ink and Wisdom come only from fights, and foes are a little tougher.' : 'Study quests from your essays before each fight (the main mode).'}</span></div></div>`
      : G ? `<p class="muted">Starting in ${esc(WD[G.w].name)} · ${G.len} rounds · checkpoints ${G.cp?'on':'off'} · ${G.nq ? '⚔ Battle only (no quests)' : '📖 Essay Quest'}</p>` : '<p class="muted">Connecting to the host…</p>'}
    <div class="box"><p><b>Your essay</b>: you'll study ${S.essaySrc === 'mine' ? 'your own essay' : 'the built-in essays'} (${u.length} paragraph${u.length===1?'':'s'}). <button class="ghost" id="essedit">${lobbyEss ? 'Close' : (S.essaySrc === 'mine' ? '✎ Change my essay' : '✎ Paste my essay')}</button></p>
      ${lobbyEss ? webEssayBox() + `<div class="row tight"><button id="esssave">Save and use this essay</button>${isHost ? '<button class="ghost" id="essbuiltin">Use the built-in essays</button>' : ''}</div><p class="muted small" id="essmsg"></p>` : ''}</div>
-   <div class="row">${isHost ? `<button id="start" ${ps.length?'':'disabled'}>Start the run (${ps.length} player${ps.length===1?'':'s'})</button>` : '<span class="muted">Waiting for the host to start…</span>'}<button class="ghost" id="lv">Leave</button></div>
+   <div class="row">${isHost ? `<button id="start" ${ps.length?'':'disabled'}>Start the run (${ps.length} player${ps.length===1?'':'s'})</button>` : '<span class="muted">Waiting for the host to start…</span>'}<button class="ghost" id="lcust">🎨 Customise</button><button class="ghost" id="lv">Leave</button></div>
    <p class="muted small">Up to ${MAXP} players. Each extra player adds an enemy to every fight. Friends can still join after the run starts: they arrive at the party's level with every stat point unspent.</p>`;
+  $('lcust').onclick = () => { custom = true; draw(); };
   $('cp').onclick = () => { try { navigator.clipboard.writeText(code); toast('Code copied'); } catch(e){} };
   $('essedit').onclick = () => { lobbyEss = !lobbyEss; draw(); };
   if (lobbyEss){ wireEssayBox(); $('esssave').onclick = () => { const err = saveWebEssay(true); if (err){ $('essmsg').textContent = err; return; } S.essaySrc = 'mine'; S.quests = null; pres({ess:'mine'}); saveLocal(); lobbyEss = false; toast('Essay saved: your quests will use it.'); draw(); };
@@ -6420,14 +6620,12 @@ function battleUI(){ const p = $('panel'); if (!BE || !CB){ p.innerHTML = '<h2>B
   const lock = playing || acted || down || BE.over;
   p.innerHTML = `${BE.over ? `<h2>${BE.over==='win' ? 'Victory!' : 'The party has fallen…'}</h2>` : `<div class="row" style="justify-content:space-between"><b>Round ${BE.r}</b>${playing ? '<span class="muted">…</span>' : tbar(bdeadline(), ACT_MS)}</div>`}
    ${down && !BE.over ? `<p class="bad">You are down and watching this fight. Revival comes after round ${nextRevive()} (every 5th round and after mini-bosses), at half HP.</p>` : ''}
-   ${FIGHTP && !lock ? `<div class="mvhead"><b>Choose a move</b><button id="a-back" class="ghost">◀ Back</button></div><div id="mvgrid" class="mvgrid">${moveBtns(ms, energy, Object.fromEntries(Object.entries(mcd).map(([k, v]) => [k, Math.max(v, moveCd[k] || 0)])), BE.r, lock, myW && myW.rar >= 4, myW)}</div>` : `<div class="acts"><button id="a-fight" class="fight" ${lock?'disabled':''}>⚔ Attack <small>choose a move</small></button><button id="a-focus" class="ghost" ${lock?'disabled':''}>Focus <small>+45 energy</small></button><button id="a-guard" class="ghost" ${lock?'disabled':''}>Guard</button><button id="a-items" class="ghost" ${lock || !items.length ? 'disabled' : ''}>Items (${items.reduce((a,k)=>a+S.belt[k],0)})</button></div>`}
+   <div class="battlebar"><div id="mvgrid" class="mvgrid bars">${moveBtns(ms, energy, Object.fromEntries(Object.entries(mcd).map(([k, v]) => [k, Math.max(v, moveCd[k] || 0)])), BE.r, lock, myW && myW.rar >= 5, myW)}</div>
+   <div class="acts side"><button id="a-focus" class="ghost" ${lock?'disabled':''}>🧘 Focus <small>+45 energy · goes first</small></button><button id="a-guard" class="ghost" ${lock?'disabled':''}>🛡 Guard <small>goes first</small></button><button id="a-items" class="ghost" ${lock || !items.length ? 'disabled' : ''}>🎒 Items (${items.reduce((a,k)=>a+S.belt[k],0)})</button><div class="enrow">⚡ ${energy}/100 energy</div></div></div>
    <div id="itemrow" class="itemrow" hidden>${items.map(k=>`<button class="ghost it" data-k="${k}">${esc(Dd.CONSUMABLES[k].n)} ×${S.belt[k]}</button>`).join('')}</div>
    ${acted && !BE.over && !playing ? `<p class="ok">Locked in. Waiting for ${waiting.map(nameOf).map(esc).join(', ') || 'the round'}…</p>` : ''}
-   <div class="foes">${CB.es.filter(e=>e.hp>0).map(e=>`<button class="foe ${selT===e.id?'sel':''}" data-id="${e.id}"><span><b>${esc(e.name)}</b> <small>${esc((Dd.TRAITS[e.trait]||'').split(':')[0])}${e.charging?' · CHARGING':''}${e.exposed?' · EXPOSED':''}${e.guard?' · guarding':''}${e.enraged?' · ENRAGED':''}</small></span><div class="hpbar"><i style="width:${Math.max(0,e.hp/e.max*100)}%;background:${e.boss?'#ff4d6d':'#ff9a3c'}"></i></div><small>${e.hp} / ${e.max} HP${selT===e.id?' · YOUR TARGET':''}</small><div class="chips">${foeChips(e.status)}</div></button>`).join('')}</div>
-   <div class="foes">${(CB.hs||BE.hs).map(h0 => { const h = CB.disp && CB.disp.hs[h0[0]] != null ? [h0[0], CB.disp.hs[h0[0]]].concat(h0.slice(2)) : h0; return h; }).map(h => `<div class="foe ${h[0]===myPeer?'me':''}"><span><b>${h[0]===myPeer ? 'You' : esc(nameOf(h[0]))}</b> <small>${h[4].includes('d')?'DOWN':''}${h[4].includes('f')?' · frozen':''}${h[4].includes('g')?' · guarding':''}</small></span><div class="chips">${heroChips(h[7])}</div><div class="hpbar"><i style="width:${Math.max(0,h[1]/h[2]*100)}%;background:#4cd46b"></i></div><small>${h[1]} / ${h[2]} HP · ⚡ ${h[3]}</small><div class="enbar"><i style="width:${h[3]}%"></i></div></div>`).join('')}</div>
-   <div class="log">${CB.log.slice(-5).map(l=>`<div>${esc(l)}</div>`).join('')}</div><p class="muted small">Pick your target, then an action. When everyone has chosen (or the timer runs out) the round plays out; no choice means your free Basic move.</p>`;
-  if (FIGHTP && !lock){ $('a-back').onclick = () => { FIGHTP = false; battleUI(); }; p.querySelectorAll('.mvb').forEach(b => b.onclick = () => { const m = ms[+b.dataset.slot]; if (m && m.cd) moveCd[m.slot] = BE.r + m.cd; FIGHTP = false; sendAct('move', +b.dataset.slot); }); }
-  else if (!lock){ $('a-fight').onclick = () => { FIGHTP = true; battleUI(); }; $('a-focus').onclick = () => sendAct('focus'); $('a-guard').onclick = () => sendAct('guard'); $('a-items').onclick = () => { $('itemrow').hidden = !$('itemrow').hidden; }; p.querySelectorAll('.it').forEach(b => b.onclick = () => sendAct('item', b.dataset.k)); }
+   <p class="muted small bhint">Tap an enemy's nameplate to target it. Guard, Focus and items act first; then everyone moves in Speed order. No choice means your free Basic move.</p>`;
+  if (!lock){ p.querySelectorAll('.mvb').forEach(b => b.onclick = () => { const m = ms[+b.dataset.slot]; if (m && m.cd) moveCd[m.slot] = BE.r + m.cd; FIGHTP = false; sendAct('move', +b.dataset.slot); }); $('a-focus').onclick = () => sendAct('focus'); $('a-guard').onclick = () => sendAct('guard'); $('a-items').onclick = () => { $('itemrow').hidden = !$('itemrow').hidden; }; p.querySelectorAll('.it').forEach(b => b.onclick = () => sendAct('item', b.dataset.k)); }
   p.querySelectorAll('.foe[data-id]').forEach(b => b.onclick = () => { selT = +b.dataset.id; if (acted && !playing && !BE.over){ myAct.t = selT; pres({act:myAct}); } battleUI(); }); }
 function chestUI(p){ stage('chest-' + G.lvl); const ps = players(); const done = ps.filter(x => x.presence.cont === readyKey()); const amDone = me() && me().presence.cont === readyKey();
   if (sceneKey !== 'pchest:' + G.lvl){ sceneKey = 'pchest:' + G.lvl; if ((S.chest||[]).some(i => i.myth || i.special)) setTimeout(() => { ART3D.equipFx(Math.max(...S.chest.map(i => i.rar||0))); SND.sfx('perfect'); }, 1300); ART3D.setScene('chest', {world:S.world, theme: G.path ? G.path.theme : 0, P:P(), rar: Math.max(0, ...(S.chest||[]).map(i => i.rar || 0))}); setTimeout(() => { ART3D.openChest(); SND.sfx('chest'); }, 500); SND.music('map'); }
@@ -6441,7 +6639,7 @@ function hostGone(){ const why = goneWhy || (WEBV ? 'The host left, so the run h
 window.__ptt = () => { const e = CB && (CB.es.find(x => x.id === selT && x.hp > 0) || CB.es.find(x => x.hp > 0)); return e ? eTypes(e) : null; };
 function plates(){ const ov = $('ov'); if (view !== 'battle' || !CB || !BE){ if (ov.innerHTML && ov.dataset.party) { ov.innerHTML = ''; ov.dataset.h = ''; } return; } ov.dataset.party = 1;
   const hp = (v,m,col) => `<div class="hpbar"><i style="width:${Math.max(0,v/m*100)}%;background:${col}"></i></div>`;
-  const L = []; for (const x0 of (CB.hs||BE.hs)){ const x = CB.disp && CB.disp.hs[x0[0]] != null ? [x0[0], CB.disp.hs[x0[0]]].concat(x0.slice(2)) : x0; const sp = ART3D.screenPos(x[0]); if (!sp) continue; L.push({r:'h',x:Math.min(90, Math.max(8, sp.x)), y:Math.max(18, sp.y), h:(X,Y) => `<div class="plate ${x[0]===myPeer?'me':''}" style="left:${X}%;top:${Y}%"><b>${x[0]===myPeer ? 'You' : esc(nameOf(x[0]))}</b>${tyRow(Dd.itemTypes((lookFor(x[0]) || {eq:{}}).eq.armour))}${hp(x[1], x[2], '#4cd46b')}<div class="enbar"><i style="width:${x[3]}%"></i></div><div class="chips">${x[4].includes('d')?'<span class="b">DOWN</span>':''}${heroChips(x[7])}</div></div>`}); }
+  const L = []; for (const x0 of (CB.hs||BE.hs)){ const x = CB.disp && CB.disp.hs[x0[0]] != null ? [x0[0], CB.disp.hs[x0[0]]].concat(x0.slice(2)) : x0; const sp = ART3D.screenPos(x[0]); if (!sp) continue; L.push({r:'h',x:Math.min(90, Math.max(8, sp.x)), y:Math.max(18, sp.y), h:(X,Y) => `<div class="plate ${x[0]===myPeer?'me':''}" style="left:${X}%;top:${Y}%">${heroTip(x[0], x[1], x[2])}<b>${x[0]===myPeer ? 'You' : esc(nameOf(x[0]))}</b>${tyRow(Dd.itemTypes((lookFor(x[0]) || {eq:{}}).eq.armour))}${hp(x[1], x[2], '#4cd46b')}<div class="enbar"><i style="width:${x[3]}%"></i></div><div class="chips">${x[4].includes('d')?'<span class="b">DOWN</span>':''}${heroChips(x[7])}</div></div>`}); }
   for (const e of CB.es){ if (e.hp <= 0) continue; const sp = ART3D.screenPos(e.id); if (!sp) continue; L.push({r:'e',x:Math.min(90, Math.max(10, sp.x)), y:Math.max(18, sp.y), h:(X,Y) => `<button class="plate en ${selT===e.id?'sel':''} ${e.boss?'boss':''}" data-id="${e.id}" style="left:${X}%;top:${Y}%"><b>${esc(e.name)} <small>Lv ${e.lv||''}</small></b>${tyRow(eTypes(e))}${hp(e.hp, e.max, e.boss?'#ff4d6d':'#ff9a3c')}<div class="hpt">${e.hp} / ${e.max}</div><div class="chips">${e.charging?'<span class="b">CHARGING</span>':''}${foeChips(e.status)}</div></button>`}); }
   const h = dock(L).map(o => o.h(Math.round(o.x*10)/10, Math.round(o.y*10)/10)).join('');
   if (ov.dataset.h !== h){ ov.innerHTML = h; ov.dataset.h = h; ov.querySelectorAll('.en').forEach(b => b.onclick = () => { selT = +b.dataset.id; if (myAct && BE && myAct.r === BE.r && !playing){ myAct.t = selT; pres({act:myAct}); } battleUI(); plates(); }); } }
@@ -6479,11 +6677,12 @@ function adminDraw(){ const ov = document.getElementById('admin'); if (!ov || ov
     <div class="row tight"><button class="ghost ah" data-a="xp10">+10 XP</button><button class="ghost ah" data-a="xp100">+100 XP</button><button class="ghost ah" data-a="xp500">+500 XP</button><button class="ghost ah" data-a="lv1">+1 level</button><button class="ghost ah" data-a="lv5">+5 levels</button><button class="ghost ah" data-a="lv10">+10 levels</button></div>
     <div class="row tight"><button class="ghost ah" data-a="pts">+10 stat points</button><button class="ghost ah" data-a="wis">+200 Wisdom</button><button class="ghost ah" data-a="ink">+200 Ink</button><button class="ghost ah" data-a="heal">Full heal</button><button class="ghost ah" data-a="pots">Fill potion belt</button><button class="ghost ah" data-a="boons">Own every boon</button></div>`;
   if (adminTab === 'weapon' || adminTab === 'armour'){ const kind = adminTab; let list = [];
-    if (adminRar >= 3) list = Dd.LEGENDS.filter(x => x[2] === kind && x[4] === adminRar).map(x => ({id:'L:' + x[0], n:x[1], s: (kind === 'weapon' ? x[3] : x[3]) + ' · ' + x[5]}));
-    else if (kind === 'weapon') list = WD[adminLand].types.map((t, i) => ({id:'W:' + i, n:t[2][adminRar] || t[0], s:t[0]}));
-    else list = ['plate','leather','robe'].map((role, i) => ({id:'A:' + i, n:WD[adminLand].armour[adminRar][i], s:role}));
-    if (kind === 'weapon' && adminRar === 4) list = list.concat(Object.keys(Dd.SPECIAL).map(k => ({id:'S:' + k, n:Dd.SPECIAL[k].name || k, s:'special'})));
-    body = rarRow + (adminRar < 3 ? landRow : '') + `<label class="small"><input type="checkbox" id="aeq" ${adminEquip ? 'checked' : ''}> Equip it straight away (ignores stat requirements)</label><p class="muted small">${list.length} to choose from. Items arrive at your Hero Lv (${L}).</p><div class="adlist">${list.map(x => `<button class="ghost agive" data-id="${esc(x.id)}"><b style="color:${R[adminRar].c}">${esc(x.n)}</b><small>${esc(x.s)}</small></button>`).join('')}</div>`; }
+    const TIER = ['base', 'base', 'base', 'epic', 'legend', 'myth', 'outer'][adminRar];
+    if (kind === 'armour') list = Dd.ARMOURS.filter(d => d.tier === TIER).map(d => ({id:'D:' + d.key, n:Dd.armourName(d, adminRar), s:d.role + (d.origin ? ' · ' + d.origin : '') + (d.lands.length && d.lands.length < 6 ? ' · ' + d.lands.map(i => WD[i].name).join(', ') : '')}));
+    else if (adminRar >= 4) list = Dd.LEGENDS.filter(x => x[2] === kind && x[4] === adminRar).map(x => ({id:'L:' + x[0], n:x[1], s: x[3] + ' · ' + x[5]}));
+    else list = WD[adminLand].types.map((t, i) => ({id:'W:' + i, n:t[2][adminRar] || t[0], s:t[0]}));
+    if (kind === 'weapon' && adminRar === 5) list = list.concat(Object.keys(Dd.SPECIAL).map(k => ({id:'S:' + k, n:Dd.SPECIAL[k].name || k, s:'special'})));
+    body = rarRow + (adminRar < 4 ? landRow : '') + `<label class="small"><input type="checkbox" id="aeq" ${adminEquip ? 'checked' : ''}> Equip it straight away (ignores stat requirements)</label><p class="muted small">${list.length} to choose from. Items arrive at your Hero Lv (${L}).</p><div class="adlist">${list.map(x => `<button class="ghost agive" data-id="${esc(x.id)}"><b style="color:${R[adminRar].c}">${esc(x.n)}</b><small>${esc(x.s)}</small></button>`).join('')}</div>`; }
   if (adminTab === 'trinket') body = rarRow + `<div class="adlist">${Dd.TRINKETS.map((t, i) => `<button class="ghost agive" data-id="T:${i}"><b style="color:${R[adminRar].c}">${esc(t[0])}</b><small>${esc(t[1])}</small></button>`).join('')}</div>`;
   if (adminTab === 'run'){ const g = H || {}; body = `<p class="bad small">These change the shared run, so everyone will see the result (but not that it was you).</p>
     <p class="muted small">Difficulty (mob health and damage; applies to the next fights):</p><div class="row tight">${Object.entries(C.DIFFS).map(([k, d]) => `<button class="${(g.diff||'hard')===k?'':'ghost'} adiff" data-d="${k}">${d.n}</button>`).join('')}</div>
@@ -6501,12 +6700,12 @@ function adminDraw(){ const ov = document.getElementById('admin'); if (!ov || ov
     if (a === 'xp10' || a === 'xp100' || a === 'xp500') gainXP(+a.slice(2));
     if (a.startsWith('lv')) gainXP(100*(+a.slice(2)) - (S.xp||0) % 100);
     if (a === 'pts') S.pts += 10; if (a === 'wis') S.meta.wisdom += 200; if (a === 'ink') S.ink += 200; if (a === 'heal') S.hp = maxHP();
-    if (a === 'pots') for (const k of Object.keys(Dd.CONSUMABLES)) S.belt[k] = BELTCAP;
+    if (a === 'pots') for (const k of Object.keys(Dd.CONSUMABLES)) S.belt[k] = beltCap();
     if (a === 'boons') S.meta.owned = Dd.BOONS.map(x => x[0]);
     adminMsg = 'Done.'; saveLocal(); save(); refresh(); adminDraw(); });
   q('.agive').forEach(b => b.onclick = () => { const [t, v] = b.dataset.id.split(':'); const r = Math.random, w = adminLand;
     if (t === 'L'){ const x = Dd.LEGENDS.find(l => l[0] === v); adminGive(x[2] === 'weapon' ? C.legendWeapon(w, x[3], x[4], r, v, L) : C.legendArmour(w, x[3], x[4], r, v, L)); }
-    if (t === 'W') adminGive(C.makeWeapon(w, +v, adminRar, r, L)); if (t === 'A') adminGive(C.makeArmour(w, adminRar, +v, r, L));
+    if (t === 'W') adminGive(C.makeWeapon(w, +v, adminRar, r, L)); if (t === 'A') adminGive(C.makeArmour(w, adminRar, +v, r, L)); if (t === 'D') adminGive(C.legendArmour(w, null, adminRar, r, v));
     if (t === 'S') adminGive(C.makeSpecial(v, w, L)); if (t === 'T') adminGive(C.makeTrinket(w, +v, adminRar, L)); });
   q('.pskip').forEach(b => b.onclick = () => { hostSkip(b.dataset.id); adminMsg = 'Skipped that turn.'; adminDraw(); });
   q('.psit').forEach(b => b.onclick = () => { hostSit(b.dataset.id); adminDraw(); });
