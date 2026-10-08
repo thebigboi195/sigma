@@ -15,7 +15,7 @@ const { chromium } = require('/opt/node22/lib/node_modules/playwright');
         const wp = s.weapons ? C.legendWeapon(0, null, rar, r, s.weapons[i % s.weapons.length]) : (rar >= 4 ? C.makeTop(rar, r, null, 'weapon', 0) : C.makeWeapon(s.world || 0, i, rar, r));
         heroes.push({id: i ? 'h' + i : 'p', P: {lv: 20, st: {}, boons: [], look: s.looks ? s.looks[i % s.looks.length] : {skin: i, hair: i + 1, hairStyle: ['short', 'spiky', 'long', 'ponytail'][i % 4]}, eq: {weapon: wp, armour: arm, trinkets: []}}}); }
       ART3D.setScene('battle', {world: s.world || 0, theme: s.theme || 0, enemies: E, heroes}); }, s);
-    await p.waitForTimeout(s.wait || 2600); await p.screenshot({path: path.join(out, s.name + '.png')}); console.log('shot', s.name);
+    await p.waitForTimeout(s.wait || 2600); await p.evaluate(() => { try { ART3D.endCut(); ART3D.frame(true); } catch(e){} }); await p.waitForTimeout(5200); await p.screenshot({path: path.join(out, s.name + '.png')}); console.log('shot', s.name);
   }
   if (errs.length) console.log('errors', errs.slice(0, 10));
   await b.close();

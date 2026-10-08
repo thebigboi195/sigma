@@ -3,7 +3,22 @@
    Rig contract (the animations rely on it): faces +Z; userData.parts = {body, armL, armR, legL, legR, head, wpn, wpnL, hold};
    arms pivot at the shoulders (±1.5, 3.9), each arm's hand group at (0, -2.05, 0); legs pivot at the hips (±0.5, 2); head at y 4.65. ===== */
 const HERO8 = (() => {
-const {mat, rbox, sweep, blob, sph, cyl, cone, tor, grp, rot, horn, wing, featherWing, eyeGlow, sprite, shade, mix} = KIT;
+const {sweep, cone, tor, grp, rot, horn, wing, featherWing, eyeGlow, sprite, shade, mix} = KIT;
+/* v8.1: a crisp blocky (Minecraft-style) hero. Every part is a sharp box wearing a 16×16 pixel texture; spheres and cylinders become cubes. */
+const PIX = {};
+function pixTex(c, kind){ const key = c + kind; if (PIX[key]) return PIX[key]; const cv = document.createElement('canvas'); cv.width = cv.height = 16; const x = cv.getContext('2d'); const C = new THREE.Color(c);
+  let seed = (c % 9973) + kind.length*17; const rnd = () => { seed = (seed*16807) % 2147483647; return seed/2147483647; };
+  const amp = kind === 'metal' || kind === 'gold' ? 0.12 : kind === 'skin' ? 0.05 : kind === 'glow' || kind === 'eye' ? 0.03 : 0.16;
+  for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++){ const k = 1 + (rnd() - 0.5)*2*amp - (kind === 'metal' && (i === 0 || j === 0) ? 0.12 : 0) + (kind === 'metal' && (i === 1 || j === 1) ? 0.08 : 0);
+    x.fillStyle = `rgb(${Math.min(255, C.r*255*k)|0},${Math.min(255, C.g*255*k)|0},${Math.min(255, C.b*255*k)|0})`; x.fillRect(i, j, 1, 1); }
+  const t = new THREE.CanvasTexture(cv); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; return (PIX[key] = t); }
+const MAT8 = {};
+function mat(c, kind, o){ kind = kind || 'skin'; const key = c + '|' + kind + '|' + (o ? JSON.stringify(o) : ''); if (MAT8[key]) return MAT8[key]; const base = KIT.mat(c, kind, o);
+  if (kind === 'eye' || kind === 'glass') return (MAT8[key] = base); const m = base.clone(); m.map = pixTex(c, kind); m.color = new THREE.Color(0xffffff); if (kind === 'glow'){ m.emissiveMap = m.map; } m.flatShading = true; return (MAT8[key] = m); }
+const rbox = (w, h, d, r, m, x, y, z) => KIT.mesh(new THREE.BoxGeometry(w, h, d), m, x, y, z);
+const blob = (r, sx, sy, sz, m, x, y, z) => KIT.mesh(new THREE.BoxGeometry(2*r*sx*0.9, 2*r*sy*0.9, 2*r*sz*0.9), m, x, y, z);
+const sph = (r, m, x, y, z) => KIT.mesh(new THREE.BoxGeometry(1.7*r, 1.7*r, 1.7*r), m, x, y, z);
+const cyl = (rt, rb, h, m, x, y, z) => KIT.mesh(new THREE.BoxGeometry(1.8*Math.max(rt, rb), h, 1.8*Math.max(rt, rb)), m, x, y, z);
 /* ---------- the character customiser's options ---------- */
 const LOOK = {
   skin:[0xffd9b8, 0xf2c39b, 0xe0a87a, 0xc68a5e, 0x9a6440, 0x6e4428, 0x4a2c1a, 0xffd27f],
@@ -17,16 +32,13 @@ const lookOf = o => Object.assign({}, DEFAULT_LOOK, o || {});
 const colOf = (list, v) => v == null ? list[0] : typeof v === 'number' ? (v >= 0 && v < list.length && Number.isInteger(v) ? list[v] : v) : v;
 /* ---------- face textures ---------- */
 const FACES = {};
-function faceTex(style, eye){ const key = style + eye; if (FACES[key]) return FACES[key]; const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
-  g.fillStyle = eye; g.strokeStyle = '#2a1a14'; g.lineWidth = 6; g.lineCap = 'round';
-  const eyeAt = (x, wink) => { if (wink){ g.beginPath(); g.moveTo(x - 9, 52); g.quadraticCurveTo(x, 44, x + 9, 52); g.stroke(); return; } g.beginPath(); g.ellipse(x, 50, 8, 11, 0, 0, Math.PI*2); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(x + 3, 46, 3, 0, Math.PI*2); g.fill(); g.fillStyle = eye; };
-  eyeAt(44, false); eyeAt(84, style === 'wink');
-  if (style === 'fierce' || style === 'determined'){ g.beginPath(); g.moveTo(32, 34); g.lineTo(54, 40); g.moveTo(96, 34); g.lineTo(74, 40); g.stroke(); }
-  g.beginPath(); if (style === 'grin'){ g.moveTo(42, 80); g.quadraticCurveTo(64, 104, 86, 80); g.closePath(); g.fillStyle = '#fff'; g.fill(); g.stroke(); }
-  else if (style === 'calm' || style === 'determined'){ g.moveTo(50, 86); g.lineTo(78, 86); g.stroke(); }
-  else if (style === 'fierce'){ g.moveTo(48, 90); g.quadraticCurveTo(64, 80, 80, 90); g.stroke(); }
-  else { g.moveTo(46, 80); g.quadraticCurveTo(64, 96, 82, 80); g.stroke(); }
-  return (FACES[key] = new THREE.CanvasTexture(c)); }
+function faceTex(style, eye){ const key = style + eye; if (FACES[key]) return FACES[key]; const c = document.createElement('canvas'); c.width = c.height = 8; const g = c.getContext('2d');
+  const px = (x, y, col) => { g.fillStyle = col; g.fillRect(x, y, 1, 1); };
+  // 8×8 pixel face: white eyes with coloured pupils, a mouth line
+  for (const ex of [1, 5]){ px(ex, 3, '#ffffff'); px(ex + 1, 3, eye); } if (style === 'wink'){ px(5, 3, '#2a1a14'); px(6, 3, '#2a1a14'); }
+  if (style === 'fierce' || style === 'determined'){ px(1, 2, '#2a1a14'); px(2, 2, '#2a1a14'); px(5, 2, '#2a1a14'); px(6, 2, '#2a1a14'); }
+  if (style === 'grin'){ for (let x = 2; x < 6; x++) px(x, 5, '#ffffff'); px(2, 6, '#5a1a14'); px(5, 6, '#5a1a14'); } else if (style === 'smile'){ px(2, 5, '#5a2a1a'); px(5, 5, '#5a2a1a'); px(3, 6, '#5a2a1a'); px(4, 6, '#5a2a1a'); } else { for (let x = 3; x < 5; x++) px(x, 6, '#5a2a1a'); }
+  const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; return (FACES[key] = t); }
 /* ---------- hair ---------- */
 function hair(head, style, col){ const m = mat(col, 'fur'); const u = head.userData;
   const cap = () => head.add(blob(0.7, 1.0, 0.62, 1.0, m, 0, 0.42, -0.03));
@@ -45,14 +57,14 @@ function rig(look){ const L = lookOf(look); const skinC = colOf(LOOK.skin, L.ski
   const g = grp(); const body = grp(); g.add(body); const under = mat(0x2c2a3a, 'cloth'), shoe = mat(0x2a1e18, 'leather');
   const legL = grp(-0.5*bw, 2, 0), legR = grp(0.5*bw, 2, 0); for (const lg of [legL, legR]){ lg.add(rbox(0.88, 1.05, 0.88, 0.22, under, 0, -0.52, 0)); const knee = grp(0, -1.0, 0); lg.add(knee); knee.add(rbox(0.84, 0.95, 0.84, 0.2, under, 0, -0.42, 0)); knee.add(rbox(0.9, 0.32, 1.02, 0.12, shoe, 0, -0.86, 0.06)); lg.userData.knee = knee; }
   legL.rotation.x = 0.12; legR.rotation.x = -0.12; body.add(legL, legR);
-  const chest = rbox(2.0*bw, 1.18, 1.05, 0.3, under, 0, 3.42, 0), belly = rbox(1.8*bw, 0.95, 0.92, 0.26, under, 0, 2.45, 0); body.add(chest, belly);
+  const chest = rbox(2.0*bw, 1.18, 1.0, 0, under, 0, 3.42, 0), belly = rbox(2.0*bw, 0.95, 1.0, 0, under, 0, 2.45, 0); body.add(chest, belly);
   body.add(cyl(0.34, 0.4, 0.4, skin, 0, 4.05, 0));
   const armL = grp(-1.5*bw, 3.9, 0), armR = grp(1.5*bw, 3.9, 0);
   for (const arm of [armL, armR]){ arm.add(rbox(0.82, 1.08, 0.82, 0.24, under, 0, -0.5, 0)); const elbow = grp(0, -1.02, 0); arm.add(elbow); elbow.add(rbox(0.78, 0.9, 0.78, 0.22, skin, 0, -0.42, 0)); arm.userData.elbow = elbow;
     const hand = grp(0, -2.05, 0); hand.add(rbox(0.78, 0.5, 0.8, 0.2, skin)); arm.add(hand); arm.userData.hand = hand; }
   body.add(armL, armR);
-  const head = grp(0, 4.65, 0); body.add(head); head.add(rbox(1.3, 1.24, 1.22, 0.36, skin));
-  const face = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.15), new THREE.MeshBasicMaterial({map:faceTex(L.face, colOf(LOOK.eye, L.eye)), transparent:true, depthWrite:false})); face.position.set(0, -0.02, 0.615); head.add(face); head.userData.face = face;
+  const head = grp(0, 4.65, 0); body.add(head); head.add(rbox(1.3, 1.3, 1.3, 0, skin));
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.15), new THREE.MeshBasicMaterial({map:faceTex(L.face, colOf(LOOK.eye, L.eye)), transparent:true, depthWrite:false})); face.position.set(0, 0, 0.655); head.add(face); head.userData.face = face;
   g.userData.parts = {body, armR, armL, legL, legR, head, chest, belly}; g.userData.look = L; g.userData.skin = skin; g.userData.bw = bw;
   return g; }
 
@@ -284,5 +296,6 @@ return {build, animate, LOOK, DEFAULT_LOOK, lookOf, colOf, faceTex};
 })();
 // the v8 hero replaces the v5 one everywhere it is built (battles, camp, previews, gallery)
 (() => { const old = GEAR3D.buildHero, oldAnim = GEAR3D.animate; GEAR3D.buildHero0 = old;
+  const oldW = GEAR3D.weapon; GEAR3D.weapon = it => oldW(it && it.world > 3 ? Object.assign({}, it, {world: it.world === 4 ? 1 : 2}) : it);   // the v5 weapon palettes know four lands
   GEAR3D.buildHero = (P, opts) => { try { return HERO8.build(P, opts); } catch (e){ console.warn('v8 hero failed, using v5', e); return old(P, opts); } };
   GEAR3D.animate = (g, t, dt) => { oldAnim(g, t, dt); HERO8.animate(g, t, dt); }; })();

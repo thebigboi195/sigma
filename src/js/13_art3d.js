@@ -145,11 +145,26 @@ const NEWART = {
 /* v8: smooth jointed creatures (CREATURES) replace the blocky v5 models; the v7 bespoke bosses keep their own builders */
 function buildEnemy(e){ if (typeof CREATURES === 'undefined' || !CREATURES.has(e)) return buildEnemy0(e); let g; try { g = CREATURES.build(e); } catch (err){ console.warn('v8 creature failed', e.key, err); return buildEnemy0(e); }
   const A = e.art, boss = !!e.boss, elite = !!e.elite; g.userData.hover = g.userData.hoverY || 0;
-  if (boss || elite || e.mini){ const aura = glowSprite(boss ? (LIGHTCSS7[A] || 'rgba(255,40,40,.4)') : e.mini ? 'rgba(255,120,30,.38)' : 'rgba(255,200,60,.3)', boss ? 12 : 8); aura.position.y = 3.2; g.add(aura); g.userData.aura = aura;
+  if (boss || e.mini) menace(g, e);
+  if (false){ const aura = glowSprite(boss ? (LIGHTCSS7[A] || 'rgba(255,40,40,.4)') : e.mini ? 'rgba(255,120,30,.38)' : 'rgba(255,200,60,.3)', boss ? 12 : 8); aura.position.y = 3.2; g.add(aura); g.userData.aura = aura;
     const ring = new THREE.Mesh(new THREE.RingGeometry(2.2, 2.8, 48), new THREE.MeshBasicMaterial({color: boss ? (LIGHT7[A] || 0xff2020) : e.mini ? 0xffaa30 : 0xffcf40, transparent:true, opacity:0.45, side:THREE.DoubleSide, blending:THREE.AdditiveBlending, depthWrite:false})); ring.rotation.x = -Math.PI/2; ring.position.y = 0.05; g.add(ring); g.userData.ring = ring;
     if (boss){ const pl = new THREE.PointLight(LIGHT7[A] || 0xff3030, 1.8, 14); pl.position.set(0, 4, 2); g.add(pl); g.userData.bossLight = pl; } }
   const sc = (boss ? 1.0 : e.mini ? 0.85 : elite ? 0.7 : 0.6) * ({golem:0.95, giant:0.85, colossus:0.8, kraken:0.75, hydra:0.85, orochi:0.85, typhon:0.8, gashadokuro:0.85, sphinx:0.85, mammoth:0.9, eye:0.8}[A] || 1); const KS = {fenrir:1.5, skoll:1.25, cerberus:1.15, kraken:1.2, apophis:1.15}; const sc2 = sc*(KS[e.key] || 1);
   g.scale.multiplyScalar(sc2); g.userData.base = g.scale.x; return g; }
+/* v8.1: bosses and mini-bosses look like threats — darkened, scarred hides with ember veins, a crown of spikes, burning eyes,
+   smoke curling at their feet and a blood-red under-light. No bright halo washing them out. */
+function menace(g, e){ const boss = !!e.boss; const dark = new THREE.Color(0x0b0709); const vein = new THREE.Color(boss ? 0xff2a10 : 0xff7a20); const seen = new Map();
+  g.traverse(o => { if (!o.isMesh || !o.material || o.material.isMeshBasicMaterial || o.material.isSpriteMaterial) return; let m = seen.get(o.material); if (!m){ m = o.material.clone(); if (m.color) m.color.lerp(dark, boss ? 0.55 : 0.4);
+      if (m.emissive && !(m.emissiveIntensity > 1)){ m.emissive = vein.clone().multiplyScalar(0.12); m.emissiveIntensity = 1; } m.roughness = Math.min(1, (m.roughness || 0.5) + 0.1); seen.set(o.material, m); } o.material = m; });
+  g.traverse(o => { if (o.isMesh && o.material && o.material.isMeshBasicMaterial && o.geometry && o.geometry.type === 'SphereGeometry'){ o.material = o.material.clone(); o.material.color.set(boss ? 0xff1a0a : 0xffa020); o.scale.multiplyScalar(1.35); } });
+  const bb = new THREE.Box3().setFromObject(g); const sc = g.scale.x || 1; const top = bb.max.y/sc, wid = (bb.max.x - bb.min.x)/sc, dep = (bb.max.z - bb.min.z)/sc;
+  const spikeM = M(0x120a0c, {roughness:0.35, metalness:0.4, emissive:vein, emissiveIntensity:0.08}); const n = boss ? 9 : 6;
+  for (let i = 0; i < n; i++){ const t = i/(n - 1) - 0.5; const sp = cone(0.13 + 0.1*(1 - Math.abs(t)*2), 0.8 + 0.9*(1 - Math.abs(t)*2), spikeM, 6); sp.position.set(t*Math.min(wid, 3)*0.6, top*0.92 - Math.abs(t)*0.6, -dep*0.15 + t*0.2); sp.rotation.z = -t*1.1; sp.rotation.x = -0.25; g.add(sp); }
+  g.userData.smoke8 = []; for (let i = 0; i < (boss ? 10 : 6); i++){ const s = glowSprite('rgba(20,8,14,.55)', 3.2 + (i%3)); s.material.blending = THREE.NormalBlending; s.userData.ph = i/10; g.add(s); g.userData.smoke8.push(s); }
+  for (let i = 0; i < (boss ? 14 : 8); i++){ const s = glowSprite(boss ? 'rgba(255,60,20,.95)' : 'rgba(255,150,40,.95)', 0.28); s.userData.ph = i/14; g.add(s); (g.userData.embers8 = g.userData.embers8 || []).push(s); }
+  const under = new THREE.PointLight(boss ? 0xc01008 : 0xc05010, boss ? 0.9 : 0.6, 7, 2); under.position.set(0, 0.15, 1.4); g.add(under); g.userData.bossLight = under;
+  const ring = new THREE.Mesh(new THREE.RingGeometry(2.4, 3.0, 48), new THREE.MeshBasicMaterial({color: boss ? 0x9a0a0a : 0x9a4a0a, transparent:true, opacity:0.5, side:THREE.DoubleSide, depthWrite:false})); ring.rotation.x = -Math.PI/2; ring.position.y = 0.04; g.add(ring); g.userData.ring = ring;
+  g.scale.multiplyScalar(boss ? 1.25 : 1.12); }
 function buildEnemy0(e){
   const g = new THREE.Group(); const c = new THREE.Color(e.color); const m = M(c, {flatShading:true}), dk = M(c.clone().multiplyScalar(0.65), {flatShading:true});
   const boss = !!e.boss, elite = !!e.elite; const eyeC = boss ? 0xff2a2a : elite ? 0xffb52e : 0xff4040; const A = e.art;
@@ -219,7 +234,7 @@ function campfire(x, z){ const g = new THREE.Group(); for (let i=0;i<5;i++){ con
 function tent(x, z){ const t = cone(2.4, 3, M(0xc4563b, {flatShading:true}), 4); t.rotation.y = Math.PI/4; t.position.set(x, 1.5, z); root.add(t); root.add(at(box(0.9, 1.6, 0.05, M(0x3a1f1a)), x, 0.8, z + 1.2)); }
 function chest(x, z, rar){ const g = new THREE.Group(); const wood = M(0x8a5a2a), gold = M(0xe3b04b, {metalness:0.7, roughness:0.3}); g.add(at(box(2, 1.1, 1.3, wood), 0, 0.55, 0)); g.add(at(box(2.05, 0.2, 1.35, gold), 0, 0.9, 0));
   const lid = new THREE.Group(); lid.position.set(0, 1.1, -0.65); const lb = box(2, 0.5, 1.3, wood); lb.position.set(0, 0.25, 0.65); lid.add(lb); lid.add(at(box(0.3, 0.35, 0.1, gold), 0, 0.15, 1.32)); g.add(lid);
-  const glow = glowSprite(['rgba(220,220,230,.8)','rgba(80,160,255,.8)','rgba(180,110,255,.85)','rgba(255,180,50,.9)','rgba(255,70,110,.95)'][rar||0], 0.1); glow.position.y = 1.6; g.add(glow); g.userData = {lid, glow, open:0}; g.position.set(x, 0, z); root.add(g); return g; }
+  const glow = glowSprite(['rgba(220,220,230,.8)','rgba(95,209,107,.8)','rgba(80,160,255,.8)','rgba(180,110,255,.85)','rgba(255,180,50,.9)','rgba(255,70,110,.95)','rgba(125,249,255,.95)'][Math.max(0, Math.min(6, rar||0))], 0.1); glow.position.y = 1.6; g.add(glow); g.userData = {lid, glow, open:0}; g.position.set(x, 0, z); root.add(g); return g; }
 function enemyDeco(g, e){ const K = e.key, s = (e.art==='brute' || e.art==='yeti') ? 1.3 : e.art==='golem' ? 1.25 : 1; const Y = v => v*s;
   const add = (o, x, y, z) => { o.position.set(x*s, y*s, z*s); g.add(o); return o; };
   if (K==='brawler'){ add(box(1.4, 0.25, 1.5, M(0x4a4a5a)), 0, 5.25, 0.1); add(box(1.0, 0.12, 0.5, M(0x4a4a5a)), 0, 5.15, 0.85); for (const sx of [-1,1]) add(box(0.95, 0.45, 0.95, M(0xf4f0e8)), sx*1.45, 1.95, 0.5); for (const sx of [-1,1]) add(box(0.15, 2.0, 0.05, M(0x8a2a2a)), sx*0.5, 2.9, 0.52); }
@@ -263,8 +278,10 @@ let chestObj = null, enemyOrder = [], heroes = {}, heroOrder = [], camGoal = nul
 const V3 = (x,y,z) => new THREE.Vector3(x,y,z);
 function rows(i, n, x0, dir, dx){ if (n===1) return [x0, 1]; if (n===2) return i ? [x0 + dir*dx*1.05, -1.1] : [x0, 1.5];
   const front = Math.ceil(n/2); if (i < front) return [x0 + dir*i*dx, 1.9]; const j = i - front; return [x0 + dir*(j + 0.5)*dx, -1.5]; }
-function heroSlot(i, n){ return n===1 ? [-4.6, 1] : rows(i, n, -3.6, -1, 3.5); }
-function enemySlot(i, n, list){ const bossI = list.findIndex(e => e.boss && !e.minion);
+const GAP8 = 1.7;   // v8: a clear no-man's-land between the party and the foes
+function heroSlot(i, n){ const [x, z] = n===1 ? [-4.6, 1] : rows(i, n, -3.6, -1, 3.2); return [x - GAP8, z*1.15]; }
+function enemySlot(i, n, list){ const [x, z] = enemySlot0(i, n, list); return [x + GAP8, z*1.1]; }
+function enemySlot0(i, n, list){ const bossI = list.findIndex(e => e.boss && !e.minion);
   if (list.filter(e => e.boss && !e.minion).length >= 2){ const bs = list.filter(e => e.boss && !e.minion), ms = list.filter(e => !(e.boss && !e.minion)); const e0 = list[i]; if (e0.boss && !e0.minion){ const k = bs.indexOf(e0); return [2.4 + k*5.2, k%2 ? -3.0 : -1.2]; } const k = ms.indexOf(e0); return [0.4 + k*2.6, k%2 ? 3.6 : 2.2]; }
   if (n===1) return [3.6, 0.4];
   if (bossI >= 0){ const m = n - 1; const front = m; if (i === bossI) return [2.8 + 3.4*Math.max(0, m-1)/2 + (m===1 ? 1.6 : 0.6), -3.4]; const j = i > bossI ? i-1 : i; return m===1 ? [1.4, 2.4] : [1.2 + j*3.5*(m>3 ? 0.88 : 1), j%2 ? 0.6 : 2.4]; }
@@ -284,6 +301,8 @@ function setScene(kind, o={}){
     world(w, theme, false);
     if (kind==='battle'){ const hs = o.heroes || [{id:'p', P:o.P}]; hs.forEach((x, i) => placeHero(x.id, x.P, i, hs.length));
       const n = o.enemies.length; o.enemies.forEach((e, i) => addFoe(e, i, n, o.enemies)); camBase = V3(0.6, 2.1, 0); frame(true);
+      if (o.enemies.some(e => (e.boss || e.mini) && !e.minion) && lights.sun){ lights.sun.intensity *= 0.55; scene.background = gradientBG('#140810', '#4a1620'); scene.fog = new THREE.Fog(0x2a0e14, 26, 70);   // v8.1: boss fights turn dark and blood-lit
+        root.traverse(m => { if (m.isMesh && m.material && m.material.color && !m.material.isMeshBasicMaterial){ m.material = m.material.clone(); m.material.color.multiplyScalar(0.5); } }); const rim = new THREE.DirectionalLight(0xff3020, 1.4); rim.position.set(8, 6, -12); scene.add(rim); const amb = new THREE.HemisphereLight(0x5a3a6a, 0x1a0808, 0.35); scene.add(amb); }
       if (o.enemies.some(e => e.boss || e.mini)){ shake = 0.6; const b = o.enemies.find(e => e.boss || e.mini); if (b) intro(b.id); try { cutscene(o.enemies, theme); } catch(err){ console.warn(err); } } }
     else { hero = GEAR3D.buildHero(o.P, (o.P && o.P.look) || {}); hero.position.set(kind==='title' ? -1.6 : -4.2, 0, 1); hero.rotation.y = kind==='title' ? 0.45 : 1.27; scene.add(hero); heroes.p = hero;
       if (kind==='chest'){ chestObj = chest(1.2, 1, o.rar || 0); cam.position.set(-1, 3.6, 10); camBase = V3(-0.6, 1.4, 0); }
@@ -1199,6 +1218,8 @@ function loop(){
     if (u.spin) u.spin.rotation.y += dt*1.5;
     if (u.anims) ASM.tick(u.anims, t, dt);
     if (u.J) KIT.tick(u.J, t + (+id)*0.37);
+    if (u.smoke8) u.smoke8.forEach((s2, k) => { const kk = (t*0.18 + s2.userData.ph) % 1; s2.position.set(Math.sin(k*2.1)*2.2, 0.3 + kk*3.2, Math.cos(k*1.7)*1.4); s2.material.opacity = 0.6*Math.sin(kk*Math.PI); });
+    if (u.embers8) u.embers8.forEach((s2, k) => { const kk = (t*0.35 + s2.userData.ph) % 1; s2.position.set(Math.sin(k*1.3 + t*0.3)*1.8, 0.3 + kk*5.5, Math.cos(k*2.7)*1.2); s2.material.opacity = Math.sin(kk*Math.PI); });
     if (u.iris){ u.iris.position.x = Math.sin(t*0.8)*0.35; }
     if (u.aura) u.aura.material.opacity = 0.7 + Math.sin(ph*2)*0.3;
     if (u.ring) u.ring.rotation.z += dt*0.8;

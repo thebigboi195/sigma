@@ -76,3 +76,34 @@ body[data-view="battle"] #chat:hover #chatlog,body[data-view="battle"] #chat:foc
 .plate{width:min(var(--pw,15%),210px)!important;font-size:.7rem}
 #hud{gap:5px}#hud .pill{font-size:.78rem;padding:3px 9px}#hud button.mute{padding:4px 9px;font-size:.78rem}
 @media (max-width:760px){ body[data-view="battle"] .stage{height:calc(100vh - 52vh)} body[data-view="battle"] #panel{height:52vh;max-height:52vh} }
+/* ===== v8.1: smaller overlays so the fight stays visible ===== */
+#chat{width:min(230px,22vw);padding:4px;border-radius:10px}
+#chatlog{max-height:0;padding:0;overflow:hidden;transition:max-height .2s}
+#chat:hover #chatlog,#chat:focus-within #chatlog{max-height:120px;overflow:auto;padding:2px 4px 4px}
+#chatf input{padding:4px 7px;font-size:.74rem}#chatf button{padding:3px 8px;font-size:.8rem}
+#feed{width:min(210px,18vw);gap:2px;bottom:auto;top:56px;max-height:34vh}
+#feed div{font-size:.66rem;padding:2px 6px;border-radius:6px}
+#feed div:nth-last-child(n+7){display:none}
+/* the battle controls: one slim strip along the bottom edge */
+body[data-view="battle"]{--dockH:118px}
+body[data-view="battle"] #panel{padding:6px 10px;gap:4px;border-radius:12px 12px 0 0;overflow:hidden;width:min(1100px,calc(100vw - 16px))}
+body[data-view="battle"] #panel>.row:first-child{font-size:.78rem;gap:6px}body[data-view="battle"] #panel .tbar{height:12px;font-size:.62rem}
+body[data-view="battle"] .battlebar{gap:6px}
+body[data-view="battle"] .mvgrid.bars{grid-template-columns:repeat(4,1fr);gap:5px}
+body[data-view="battle"] .mvgrid.bars button.bar{padding:4px 7px;column-gap:5px;border-radius:9px;box-shadow:0 2px 0 rgba(0,0,0,.4)}
+body[data-view="battle"] .mvb.bar .mk .tyi{font-size:.9rem}body[data-view="battle"] .mvb.bar .mk em{display:none}
+body[data-view="battle"] .mvb.bar .mn b{font-size:.78rem}body[data-view="battle"] .mvb.bar .mn small{font-size:.58rem}
+body[data-view="battle"] .mvb.bar .mstat{grid-column:2/4;justify-content:flex-start;gap:3px}body[data-view="battle"] .mvb.bar .mstat i{font-size:.58rem;padding:1px 4px}
+body[data-view="battle"] .mvb.bar .meff{grid-column:2/4;font-size:.58rem;min-height:0}
+body[data-view="battle"] .acts.side{min-width:96px;gap:3px}body[data-view="battle"] .acts.side button{padding:3px 7px;font-size:.7rem;box-shadow:0 2px 0 #1d1838}
+body[data-view="battle"] .acts.side small{display:none}body[data-view="battle"] .enrow{font-size:.62rem}
+body[data-view="battle"] .bhint,body[data-view="battle"] #panel h2{display:none}
+body[data-view="battle"] #panel p{font-size:.72rem}
+body[data-view="battle"] #feed{top:56px;bottom:auto}
+body[data-view="battle"] #chat{bottom:calc(var(--dockH) + 6px)}
+/* nameplates: small tags above heads */
+.plate{width:min(var(--pw,15%),128px)!important;font-size:.6rem!important;padding:2px 5px!important;border-width:1px!important;border-radius:7px!important}
+.plate b{font-size:.62rem}.plate small{font-size:.54rem}.plate .tyrow{display:none}
+.plate .hpbar{height:5px;margin-top:2px}.plate .enbar{height:3px}.plate .hpt{font-size:.54rem}.plate .chips span{font-size:.5rem;padding:0 3px}
+.plate.boss{width:min(var(--pw,15%),170px)!important}
+@media (max-width:760px){ body[data-view="battle"]{--dockH:42vh} body[data-view="battle"] .mvgrid.bars{grid-template-columns:repeat(2,1fr)} }

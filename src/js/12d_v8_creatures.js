@@ -28,7 +28,10 @@ function beastHead(kind, c, o){ o = o || {}; const g = grp(); const M = mat(c, o
   if (kind === 'dragon' || kind === 'croc'){ for (let i = 0; i < (kind === 'dragon' ? 4 : 0); i++){ const h = horn(0.7 + i*0.15, 0.09, 0.6, mat(o.hornC || 0xe8dcc0, 'bone')); h.position.set((i % 2 ? 1 : -1)*r*(0.35 + (i >> 1)*0.2), hgt*0.45, -0.15 - (i >> 1)*0.15); h.rotation.x = -1.1 - (i >> 1)*0.25; h.rotation.z = (i % 2 ? -1 : 1)*0.35; g.add(h); }
     for (let i = 0; i < 4; i++) g.add(rot(cone(0.06, 0.2, M, 0, hgt*0.55 - i*0.05, -0.1 - i*0.18, 4), -0.6, 0, 0)); if (o.whiskers) for (const sx of [-1, 1]) g.add(sweep([[sx*sr, -0.05, r*0.5 + sl*0.75], [sx*(sr + 0.5), 0.0, r*0.4 + sl*0.9], [sx*(sr + 1.1), -0.4, r*0.2 + sl]], [0.05, 0.01], mat(o.whiskers, 'fur'), {radial:5})); }
   if (kind === 'shark'){ g.add(rot(cone(0.25, 0.8, M, 0, hgt*0.7, -0.2, 6), -0.4, 0, 0)); }
-  eyes(g, ec, o.eyeR || 0.07, r*0.42, hgt*0.22, r*0.65);
+  // angry brow ridges over burning slit eyes, and long fangs: every beast looks like it wants you dead
+  const BR = mat(shade(c, 0.45), o.scaly ? 'scale' : 'fur'); for (const sx of [-1, 1]){ const br = rbox(r*0.62, hgt*0.16, r*0.4, 0.05, BR, sx*r*0.36, hgt*0.36, r*0.55); br.rotation.z = sx*0.38; br.rotation.x = -0.25; g.add(br);
+    const ey = sph(r*0.13, mat(ec, 'eye'), sx*r*0.4, hgt*0.2, r*0.72, 10); ey.scale.set(1.5, 0.55, 0.6); g.add(ey); const gl = sprite(ec, r*1.3); gl.position.set(sx*r*0.4, hgt*0.2, r*0.8); g.add(gl); }
+  if (!['horse', 'goat', 'tanuki', 'mammoth'].includes(kind)) for (const sx of [-1, 1]){ g.add(rot(cone(0.06 + sr*0.12, sr*1.1, BONE, sx*sr*0.75, -hgt*0.42, r*0.45 + sl*0.75, 6), PI, 0, 0)); jaw.add(rot(cone(0.05 + sr*0.1, sr*0.8, BONE, sx*sr*0.6, 0.05, jl*0.75, 6), 0, 0, 0)); }
   g.userData.jaw = jaw; g.userData.J = J; return g; }
 /* humanoid monster heads */
 function faceHead(kind, c, o){ o = o || {}; const g = grp(); const SK = mat(c, kind === 'skull' ? 'bone' : 'skin'), DK = mat(shade(c, 0.65), 'skin'), BONE = mat(0xf2ecdc, 'bone'); const ec = o.eye || 0xff3030; const J = [];
@@ -113,7 +116,7 @@ function biped(e, o){ const g = grp(), J = []; const c = o.c || e.color; const S
 // dragon: heavy quadruped body, 1-8 long necks, membrane wings, spined tail
 function dragon(e, o){ const c = o.c || e.color; return quad(e, Object.assign({len:3.8, r:1.15, legH:1.5, legR:0.3, head:'dragon', headS:1.45, scaly:true, claws:true, neckN:6, neckL:2.4, neckA:1.0, wide:0.85, tailN:9, tailL:4.2, tailR:0.38, tailA:2.5, spines:9,
   wings:o.wings === false ? null : 'membrane', wingS:o.wingS || 4.2, belly:o.belly || mix(c, 0xf0d8a0, 0.5), eye:o.eye || 0xffd040, hornC:o.hornC, extra:(g, body, heads, J) => {
-    for (const hd of heads){ hd.userData.jaw.rotation.x = 0.35; } if (o.breath) for (const hd of heads){ const s = sprite(o.breath, 1.4); s.position.set(0, -0.3, 1.6); hd.add(s); } }}, o)); }
+    for (const hd of heads){ hd.userData.jaw.rotation.x = 0.5; } if (o.breath) for (const hd of heads){ const s = sprite(o.breath, 1.4); s.position.set(0, -0.3, 1.6); hd.add(s); } }}, o)); }
 // serpent: coiled body on the ground, raised neck chain and head
 function serpent(e, o){ const g = grp(), J = []; const c = o.c || e.color; const M = mat(c, 'scale'), BELLY = mat(o.belly || mix(c, 0xf0e0b0, 0.45), 'scale'); const R = o.r || 0.45, s = o.s || 1;
   const pts = []; for (let i = 0; i <= 14; i++){ const t = i/14; pts.push([Math.sin(t*PI*2.2)*1.4*(1 - t*0.3), R*0.9, -t*4.2 + 1.2]); } g.add(sweep(pts, t => R*(1 - t*0.85) + 0.03, M, {radial:12, segs:60, ey:0.85}));
@@ -121,7 +124,7 @@ function serpent(e, o){ const g = grp(), J = []; const c = o.c || e.color; const
   for (let k = 0; k < nHeads; k++){ const off = nHeads === 1 ? 0 : -1 + 2*k/(nHeads - 1); const many = nHeads > 2, nL = (o.neckL || 3.2)*(many ? 1 + 0.18*Math.cos(k*2.3) : 1); const nr = o.neckR || (many ? R*0.5 : R); const nk = chain(o.neckN || 7, nL, t => nr*(1 - t*0.4), M);
     nk.root.position.set(Math.sin(off*1.1)*(many ? 1.6 : 0.9), R*0.9, 1.0 + Math.cos(off*1.1)*(many ? 0.6 : 0.2)); nk.root.rotation.set(many ? 0.15 + 0.1*(k % 2) : 0.25, 0, -off*(many ? 0.75 : 0.55)); g.add(nk.root);
     const n = nk.joints.length; nk.joints.forEach((j, i) => { j.rotation.x = many ? (i < n/2 ? -0.1 : 0.22) : (i < 3 ? -0.02 : 0.12); j.rotation.z = many ? off*(i < n/2 ? 0.02 : -0.06) : 0; J.push({o:j, ax:'z', a:0.06, f:1.3, p:i*0.5 + k*1.3, b:j.rotation.z}); J.push({o:j, ax:'x', a:0.04, f:1.7, p:i*0.3 + k, b:j.rotation.x}); });
-    const hd = o.head === 'dragon' ? beastHead('dragon', c, {eye:o.eye || 0xffd040, scaly:true, hornC:o.hornC, whiskers:o.whiskers, ph:k}) : snakeHead(c, o, k); hd.rotation.x = -0.6; hd.scale.setScalar(o.headS || 1); nk.tip.add(hd); heads.push(hd); if (hd.userData.J) J.push(...hd.userData.J);
+    const hd = o.head === 'dragon' ? beastHead('dragon', c, {eye:o.eye || 0xffd040, scaly:true, hornC:o.hornC, whiskers:o.whiskers, ph:k, open:0.5}) : snakeHead(c, o, k); hd.rotation.x = -0.6; hd.scale.setScalar(o.headS || 1); nk.tip.add(hd); heads.push(hd); if (hd.userData.J) J.push(...hd.userData.J);
     if (o.hood) { const hood = blob(0.9, 1.0, 1.25, 0.18, M, 0, -0.5, -0.15); hood.rotation.x = -0.2; nk.joints[nk.joints.length - 2].add(hood); } }
   if (o.fins) for (let i = 0; i < 7; i++){ const t = i/7; g.add(rot(cone(0.12, 0.6, mat(o.fins, 'scale'), Math.sin(t*PI*2.2)*1.4*(1 - t*0.3), R*1.6, -t*4.2 + 1.2, 4), -0.5, 0, 0)); }
   if (o.extra) o.extra(g, heads, J);
