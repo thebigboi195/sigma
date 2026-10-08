@@ -287,6 +287,9 @@ function enemySlot0(i, n, list){ const bossI = list.findIndex(e => e.boss && !e.
   if (bossI >= 0){ const m = n - 1; const front = m; if (i === bossI) return [2.8 + 3.4*Math.max(0, m-1)/2 + (m===1 ? 1.6 : 0.6), -3.4]; const j = i > bossI ? i-1 : i; return m===1 ? [1.4, 2.4] : [1.2 + j*3.5*(m>3 ? 0.88 : 1), j%2 ? 0.6 : 2.4]; }
   return rows(i, n, 2.3, 1, 3.9); }
 function placeHero(id, P, i, n, name){ const h = GEAR3D.buildHero(P, P.look || {}); const [x, z] = heroSlot(i, n); h.position.set(x, 0, z); h.rotation.y = 1.27; h.userData.home = V3(x, 0, z); h.userData.id = id; scene.add(h); heroes[id] = h; heroOrder.push(id); if (id === 'p') hero = h; return h; }
+/* swap a hero's model in place (e.g. the helmet toggle) without restarting the scene */
+function rebuildHero(id, P){ const h = heroes[id]; if (!h || !P) return; const nh = GEAR3D.buildHero(P, P.look || {}); nh.position.copy(h.position); nh.rotation.copy(h.rotation);
+  nh.userData.home = h.userData.home; nh.userData.id = id; if (h.userData.down){ nh.userData.down = true; } scene.remove(h); scene.add(nh); heroes[id] = nh; if (hero === h) hero = nh; if (heroes.p === h) heroes.p = nh; }
 function pageBG(kind, o){ const th = o.theme || 0, en = o.enemies || []; let k = 'w' + (o.world || 0);
   if (kind==='camp') k += ' night'; else if (kind==='battle'){ if (th===6) k = 'p10'; else if (th===5) k = 'p7'; else if (en.some(e => e.god)) k = 'god'; else if (en.some(e => e.boss && !e.minion)) k = 'boss ' + k; }
   try { document.body.className = k; } catch(e){} }
@@ -1250,5 +1253,5 @@ function loop(){
   if (camBase){ const s = MOTION ? shake : 0; shake *= 0.9; const off = V3((Math.random()-.5)*s, (Math.random()-.5)*s, 0); cam.position.add(FXS.camOff); cam.lookAt(camBase.clone().add(off)); }
   renderFrame(); cam.position.sub(FXS.camOff);
 }
-return {downHero, reviveHero, endCut, dbg:{env:v => { scene.environment = v ? ENV : null; }, post:v => { if (post) post.on = v; else if (v) postInit(); }, q:setQuality, get state(){ return post; }, get R(){ return R; }, get scene(){ return scene; }, get envTex(){ return ENV; }}, flashScreen, slowMo, camKick, FXS, victory, gallery, setMotion: v => { MOTION = v; }, init, setScene, setEnemies, setHeroes, heroAttack, heroAct, enemyAttack, foeMove, hitEnemy, hitHero, healFx, killEnemy, openChest, screenPos, updateHero, equipFx, fx, frame, resize, get ready(){ return !!R; }, get heroIds(){ return heroOrder.slice(); }};
+return {rebuildHero, downHero, reviveHero, endCut, dbg:{env:v => { scene.environment = v ? ENV : null; }, post:v => { if (post) post.on = v; else if (v) postInit(); }, q:setQuality, get state(){ return post; }, get R(){ return R; }, get scene(){ return scene; }, get envTex(){ return ENV; }}, flashScreen, slowMo, camKick, FXS, victory, gallery, setMotion: v => { MOTION = v; }, init, setScene, setEnemies, setHeroes, heroAttack, heroAct, enemyAttack, foeMove, hitEnemy, hitHero, healFx, killEnemy, openChest, screenPos, updateHero, equipFx, fx, frame, resize, get ready(){ return !!R; }, get heroIds(){ return heroOrder.slice(); }};
 })();

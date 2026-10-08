@@ -8,7 +8,7 @@ const clamp = (x,a,b) => Math.max(a, Math.min(b, x));
 let UID = 1;
 let WEB = false; const setWeb = v => { WEB = !!v; };
 let NQ = false; const setNQ = v => { NQ = !!v; };   // battle-only mode: no study quests, XP only from fights, foes a little tougher   // web edition: one 50-level world, enemy level = stage
-const DIFFS = {easy:{hp:0.5, atk:0.8, n:'Easy'}, normal:{hp:0.7, atk:0.9, n:'Normal'}, hard:{hp:0.9, atk:1.0, n:'Hard'}, brutal:{hp:1.3, atk:1.2, n:'Brutal'}, nightmare:{hp:1.9, atk:1.4, n:'Nightmare'}}; let DIFF = 'hard';
+const DIFFS = {easy:{hp:0.5, atk:0.8, n:'Easy'}, normal:{hp:0.7, atk:0.9, n:'Normal'}, hard:{hp:0.9, atk:1.0, n:'Hard'}, brutal:{hp:1.3, atk:1.2, n:'Brutal'}, nightmare:{hp:1.9, atk:1.4, n:'Nightmare'}, insane:{hp:2.4, atk:1.6, n:'Insane'}}; let DIFF = 'hard';
 let LMAX = 30; let curW = 0; const miniLv = () => WEB ? [5,15,25,35,45].filter(x => x < LMAX) : [Math.round(LMAX/3), Math.round(2*LMAX/3)];
 const isBossL = L => WEB ? (L % 10 === 0 || L === LMAX) : L === LMAX;
 const K = {nqXP:3.5, nqHard:1.06, hpBase:120, hpPer:5, strPer:0.025, agiDodge:0.004, agiCrit:0.002, wpnSurplus:0.01, dodgeCap:0.45,
@@ -198,7 +198,7 @@ function killXP(stars, kind, gap){ const base = kind === 'final' ? XPK.final : k
 /* ---------- v8 monster stats: every foe is a Pokémon with base stats from its body type, levelled to where it stands ----------
    Health = its Pokémon HP × an HP multiplier for the kind of fight, so fights last a few rounds rather than one hit. */
 const FK = {nHp:1, eliteHp:1.5, eliteAtk:1.05, miniHp:2.7, miniAtk:1.0, bossHp:3, bossAtk:0.9, godHp:3.6, godAtk:0.7, p7Hp:2.2, p7Atk:0.4, p10Hp:4, p10Atk:0.5, finalHp:4.5, finalAtk:0.6,
-  addHp:0.35, addAtk:0.8, pH:1.0, pA:0.75, pAb:0.3, foeDmg:1.0, heroDmg:1.0, modeHp:{20:0.85, 30:1, 50:1.1}, ramp0:0.8, hitsN:1.1, hitsD:17, stab:1.25};   // tuned with tools/sim.js: hard 30 rounds ≈ 25% solo, ≈ 50% with a support friend
+  addHp:0.35, addAtk:0.8, pH:1.0, pA:0.75, pAb:0.3, foeDmg:1.0, heroDmg:1.0, modeHp:{20:0.85, 30:1, 50:1.1}, ramp0:0.8, hitsN:1.1, hitsD:17, stab:1.25, bHp:1, bHit:1, bTurn:1, bDef:0.6, bMax:1, bRamp:0.4};   // tuned with tools/sim.js: hard 30 rounds ≈ 25% solo, ≈ 50% with a support friend
 /* ---------- v8 normalisation: the "reference hero" for a round ----------
    Gear stats are flat per rarity while the Pokémon formula grows with level, so on its own the early game would be lethal and the
    late game trivial. Monster HP and damage are therefore pegged to a reference hero: the base stats of the level they stand at, plus
@@ -212,7 +212,7 @@ const REFC = {};
 function refAt(E){ const key = E + ':' + LMAX; if (REFC[key]) return REFC[key]; const L = WEB ? E/2 : E; const rr = expRar(Math.max(1, L)); const b = heroBase(E);
   const arm = k => lerpT(D.ARM_BS.map(x => x[k]), rr); const hp = b.hp + arm('hp'), def = b.def + arm('def'), atk = b.atk + lerpT(D.WPN_POW, rr);
   const fAtk = D.pkStat(75, E), fDef = D.pkStat(75, E), fHp = D.pkStat(75, E, true);
-  const hit = pkDamage(E, D.BASEPOW, atk, fDef)*0.925*FK.stab, fhit = pkDamage(E, D.BASEPOW, fAtk, def)*0.925*1.5;
+  const hit = pkDamage(E, 90, atk, fDef)*0.925*FK.stab, fhit = pkDamage(E, D.BASEPOW, fAtk, def)*0.925*1.5;
   return (REFC[key] = {hp, atk, def, fHp, hit, fhit, foeHp: hit*FK.hitsN, dmgN: hp/(FK.hitsD*fhit), rr}); }
 const ramp = E => E >= 12 ? 1 : FK.ramp0 + (1-FK.ramp0)*(E-1)/11;   // the first few levels ease in while the hero finds real gear
 function foeHP(key, E){ const e = {art:ENEMIES[key][1], trait:ENEMIES[key][3]}; const R = refAt(E); return R.foeHp * D.pkStat(D.foeBase(e)[0], E, true)/R.fHp; }   // a reference foe takes hitsN hits; bulkier bodies take more
@@ -270,7 +270,31 @@ const BAD = ['burn','poison','freeze','blind','slow','weak','vuln','recharge'], 
 function heroOf(P, belt, opts={}){ const d = derive(P); const boons = P.boons || [];
   return {lv: P.lv || 1, hid: opts.hid || 'p', hp: Math.min(d.max, opts.hp != null ? Math.max(1, Math.round(opts.hp)) : d.max), max:d.max, speed:d.speed, atk:d.atk, def:d.def, spa:d.spa, spd:d.spd, spe:d.spe, spe0:d.spe, acts:0, energy: 40 + (boons.includes('quick')?30:0), first: boons.includes('first'), will:boons.includes('will'), dodge:d.dodge, mult:d.mult, crit:d.crit, w:P.eq.weapon, a:P.eq.armour, tr:(P.eq.trinkets||[]).filter(Boolean), cool:0,
     buff:{str:0, iron:0, smoke:0}, st:{}, guard:false, revived:false, at: D.itemTypes(P.eq.weapon)[0], dt: D.itemTypes(P.eq.armour), stand: abilOf(P.eq.armour,'lastStand') > 0 || abilOf(P.eq.weapon,'lastStand') > 0, combo:0, boons, focus:0, frozen:false, down:false, mcd:{}, belt: belt || {}}; }
-function newBattle(P, enemies, belt, opts={}){ const p = heroOf(P, belt, opts); return {boons:p.boons, focus:0, frozen:false, p, es: enemies, turn:1, over:null, world: opts.world||0}; }
+function newBattle(P, enemies, belt, opts={}){ const p = heroOf(P, belt, opts); return bossify({boons:p.boons, focus:0, frozen:false, p, es: enemies, turn:1, over:null, world: opts.world||0}); }
+/* ---------- v9 bosses are bosses: sized against the heroes actually in the fight ----------
+   HP: at least BOSSK.hp × the party's combined max HP, and at least enough to soak `turns` rounds of the party's best steady damage.
+   Damage: an ordinary boss blow takes BOSSK.hit of the average hero's max HP (its big moves hit harder), so over-gearing can't trivialise it.
+   A single blow is capped at 60% of a hero's max HP so nobody is one-shot from full health. */
+const BOSSK = {easy:{hp:1.2, hit:0.045}, normal:{hp:1.5, hit:0.06}, hard:{hp:2.0, hit:0.095}, brutal:{hp:2.3, hit:0.11}, nightmare:{hp:2.6, hit:0.125}, insane:{hp:2.8, hit:0.14}};   // hit = an ordinary blow as a share of max HP; boss specials hit 1.5–2.5× that
+const BOSSKIND = {mini:{hp:0.55, hit:0.75, turns:2.5, max:5}, boss:{hp:1, hit:1, turns:3.5, max:7}, god:{hp:1.05, hit:1.05, turns:3.5, max:7}, promised:{hp:1.1, hit:1.05, turns:4, max:9}, outer:{hp:1.2, hit:1.1, turns:4.5, max:10}, final:{hp:1.25, hit:1.15, turns:5, max:11}};   // turns: the floor for over-geared heroes (real fights run about 2.5× longer)
+const bossKind = e => e.minion || e.partyAdd ? null : e.final ? 'final' : e.outer ? 'outer' : e.promised ? 'promised' : e.god ? 'god' : e.mini ? 'mini' : e.boss ? 'boss' : null;
+function heroDPS(h, e){ const fs = foeSt(e); const ms = heroMoves(h.w, h.a); const m1 = ms[0] || {mult:1.8, cat:'phys'}; const spec = m1.cat === 'spec';
+  const one = pkDamage(h.lv, D.BASEPOW*m1.mult*(h.mult || 1), spec ? h.spa : h.atk, spec ? fs.spd : fs.def) * 0.925 * 1.5;
+  return one * 1.35; }   // a typical round mixes strikes, sweeps and ultimates: about 1.35 strikes' worth
+function bossify(B){ const hs = B.party ? B.heroes : [B.p]; if (!hs.length) return B; const dk = BOSSK[DIFF] || BOSSK.hard; const big = B.es.filter(e => bossKind(e)); if (!big.length) return B;
+  const sumHP = hs.reduce((a, h) => a + h.max, 0), avgHP = sumHP/hs.length;
+  for (const e of big){ const k = BOSSKIND[bossKind(e)], share = 1/big.length;
+    const pr = Math.max(0, Math.min(1, ((e.lv || 1)/(WEB ? 2 : 1))/Math.max(1, LMAX)/0.6)), hpF = FK.bRamp + (1 - FK.bRamp)*pr, hitF = 0.7 + 0.3*pr;   // early bosses ease in; full strength from 60% of the run
+    if (!e.bossified){ const st0 = foeSt(e); st0.def = Math.round(st0.def*FK.bDef); st0.spd = Math.round(st0.spd*FK.bDef); }   // bosses are walls of HP, not of armour
+    const dps = hs.reduce((a, h) => a + heroDPS(h, e), 0);
+    const want = Math.round(Math.min(Math.max(Math.min(3, dk.hp*k.hp)*sumHP*FK.bHp*hpF, dps*k.turns*FK.bTurn*hpF), dps*k.max*FK.bMax*(0.8 + dk.hp/5)) * share * (WEB ? 1 : 0.8));   // under-geared heroes face a shorter fight, never a 40-round slog
+    if (want > e.max){ e.max = e.hp = want; }
+    const fs = foeSt(e), R = refAt(Math.max(1, e.lv || 1));
+    const unit = hs.reduce((a, h) => a + (pkDamage(e.lv, D.BASEPOW*e.atk, fs.atk, h.def) + pkDamage(e.lv, D.BASEPOW*e.atk, fs.spa, h.spd))/2 * 0.925 * 1.5 * FK.foeDmg * R.dmgN, 0)/hs.length;
+    const hit = dk.hit*k.hit*avgHP*FK.bHit*hitF; if (unit > 0 && unit < hit) e.atk = e.atk*hit/unit;
+    e.bossCap = 0.6; e.bossified = true; }
+  for (const e of B.es) if (e.minion && !e.partyAdd){ const boss = big[0]; if (boss && e.max < boss.max*0.1) e.max = e.hp = Math.round(boss.max*0.1); }
+  return B; }
 /* scale an encounter for n heroes: one extra enemy per extra hero, totals grow about n-fold */
 /* scale an encounter for n heroes (v8): each extra hero adds FK.pH of the HP and FK.pA of the damage (an extra foe joins ordinary fights);
    the lone ★7/★10/final bosses gain HP the same way but only FK.pAb of their damage, since they still strike one hero at a time */
@@ -283,7 +307,7 @@ function scaleForParty(g, n, w, L, path, r){ if (n <= 1) return g;
   for (const e of g){ e.max = e.hp = Math.max(1, Math.round(e.max*kh)); e.atk = Math.max(0.05, e.atk*ka); } return g; }
 function newParty(list, enemies, opts={}){ // list: [{hid, P, belt, hp, insp}]
   const heroes = list.map(x => { const h = heroOf(x.P, x.belt, {hid:x.hid, hp:x.hp}); if (x.insp) h.mult *= 1 + 0.1*x.insp; return h; });
-  return {party:true, heroes, p:heroes[0], boons:heroes[0].boons, focus:0, frozen:false, es:enemies, turn:1, over:null, world: opts.world||0}; }
+  return bossify({party:true, heroes, p:heroes[0], boons:heroes[0].boons, focus:0, frozen:false, es:enemies, turn:1, over:null, world: opts.world||0}); }
 function use(B, h){ B.p = h; B.boons = h.boons; B.focus = h.focus; B.frozen = h.frozen; }
 function keep(B){ B.p.focus = B.focus; B.p.frozen = B.frozen; }
 const alive = B => B.es.filter(e => e.hp > 0);
@@ -372,25 +396,53 @@ function movesOf(w){ const k = sigKey(w); return k && (w.rar||0) >= 4 ? [k] : []
 function optText(o){ o = o || {}; const t = []; if (o.stun) t.push(`${o.stun}% chance to stun`); if (o.burn) t.push(`${o.burn}% chance to burn`); if (o.slow) t.push('slows the target'); if (o.pierce) t.push('ignores shields'); if (o.critBonus) t.push(`+${Math.round(o.critBonus*100)}% crit chance`); if (o.exec) t.push(`+${Math.round(o.exec*100)}% damage to foes under 35% HP`); if (o.steal) t.push(`heals you ${Math.round(o.steal*100)}% of the damage`); return t.length ? '. ' + t.join(', ').replace(/^./, c => c.toUpperCase()) : ''; }
 function hashOf(s){ let h = 7; for (const ch of String(s)) h = (h*31 + ch.charCodeAt(0)) >>> 0; return h; }
 const RIDER = {burn:'25% chance to burn', stun:'15% chance to stun', poison:'25% chance to poison', blind:'20% chance to blind', slow:'slows the target', steal:'heals 15% of the damage', crit:'+20% crit chance', pierce:'ignores shields', energy:'+10 extra energy', chain:'arcs to a second foe for 40%'};
+/* ---------- v9 move kit: every weapon follows one shape ----------
+   1 Weapon strike — ~90 power to one foe, free, +15 energy (Mythical weapons add a rider)
+   2 Sweep        — ~60 power to every foe, 20 energy
+   3 Armour art   — no damage: a buff from the armour you wear (guard, fury, power or healing), 30 energy, every 3 rounds
+   4 Ultimate     — 50 energy, every 3 rounds: ~180 power plus a special effect (Legendary/Mythical: the weapon's own myth move)
+   Outerversal gear breaks the rules: bigger numbers and extra effects. */
+const MV = {t1:90, t2:60, t4:180, t4all:110, outer:1.35};
+const ARMOVE = {
+  plate:   [['Bulwark', 'Brace behind your armour: you take 45% less damage and the party {aegis}% less for 2 rounds', s => [['shield', 2], ['aegis', 0.15*s, 2]]],
+            ["Titan's Bulwark", 'Become a fortress: you take 45% less damage, the party {aegis}% less for 2 rounds, and you heal 15%', s => [['shield', 2], ['aegis', 0.15*s, 2], ['heal', 'self', 0.15]]]],
+  leather: [['Battle Fury', 'Empowered (+25% damage) and Swift (+10% accuracy) for 2 rounds, and +{en} energy', s => [['buff', 'empower', 2, 'self'], ['buff', 'swift', 2, 'self'], ['energy', Math.round(15*s), 'self']]],
+            ["Hunter's Frenzy", 'Empowered, Swift and Enlightened (+15% crit) for 2 rounds, and +{en} energy', s => [['buff', 'empower', 2, 'self'], ['buff', 'swift', 2, 'self'], ['buff', 'enlight', 2, 'self'], ['energy', Math.round(15*s), 'self']]]],
+  robe:    [['Arcane Surge', 'The whole party hits {rally}% harder for 2 rounds and gains +15% crit chance', s => [['rally', 0.15*s, 2], ['buff', 'enlight', 2, 'party']]],
+            ['Arcane Ascension', 'The party hits {rally}% harder for 2 rounds, gains +15% crit chance and +20 energy', s => [['rally', 0.15*s, 2], ['buff', 'enlight', 2, 'party'], ['energy', 20, 'party']]]],
+  vestment:[['Mending Light', 'Heals the whole party {heal}% and cleanses bad effects', s => [['heal', 'party', 0.12*s], ['cleanse']]],
+            ['Sacred Mending', 'Heals the party {heal}%, cleanses them, and raises a fallen ally at 30%', s => [['heal', 'party', 0.12*s], ['cleanse'], ['revive', 0.3]]]]};
+const ARSCALE = [1, 1, 1.1, 1.2, 1.4, 1.6, 2];
+function armourMove(a){ const role = (a && ARMOVE[a.role]) ? a.role : 'plate'; const rar = a ? a.rar || 0 : 0; const s = ARSCALE[Math.min(6, rar)]; const [n, d, f] = ARMOVE[role][rar >= 5 ? 1 : 0];
+  let ops = f(s); let name = n, desc = d.replace('{aegis}', Math.round(15*s)).replace('{en}', Math.round(15*s)).replace('{rally}', Math.round(15*s)).replace('{heal}', Math.round(12*s));
+  if (!a){ name = 'Second Wind'; desc = 'Catch your breath: heal 10% and gain 15 energy'; ops = [['heal', 'self', 0.1], ['energy', 15, 'self']]; }
+  if (rar >= 6){ ops = ops.concat([['buff', 'god', 2, 'self']]); name = 'Outerversal ' + name; desc += '. OUTERVERSAL: you also become a god for 2 rounds (+50% damage, never miss, immune to bad effects)'; }
+  return {slot:2, type:3, n:name, cost:30, cd:3, acc:100, mult:0, ops, d:desc, fx:'focus', support:true}; }
+/* rescale a special's damage ops so its main hit lands at the target power */
+function scaleOps(ops, target, allTarget){ const pri = ops.find(o => ['hit', 'all', 'multi'].includes(o[0])); if (!pri) return ops.map(o => o.slice());
+  const tot = pri[0] === 'hit' ? pri[1]*D.BASEPOW*((pri[2] || {}).crit ? 1.5 : 1) : pri[0] === 'all' ? pri[1]*D.BASEPOW : pri[1]*pri[2]*D.BASEPOW;
+  const f = (pri[0] === 'all' ? allTarget : target)/Math.max(1, tot);
+  return ops.map(o => { const c = o.slice(); if (c[0] === 'hit' || c[0] === 'all' || c[0] === 'others') c[1] = Math.round(c[1]*f*100)/100; if (c[0] === 'multi') c[2] = Math.round(c[2]*f*100)/100; return c; }); }
 function heroMoves(w, a){ if (!w) return []; const arch = w.arch || 'blade'; const A = D.ARCHMOVES[arch] || D.ARCHMOVES.blade; const k = sigKey(w); const myth = (w.rar||0) >= 5 && k && D.MYTHT1[k];
-  const t1 = myth ? {slot:0, type:1, n:D.MYTHT1[k][0], cost:0, gain:15, acc:100, mult:1.05, rider:D.MYTHT1[k][1], d:`Free Mythical strike: ${RIDER[D.MYTHT1[k][1]]}. Builds +15 energy${D.MYTHT1[k][1]==='energy' ? ' (+10 more)' : ''}.`, fx:'myth1'}
-                  : {slot:0, type:1, n:D.BASICMOVE[arch] || 'Strike', cost:0, gain:15, acc:100, mult:1.0, d:'Free, reliable strike. Builds +15 energy for your bigger moves.', fx:'basic'};
-  const [n2, kind2, hits2, m2, acc2, o2] = A.t2;
-  const t2 = {slot:1, type:2, n:n2, cost:20, acc:acc2, kind:kind2, hits:hits2, mult:m2, opts:o2 || {}, d: (kind2 === 'area' ? 'Sweeps across every enemy; each hit rolls its own accuracy' : `${hits2} quick hits${(o2||{}).spread ? ' spread across the enemies' : ' on your target'}; each rolls its own accuracy`) + optText(o2), fx:'skill'};
-  let [n3, c3, acc3, m3, o3] = A.t3; if ((w.rar||0) >= 4 && k){ const h = hashOf(k); c3 = Math.max(40, Math.min(60, c3 + (h % 3 - 1)*5)); m3 = Math.round((m3 + ((h >> 3) % 3 - 1)*0.1)*100)/100; acc3 = Math.max(90, Math.min(95, acc3 + ((h >> 5) % 3 - 1)*2)); }
-  const t3 = {slot:2, type:3, n:n3, cost:c3, acc:acc3, mult:m3, opts:o3 || {}, d:'One crushing blow on your target' + optText(o3), fx:'heavy'};
+  const ap = D.ARCH_POW[arch] || 1, ox = (w.rar||0) >= 6 ? MV.outer : 1, P1 = Math.round(MV.t1*ap*ox), P2 = Math.round(MV.t2*ap*ox);
+  const t1 = myth ? {slot:0, type:1, n:D.MYTHT1[k][0], cost:0, gain:15, acc:100, mult:P1/D.BASEPOW, rider:D.MYTHT1[k][1], d:`Free Mythical strike: ${RIDER[D.MYTHT1[k][1]]}. Builds +15 energy${D.MYTHT1[k][1]==='energy' ? ' (+10 more)' : ''}.`, fx:'myth1'}
+                  : {slot:0, type:1, n:D.BASICMOVE[arch] || 'Strike', cost:0, gain:15, acc:100, mult:P1/D.BASEPOW, d:'Free, reliable strike from your weapon. Builds +15 energy for your bigger moves.', fx:'basic'};
+  const [n2, , , , , o2] = A.t2;
+  const t2 = {slot:1, type:2, n:n2, cost:20, acc:90, kind:'area', hits:1, mult:P2/D.BASEPOW, opts:Object.assign({}, o2 || {}, {spread:undefined}), d:'Sweeps across every enemy; each hit rolls its own accuracy' + optText(o2), fx:'skill'};
+  const t3 = armourMove(a);
   let t4; if (k && (w.rar||0) >= 4){ const sx = (w.rar >= 5 && D.SIGX[k]) || {}; const acc = sx.acc || 100;
-    t4 = {slot:3, type:4, n:D.SIGS[k][0], cost:T4COST, cd:T4CD, acc, sig:k, down: sx.down || [], d:D.SIGS[k][1] + (sx.note ? `. DOWNSIDE: ${sx.note}` : ''), fx:'special'}; }
-  else { const [n4, d4, ops4, acc4] = A.t4; t4 = {slot:3, type:4, n:n4, cost:T4COST, cd:T4CD, acc:acc4, ops:ops4, down:[], d:d4, fx:'special'}; }
+    t4 = {slot:3, type:4, n:D.SIGS[k][0], cost:T4COST, cd:T4CD, acc, sig:k, ops:scaleOps(D.SIGS[k][2], MV.t4*ox, MV.t4all*ox), down: sx.down || [], d:D.SIGS[k][1].replace(/\s*\(\d+%[^)]*\)/g, '') + (sx.note ? `. DOWNSIDE: ${sx.note}` : ''), fx:'special'}; }
+  else { const [n4, d4, ops4, acc4] = A.t4; t4 = {slot:3, type:4, n:n4, cost:T4COST, cd:T4CD, acc:acc4, ops:scaleOps(ops4, MV.t4*ox, MV.t4all*ox), down:[], d:d4.replace(/\s*\(\d+%[^)]*\)/g, '').replace(/\d+% (to|each)/, 'Big damage $1'), fx:'special'}; }
+  if (ox > 1 && !t4.ops.some(o => o[0] === 'vuln')) t4.ops.push(['vuln', 2, 'one', 0.3]);   // outerversal ultimates also expose the target
   const slow = abilOf(w, 'slowskill') + (a ? abilOf(a, 'slowskill') : 0); if (slow){ t2.cost += 10*slow; t3.cost += 10*slow; }
-  const pc = x => Math.round(x*100) + '%';
-  t1.dmg = pc(t1.mult) + ' to one foe'; t2.dmg = kind2 === 'area' ? pc(m2) + ' to every foe' : hits2 + ' hits × ' + pc(m2); t3.dmg = pc(m3) + ' to one foe';
-  const ops4 = t4.sig ? D.SIGS[t4.sig][2] : t4.ops; const dOp = ops4.find(o => ['hit','all','multi','judge','gentle'].includes(o[0]));
-  const cr = dOp && ((dOp[0]==='multi' ? dOp[3] : dOp[2]) || {}).crit; t4.dmg = !dOp ? 'No damage (support)' : dOp[0] === 'hit' ? pc(dOp[1]*(cr?2:1)) + ' to one foe' + (cr ? ' (sure crit)' : '') : dOp[0] === 'all' ? pc(dOp[1]) + ' to every foe' : dOp[0] === 'multi' ? dOp[1] + ' hits × ' + pc(dOp[2]) : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its current HP' : 'Kills a weakened foe outright';
-  const pw = x => Math.round(D.BASEPOW*x); t4.powTxt = !dOp ? 'support' : dOp[0] === 'hit' ? pw(dOp[1]) + ' power' + (cr ? ' · sure crit' : '') : dOp[0] === 'all' ? pw(dOp[1]) + ' power to all' : dOp[0] === 'multi' ? dOp[1] + '×' + pw(dOp[2]) + ' power' : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its HP' : 'finisher';
+  const pc = x => Math.round(x*100) + '%', pw = x => Math.round(D.BASEPOW*x);
+  t1.dmg = pw(t1.mult) + ' power to one foe'; t2.dmg = pw(t2.mult) + ' power to every foe'; t3.dmg = 'No damage (armour art)'; t3.powTxt = 'armour art';
+  const dOp = t4.ops.find(o => ['hit','all','multi','judge','gentle'].includes(o[0]));
+  const cr = dOp && ((dOp[0]==='multi' ? dOp[3] : dOp[2]) || {}).crit; t4.dmg = !dOp ? 'No damage (support)' : dOp[0] === 'hit' ? pw(dOp[1]) + ' power to one foe' + (cr ? ' (sure crit)' : '') : dOp[0] === 'all' ? pw(dOp[1]) + ' power to every foe' : dOp[0] === 'multi' ? dOp[1] + ' hits × ' + pw(dOp[2]) + ' power' : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its current HP' : 'Kills a weakened foe outright';
+  t4.powTxt = !dOp ? 'support' : dOp[0] === 'hit' ? pw(dOp[1]) + ' power' + (cr ? ' · sure crit' : '') : dOp[0] === 'all' ? pw(dOp[1]) + ' power to all' : dOp[0] === 'multi' ? dOp[1] + '×' + pw(dOp[2]) + ' power' : dOp[0] === 'judge' ? pc(dOp[1]) + ' of its HP' : 'finisher';
   const out4 = [t1, t2, t3, t4]; const wc = w.cat || (D.CASTER.includes(arch) ? 'spec' : 'phys'), b = w.bs || {}; const hyb = wc === 'phys' && (b.spa || 0) >= 0.4*(b.atk || 1);
-  for (const m of out4){ m.ty = D.moveTypeOf(m, w); m.cat = wc; if (hyb && m.slot === 3) m.cat = 'spec'; if (hyb && m.slot === 1 && m.kind === 'area' && m.ty !== 'normal') m.cat = 'spec';
-    m.pow = Math.round(D.BASEPOW * (m.mult || (m.slot === 3 ? 0 : 1))); } return out4; }
+  for (const m of out4){ m.ty = D.moveTypeOf(m, w); m.cat = wc; if (hyb && m.slot === 3) m.cat = 'spec'; if (hyb && m.slot === 1 && m.ty !== 'normal') m.cat = 'spec';
+    m.pow = m.slot === 2 ? 0 : m.slot === 3 ? (dOp ? (dOp[0] === 'multi' ? Math.round(dOp[1]*pw(dOp[2])) : dOp[0] === 'judge' || dOp[0] === 'gentle' ? 0 : pw(dOp[1])) : 0) : Math.round(D.BASEPOW * m.mult); } return out4; }
 /* a move's effect list (shared by T4 specials) */
 function runOps(B, name, ops, tgt, r, ev, acc){ const p = B.p, h = p.hid; const allies = () => B.party ? B.heroes.filter(x => !x.down && x.hp > 0) : [p];
   let dealt = 0, last = null;
@@ -428,7 +480,7 @@ function runOps(B, name, ops, tgt, r, ev, acc){ const p = B.p, h = p.hid; const 
     if (k === 'smoke') for (const x of (b === 'party' ? allies() : [p])) x.buff.smoke = Math.max(x.buff.smoke||0, a);
     if (k === 'shield'){ p.buff.iron = Math.max(p.buff.iron||0, a); ev.push({t:'msg', v:'Your skin turns hard as stone.', h}); } }
   return dealt; }
-function doMove(B, mv, tgt, r, ev){ const p = B.p; const m = heroMoves(p.w, p.a)[3]; ev.push({t:'skill', v:D.SIGS[mv][0], h:p.hid, sig:true}); runOps(B, D.SIGS[mv][0], D.SIGS[mv][2], tgt, r, ev, m ? m.acc : 100); if (m && m.down && m.down.length) runOps(B, '', m.down, tgt, r, ev, 100); }
+function doMove(B, mv, tgt, r, ev){ const p = B.p; const m = heroMoves(p.w, p.a)[3]; ev.push({t:'skill', v:D.SIGS[mv][0], h:p.hid, sig:true}); runOps(B, D.SIGS[mv][0], m && m.sig === mv ? m.ops : D.SIGS[mv][2], tgt, r, ev, m ? m.acc : 100); if (m && m.down && m.down.length) runOps(B, '', m.down, tgt, r, ev, 100); }
 function tickBuffs(B){ if (B.rally > 0) B.rally--; if (B.aegis > 0) B.aegis--;
   for (const e of B.es){ for (const k of ['blind','slow','weak','empower','reflect']) if (e.status[k] > 0) e.status[k]--; if (e.status.vuln > 0){ e.status.vuln--; if (!e.status.vuln) e.status.vulnAmt = 0; } } }
 function useMove(B, slot, tgt, r, ev){ const p = B.p, h = p.hid; const mv = heroMoves(p.w, p.a)[slot]; if (!mv) return; p.mty = mv.ty; p.mcat = mv.cat; p.acts = (p.acts || 0) + 1; if (mv.type === 3 && B.boons.includes('surge')) mv.cost = Math.max(0, mv.cost - 10);
@@ -446,7 +498,7 @@ function useMove(B, slot, tgt, r, ev){ const p = B.p, h = p.hid; const mv = hero
     if (mv.kind === 'area'){ ev.push({t:'act', h, a:'skill', tg:all.map(e => e.id), area:true}); for (const e of all) dealTo(B, e, baseHit(B, r)*mv.mult, r, ev, Object.assign({acc:mv.acc, noChain:true}, mv.opts, mv.opts.stun ? {} : {})); }
     else { ev.push({t:'act', h, a:'skill', tg:[tgt.id]}); for (let i=0;i<mv.hits;i++){ const al = alive(B); if (!al.length) break; const e = mv.opts.spread ? al[i % al.length] : (tgt.hp > 0 ? tgt : al[0]); dealTo(B, e, baseHit(B, r)*mv.mult, r, ev, Object.assign({acc:mv.acc, noChain:true}, mv.opts)); } }
     selfBurn(B, r, ev); return; }
-  if (mv.type === 3){ ev.push({t:'skill', v:mv.n, h}); ev.push({t:'act', h, a:'heavy', tg:[tgt.id]}); dealTo(B, tgt, baseHit(B, r)*mv.mult, r, ev, Object.assign({acc:mv.acc}, mv.opts)); selfBurn(B, r, ev); return; }
+  if (mv.type === 3){ ev.push({t:'skill', v:mv.n, h}); ev.push({t:'act', h, a:'focus'}); runOps(B, mv.n, mv.ops, tgt, r, ev, 100); return; }
   if (mv.type === 4){ if (mv.sig) doMove(B, mv.sig, tgt, r, ev); else { ev.push({t:'skill', v:mv.n, h, sig:true}); runOps(B, mv.n, mv.ops, tgt, r, ev, mv.acc); } } }
 /* one hero's action, no enemy response. act: 'move' (item = slot 0-3) | 'focus' | 'guard' | 'item'; old 'attack'/'skill' map to slots 0/1 */
 function heroAction(B, act, targetId, r, belt={}, item=null){
@@ -507,6 +559,7 @@ function hurt(B, e, raw, r, ev, label, acc=95){
   if (p.buff.iron > 0) d *= 0.55;
   const tmh = D.typeMul((e.types && e.types[e.tcur || 0]) || 'normal', p.dt); d *= tmh * (tmh > 1.5 && p.boons.includes('hardened') ? 0.75 : 1);
   d *= 1 - abilOf(p.a,'ward')/100; if (B.boons.includes('iron')) d *= 0.9; d *= 1 + (abilOf(p.w,'fragile') + abilOf(p.a,'fragile'))/100;
+  if (e.bossCap) d = Math.min(d, p.max*e.bossCap);
   d = Math.max(1, Math.round(d)); p.hp = Math.max(0, p.hp - d); ev.push({t:'pdmg', id:e.id, v:d, label, h, x:tmh >= 1.9 ? 2 : tmh <= 0.6 ? 0.5 : undefined});
   const th = abilOf(p.a,'thorns') + TRK(B,'THORNS') + (B.boons.includes('thorn') ? 12 : 0); if (th && e.hp > 0){ const t = Math.max(1, Math.round(d*th/100)); e.hp = Math.max(0, e.hp - t); ev.push({t:'fx', k:'thorns', h}); ev.push({t:'edot', id:e.id, v:t, s:'thorns'}); }
   const co = abilOf(p.a,'counter') + (p.boons.includes('riposte') ? 15 : 0); if (co && e.hp > 0 && r() < co/100){ ev.push({t:'fx', k:'counter', a:e.id, h}); ev.push({t:'msg', v:'Counter-attack!', h}); dealTo(B, e, baseHit(B, r)*0.6, r, ev, {noChain:true}); }
@@ -713,9 +766,11 @@ function autoAct(B, h, r){ const ms = heroMoves(h.w, h.a); const al = alive(B); 
   const tgt = al.slice().sort((a, b) => a.hp - b.hp)[0]; const ready = m => m && h.energy >= m.cost && (!m.cd || (h.mcd[m.slot] || 0) <= B.turn);
   if (h.hp < h.max*0.35 && (h.belt.hp2 > 0 || h.belt.hp > 0)) return {act:'item', item: h.belt.hp2 > 0 ? 'hp2' : 'hp', tgt:tgt.id};
   if (al.some(e => e.charging)) return {act:'guard'};
-  if (ready(ms[3]) && h.energy >= 60) return {act:'move', item:3, tgt:tgt.id};
-  if (al.length >= 2 && ready(ms[1])) return {act:'move', item:1, tgt:tgt.id};
-  if (ready(ms[2]) && h.energy >= ms[2].cost + 10) return {act:'move', item:2, tgt:tgt.id};
+  const big = al.find(e => (e.boss || e.mini) && !e.minion); const boss = big || tgt;
+  if (ready(ms[3])) return {act:'move', item:3, tgt:(big && al.length > 1 && ms[3].ops && ms[3].ops.some(o => o[0] === 'all') ? tgt : boss).id};
+  const save = ms[3] && (h.mcd[3] || 0) <= B.turn + 1 ? 50 : 0;   // keep energy for an ultimate that is about ready
+  if (ready(ms[2]) && h.energy >= ms[2].cost + save && (big || h.hp < h.max*0.6)) return {act:'move', item:2, tgt:tgt.id};
+  if (al.length >= 2 && ready(ms[1]) && h.energy >= ms[1].cost + save) return {act:'move', item:1, tgt:tgt.id};
   return {act:'move', item:0, tgt:tgt.id}; }
 
 // ---------- quests
@@ -793,7 +848,7 @@ function placeChunks(u, withAnalysis){
   return out;
 }
 function essayText(units){ return units.map(u=>u.s.join(' ')).join(' '); }
-return {FK, refAt, expRar, foeSt, gearBS, heroBase, statItem, pkDamage, speedOf, makeArmour0: makeArmour, K, makeTop, tome, makeBoss, makeHealer, kitMoves, makeSupport, DIFFS, setDiff: d => { DIFF = DIFFS[d] ? d : 'hard'; }, get DIFF(){ return DIFF; }, itemTypes: D.itemTypes, get LMAX(){ return LMAX; }, setLMAX: n => { LMAX = n; }, miniLv, makeSpecial, SKILLCOST, opening, rng, pick, wpick, makeWeapon, makeArmour, makeTrinket, starter, essayRelic, derive, eff, canEquip, missing, power, abilOf, rollItem, rollChest, rollConsumable,
+return {FK, armourMove, bossify, BOSSK, MV, refAt, expRar, foeSt, gearBS, heroBase, statItem, pkDamage, speedOf, makeArmour0: makeArmour, K, makeTop, tome, makeBoss, makeHealer, kitMoves, makeSupport, DIFFS, setDiff: d => { DIFF = DIFFS[d] ? d : 'hard'; }, get DIFF(){ return DIFF; }, itemTypes: D.itemTypes, get LMAX(){ return LMAX; }, setLMAX: n => { LMAX = n; }, miniLv, makeSpecial, SKILLCOST, opening, rng, pick, wpick, makeWeapon, makeArmour, makeTrinket, starter, essayRelic, derive, eff, canEquip, missing, power, abilOf, rollItem, rollChest, rollConsumable,
         rollPaths, starOdds, xpShares, isBossL, BELTCAP: 5, makeGroup, budget, makeEnemyPub: makeEnemy, XPK, enemyLv, avgPts, gapMod, questXP, killXP, setWeb, setNQ, get NQ(){ return NQ; }, get WEB(){ return WEB; }, refP, legendWeapon, legendArmour, applyLevel, plOf, setPL: x => { PL = Math.max(1, x); }, get PL(){ return PL; }, dropLevel, CURVE, STARp: STAR, scaleForParty, BOSSMOVES, newParty, partyRound: (B, a, r) => { const ev = partyRound(B, a, r); noteDeaths(B); tickBuffs(B); return ev; }, MOVES, MOVECOST, MOVECD, movesOf, heroMoves, autoAct, enemyMoves, EM, heroStatus, foeStatus, T4COST, T4CD, BADST: BAD, GOODST: GOOD, heroHitChance, foeHitChance, heroOf, mkQuest, pairsOf, MAXTRIES, newBattle, playerAct: function(B){ const ev = playerAct.apply(null, arguments); noteDeaths(B); tickBuffs(B); return ev; }, alive, TIERS, tierWeights, rollQuests, quotesOf, accuracy, initials, markSummary, placeChunks, essayText,
         words, norm, setEXP: e => { EXP = e; }, getUID: () => UID, setUID: n => { UID = n; }};
 })(DATA);

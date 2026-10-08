@@ -107,3 +107,4 @@ body[data-view="battle"] #chat{bottom:calc(var(--dockH) + 6px)}
 .plate .hpbar{height:5px;margin-top:2px}.plate .enbar{height:3px}.plate .hpt{font-size:.54rem}.plate .chips span{font-size:.5rem;padding:0 3px}
 .plate.boss{width:min(var(--pw,15%),170px)!important}
 @media (max-width:760px){ body[data-view="battle"]{--dockH:42vh} body[data-view="battle"] .mvgrid.bars{grid-template-columns:repeat(2,1fr)} }
+#dockbtns button.off{opacity:.45;text-decoration:line-through}

@@ -47,7 +47,7 @@ function sim(seed){
       for (const q of qs){ if (r() < QP){ gainXP(h, Math.round(C.questXP(q.pts, L, h.lv - E))); heal(h, 0.1); } } spend(h); equip(h); }
     // path vote
     const paths = C.rollPaths(r, L, w); const bestRar = Math.min(...heroes.map(h => Math.max(h.eq.weapon.rar, h.eq.armour.rar)));
-    const pref = p => p.kind === 'event' ? 1.5 : p.kind === 'mini' || p.kind === 'boss' ? 99 : p.kind === 'outer' ? (bestRar >= 5 ? 6 : -9) : p.kind === 'promised' ? (bestRar >= 5 ? 5 : bestRar >= 4 ? 2.6 : -5) : p.kind === 'god' ? (bestRar >= 3 ? 4 : 0) : 3 - Math.abs(p.stars - 3.5);
+    const pref = p => p.kind === 'event' ? 1.5 : p.kind === 'mini' || p.kind === 'boss' ? 99 : p.kind === 'outer' ? (bestRar >= 5 ? 6 : -9) : p.kind === 'promised' ? (bestRar >= 5 ? 2.6 : -5) : p.kind === 'god' ? (bestRar >= 3 ? 4 : 0) : 3 - Math.abs(p.stars - 3.5);
     const path = paths.slice().sort((a, b) => pref(b) - pref(a))[0];
     if (path.kind === 'event'){ for (const h of heroes) if (!h.down) heal(h, 0.6); log.push(`R${L} event`); continue; }
     if (path.kind === 'boss' && L === LEN) path.final = true;
@@ -56,8 +56,10 @@ function sim(seed){
     const live = heroes.filter(h => !h.down);
     const B = C.newParty(live.map(h => ({hid:h.id, P:P(h), belt:h.belt, hp:h.hp})), g, {world:w});
     let t = 0; if (args.nofight){ B.over = 'win'; for (const e of B.es){ e.hp = 0; e.xpTo = B.heroes.map(h => h.hid); } }
+    const bm0 = B.es[0].max, ba0 = B.es[0].atk;
     while (!B.over && t < 60){ const acts = {}; for (const bh of B.heroes) if (!bh.down) acts[bh.hid] = C.autoAct(B, bh, r); C.partyRound(B, acts, r); t++; }
-    const fk = path.final ? 'final' : path.kind === 'normal' ? 'n' + path.stars : path.kind; FIGHTS[fk] = FIGHTS[fk] || [0, 0, 0]; FIGHTS[fk][0]++; FIGHTS[fk][2] += t; if (B.over === 'win') FIGHTS[fk][1]++;
+    const fk = (path.final ? 'final' : path.kind === 'normal' ? 'n' + path.stars : path.kind) + (args.bykey && path.kind !== 'normal' ? ':' + g[0].key + '@' + Math.ceil(L/5)*5 : ''); FIGHTS[fk] = FIGHTS[fk] || [0, 0, 0]; FIGHTS[fk][0]++; FIGHTS[fk][2] += t; if (B.over === 'win') FIGHTS[fk][1]++;
+    if (args.trace && path.kind === 'boss' && B.over !== 'win') console.log(`LOST R${L} ${g[0].key} bossHP ${bm0} left ${B.es[0].hp} heroHP ${B.heroes[0].max} lv${heroes[0].lv} gear ${heroes[0].eq.weapon.rar}/${heroes[0].eq.armour.rar} ${heroes[0].eq.weapon.arch} atk ${B.heroes[0].atk} def ${B.heroes[0].def} t${t} m1 ${C.heroMoves(B.heroes[0].w, B.heroes[0].a)[0].pow}`);
     if (B.over !== 'win' && NODEATH){ if (VERBOSE) log.push(`R${L} LOST ${path.kind}★${path.stars} lv${heroes[0].lv} t${t} gear ${heroes[0].eq.weapon.rar}/${heroes[0].eq.armour.rar} st ${JSON.stringify(heroes[0].st)}`); for (const h of heroes){ h.down = false; h.hp = Math.round(maxHP(h) * 0.5); } continue; }
     if (B.over !== 'win'){ return {won:false, at:L, path:path.kind + path.stars, lv:heroes[0].lv, w, log, firstLeg:heroes[0].firstLeg, rounds:t}; }
     const xs = C.xpShares(B);
