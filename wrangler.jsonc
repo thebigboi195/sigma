@@ -1,0 +1,6 @@
+// Cloudflare Workers static-site config: serves the built game (dist/index.html) at the site root.
+{
+  "name": "essayquest",
+  "compatibility_date": "2025-01-01",
+  "assets": { "directory": "./dist" }
+}
